@@ -67,16 +67,20 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
+      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
       "flex flex-col items-center justify-center p-8",
       className
     )}>
-      {/* Header */}
+      {/* Header with Magna Logo */}
       <div className="text-center mb-12">
-        <h1 className="text-5xl font-bold text-white mb-3 tracking-tight">
-          Magna TSR Challenge
+        <div className="flex items-center justify-center gap-3 mb-4">
+          <span className="text-5xl font-black text-white tracking-tight">MAGNA</span>
+          <span className="w-3 h-3 bg-magna-red rounded-full" />
+        </div>
+        <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">
+          TSR Challenge
         </h1>
-        <p className="text-slate-400 text-lg">
+        <p className="text-magna-gray text-lg">
           Capital Allocation Simulation Game
         </p>
       </div>
@@ -98,10 +102,10 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
       </div>
       
       {/* Team Selection Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 w-full max-w-2xl">
+      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-2xl">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-blue-500/20 rounded-xl">
-            <Users className="w-6 h-6 text-blue-400" />
+          <div className="p-2 bg-magna-red/20 rounded-xl">
+            <Users className="w-6 h-6 text-magna-red" />
           </div>
           <h2 className="text-xl font-semibold text-white">Select Your Team</h2>
         </div>
@@ -116,18 +120,18 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
               className={cn(
                 "relative h-16 rounded-xl font-bold text-lg transition-all duration-200",
                 "flex items-center justify-center",
-                "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-slate-900",
+                "focus:outline-none focus:ring-2 focus:ring-magna-red focus:ring-offset-2 focus:ring-offset-magna-darker",
                 isClaimed && [
-                  "bg-slate-700/50 text-slate-500 cursor-not-allowed",
+                  "bg-magna-gray/20 text-magna-gray/50 cursor-not-allowed",
                 ],
                 !isClaimed && !isSelected && [
-                  "bg-slate-700 text-white hover:bg-slate-600",
-                  "border-2 border-transparent hover:border-blue-500/50",
+                  "bg-white/10 text-white hover:bg-white/20",
+                  "border-2 border-transparent hover:border-magna-red/50",
                 ],
                 isSelected && [
-                  "bg-blue-600 text-white",
-                  "border-2 border-blue-400",
-                  "shadow-lg shadow-blue-500/30",
+                  "bg-magna-red text-white",
+                  "border-2 border-magna-red-light",
+                  "shadow-lg shadow-magna-red/30",
                   "scale-105",
                 ],
               )}
@@ -135,30 +139,30 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
               {teamId}
               {isClaimed && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl">
-                  <XCircle className="w-5 h-5 text-slate-400" />
+                  <XCircle className="w-5 h-5 text-magna-gray" />
                 </div>
               )}
               {isSelected && (
-                <CheckCircle2 className="absolute -top-1 -right-1 w-5 h-5 text-emerald-400" />
+                <CheckCircle2 className="absolute -top-1 -right-1 w-5 h-5 text-white" />
               )}
             </button>
           ))}
         </div>
         
         {/* Legend */}
-        <div className="flex items-center justify-center gap-6 text-sm text-slate-400 mb-8">
+        <div className="flex items-center justify-center gap-6 text-sm text-magna-gray mb-8">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-slate-700" />
+            <div className="w-4 h-4 rounded bg-white/10" />
             <span>Available</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-slate-700/50 flex items-center justify-center">
-              <XCircle className="w-3 h-3 text-slate-400" />
+            <div className="w-4 h-4 rounded bg-magna-gray/20 flex items-center justify-center">
+              <XCircle className="w-3 h-3 text-magna-gray/50" />
             </div>
             <span>Claimed</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-blue-600" />
+            <div className="w-4 h-4 rounded bg-magna-red" />
             <span>Selected</span>
           </div>
         </div>
@@ -178,8 +182,8 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
             "w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200",
             "flex items-center justify-center gap-2",
             selectedTeam && isConnected && !isJoining
-              ? "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/30"
-              : "bg-slate-700 text-slate-400 cursor-not-allowed"
+              ? "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
+              : "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
           )}
         >
           {isJoining ? (
@@ -196,8 +200,8 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
       </div>
       
       {/* Footer */}
-      <p className="text-slate-500 text-sm mt-8">
-        Magna International Leadership Meeting • March 2026
+      <p className="text-magna-gray text-sm mt-8">
+        Magna International Leadership Meeting • 2026
       </p>
     </div>
   );

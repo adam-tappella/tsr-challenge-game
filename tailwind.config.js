@@ -44,13 +44,28 @@ export default {
           '3': 'hsl(var(--chart-3))',
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
+        },
+        // Magna Brand Colors
+        magna: {
+          red: '#E22E2F',
+          'red-dark': '#C41E1F',
+          'red-light': '#FF4A4B',
+          black: '#000000',
+          gray: '#ACACAC',
+          'gray-dark': '#666666',
+          'gray-light': '#D4D4D4',
+          dark: '#1a1a1a',
+          darker: '#121212',
         }
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
-      }
+      },
+      fontFamily: {
+        sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
     }
   },
   plugins: [require("tailwindcss-animate")],

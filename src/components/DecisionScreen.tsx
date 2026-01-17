@@ -147,20 +147,24 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
   
   return (
     <div className={cn(
-      "min-h-screen bg-slate-900 flex flex-col",
+      "min-h-screen bg-magna-darker flex flex-col",
       className
     )}>
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-40">
+      <header className="bg-magna-dark border-b border-white/10 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            {/* Left: Team & Round Info */}
+            {/* Left: Magna Logo, Team & Round Info */}
             <div className="flex items-center gap-6">
-              <div className="bg-blue-600 text-white px-4 py-1.5 rounded-full font-bold">
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-black text-white tracking-tight">MAGNA</span>
+                <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
+              </div>
+              <div className="bg-magna-red text-white px-4 py-1.5 rounded-full font-bold">
                 Team {team.teamId}
               </div>
-              <div className="text-slate-400">
-                <span className="text-slate-300 font-medium">Round {gameState.currentRound}</span>
+              <div className="text-magna-gray">
+                <span className="text-white font-medium">Round {gameState.currentRound}</span>
                 <span className="mx-2">•</span>
                 <span>FY {2025 + gameState.currentRound}</span>
               </div>
@@ -169,20 +173,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
             {/* Center: Cash Balance */}
             <div className="flex items-center gap-8">
               <div className="text-center">
-                <div className="text-xs text-slate-500 uppercase tracking-wide">Starting Cash</div>
+                <div className="text-xs text-magna-gray uppercase tracking-wide">Starting Cash</div>
                 <div className="text-lg font-bold text-white">${team.cashBalance.toLocaleString()}M</div>
               </div>
-              <div className="w-px h-8 bg-slate-700" />
+              <div className="w-px h-8 bg-white/10" />
               <div className="text-center">
-                <div className="text-xs text-slate-500 uppercase tracking-wide">Selected</div>
+                <div className="text-xs text-magna-gray uppercase tracking-wide">Selected</div>
                 <div className="text-lg font-bold text-amber-400">-${selectedCost.toLocaleString()}M</div>
               </div>
-              <div className="w-px h-8 bg-slate-700" />
+              <div className="w-px h-8 bg-white/10" />
               <div className="text-center">
-                <div className="text-xs text-slate-500 uppercase tracking-wide">Remaining</div>
+                <div className="text-xs text-magna-gray uppercase tracking-wide">Remaining</div>
                 <div className={cn(
                   "text-lg font-bold",
-                  remainingBudget >= 0 ? "text-emerald-400" : "text-red-400"
+                  remainingBudget >= 0 ? "text-emerald-400" : "text-magna-red"
                 )}>
                   ${remainingBudget.toLocaleString()}M
                 </div>
@@ -193,8 +197,8 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
             <div className={cn(
               "flex items-center gap-2 px-4 py-2 rounded-xl font-mono text-xl font-bold",
               isPaused && "bg-amber-500/20 text-amber-400",
-              !isPaused && isLowTime && "bg-red-500/20 text-red-400 animate-pulse",
-              !isPaused && !isLowTime && "bg-slate-700 text-white"
+              !isPaused && isLowTime && "bg-magna-red/20 text-magna-red animate-pulse",
+              !isPaused && !isLowTime && "bg-white/10 text-white"
             )}>
               <Timer className="w-5 h-5" />
               {isPaused ? 'PAUSED' : formattedTime}
@@ -203,10 +207,10 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
         </div>
         
         {/* Scenario Banner */}
-        <div className="bg-slate-900/50 border-t border-slate-700 px-4 py-3">
+        <div className="bg-black/30 border-t border-white/10 px-4 py-3">
           <div className="max-w-7xl mx-auto">
-            <p className="text-slate-400 text-sm">
-              <span className="text-slate-300 font-medium">
+            <p className="text-magna-gray text-sm">
+              <span className="text-white font-medium">
                 {gameState.scenario.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
               </span>{' '}
               {gameState.scenario.narrative.split('\n')[0]}
@@ -217,20 +221,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
       
       {/* Submitted Overlay */}
       {hasSubmitted && (
-        <div className="fixed inset-0 z-30 bg-slate-900/90 backdrop-blur-sm flex items-center justify-center">
-          <div className="bg-slate-800 border border-slate-700 rounded-3xl p-10 text-center max-w-md">
+        <div className="fixed inset-0 z-30 bg-magna-darker/95 backdrop-blur-sm flex items-center justify-center">
+          <div className="bg-magna-dark border border-white/10 rounded-2xl p-10 text-center max-w-md">
             <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-10 h-10 text-emerald-400" />
             </div>
             <h2 className="text-2xl font-bold text-white mb-2">Decisions Submitted!</h2>
-            <p className="text-slate-400 mb-6">
+            <p className="text-magna-gray mb-6">
               Your capital allocation decisions for Round {gameState.currentRound} have been recorded.
               Waiting for other teams to submit...
             </p>
             <div className="flex items-center justify-center gap-1">
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+              <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
           </div>
         </div>
@@ -254,29 +258,29 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
                 className={cn(
                   "w-full flex items-center justify-between p-4 rounded-xl transition-colors",
                   `bg-gradient-to-r ${config.gradient}`,
-                  "border border-slate-700 hover:border-slate-600"
+                  "border border-white/10 hover:border-white/20"
                 )}
               >
                 <div className="flex items-center gap-3">
-                  <Icon className="w-6 h-6 text-slate-300" />
+                  <Icon className="w-6 h-6 text-white" />
                   <div className="text-left">
                     <h2 className="text-lg font-semibold text-white">
                       {config.label} Decisions
                       {selectedInCategory > 0 && (
-                        <span className="ml-2 px-2 py-0.5 bg-white/10 rounded-full text-sm">
+                        <span className="ml-2 px-2 py-0.5 bg-magna-red/20 text-magna-red rounded-full text-sm">
                           {selectedInCategory} selected
                         </span>
                       )}
                     </h2>
-                    <p className="text-sm text-slate-400">{config.description}</p>
+                    <p className="text-sm text-magna-gray">{config.description}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-slate-400 text-sm">{decisions.length} options</span>
+                  <span className="text-magna-gray text-sm">{decisions.length} options</span>
                   {isExpanded ? (
-                    <ChevronUp className="w-5 h-5 text-slate-400" />
+                    <ChevronUp className="w-5 h-5 text-magna-gray" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-slate-400" />
+                    <ChevronDown className="w-5 h-5 text-magna-gray" />
                   )}
                 </div>
               </button>
@@ -306,14 +310,14 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
       </main>
       
       {/* Submit Footer */}
-      <footer className="sticky bottom-0 bg-slate-800 border-t border-slate-700 p-4">
+      <footer className="sticky bottom-0 bg-magna-dark border-t border-white/10 p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Selection Summary */}
           <div className="flex items-center gap-6">
-            <div className="text-slate-400">
+            <div className="text-magna-gray">
               <span className="text-white font-bold">{selectedDecisionIds.size}</span> decisions selected
             </div>
-            <div className="text-slate-400">
+            <div className="text-magna-gray">
               Total: <span className="text-amber-400 font-bold">${selectedCost.toLocaleString()}M</span>
             </div>
           </div>
@@ -327,7 +331,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
               </div>
               <button
                 onClick={cancelConfirm}
-                className="px-6 py-3 bg-slate-700 text-white rounded-xl font-medium hover:bg-slate-600 transition-colors"
+                className="px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors"
               >
                 Cancel
               </button>
@@ -358,8 +362,8 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className }) => 
                 hasSubmitted
                   ? "bg-emerald-500/20 text-emerald-400 cursor-not-allowed"
                   : selectedDecisionIds.size === 0
-                    ? "bg-slate-700 text-slate-500 cursor-not-allowed"
-                    : "bg-blue-600 text-white hover:bg-blue-500 shadow-lg shadow-blue-500/30"
+                    ? "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
+                    : "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
               )}
             >
               {hasSubmitted ? (
