@@ -4,9 +4,12 @@
   "type": "module",
   "description": "TSR CEO Demo Backend API",
   "main": "server.ts",
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "tsx watch server.ts",
-    "start": "node --loader ts-node/esm server.ts",
+    "start": "tsx server.ts",
     "build": "tsc",
     "lint": "eslint . --ext .ts"
   },

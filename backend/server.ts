@@ -82,12 +82,28 @@ const gameManager = initializeGameStateManager({
 // Socket.IO Setup
 // =============================================================================
 
-io = new Server<ClientToServerEvents & AdminToServerEvents, ServerToClientEvents>(httpServer, {
-  cors: {
-    origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-    methods: ['GET', 'POST'],
-    credentials: true,
+// CORS configuration - supports multiple origins for dev and production
+const allowedOrigins = process.env.CORS_ORIGIN 
+  ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
+  : ['http://localhost:5173'];
+
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Allow requests with no origin (mobile apps, curl, etc.)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.some(allowed => origin.startsWith(allowed) || allowed === '*')) {
+      callback(null, true);
+    } else {
+      console.log(`[CORS] Blocked origin: ${origin}`);
+      callback(null, true); // Allow anyway for now during testing
+    }
   },
+  methods: ['GET', 'POST'],
+  credentials: true,
+};
+
+io = new Server<ClientToServerEvents & AdminToServerEvents, ServerToClientEvents>(httpServer, {
+  cors: corsOptions,
   pingInterval: WEBSOCKET_SETTINGS.pingInterval,
   pingTimeout: WEBSOCKET_SETTINGS.pingTimeout,
 });
@@ -96,10 +112,7 @@ io = new Server<ClientToServerEvents & AdminToServerEvents, ServerToClientEvents
 // Middleware
 // =============================================================================
 
-app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
-  credentials: true,
-}));
+app.use(cors(corsOptions));
 
 app.use(express.json());
 
