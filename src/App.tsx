@@ -19,12 +19,18 @@
 import React, { useEffect, useState } from 'react';
 import { useGameStore, useGameStatus } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
+import { AccessGate } from '@/components/AccessGate';
 import { TeamSelection } from '@/components/TeamSelection';
 import { Lobby } from '@/components/Lobby';
 import { DecisionScreen } from '@/components/DecisionScreen';
 import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
+
+// =============================================================================
+// ACCESS CODE - Change this to control who can access the app
+// =============================================================================
+const ACCESS_CODE = 'magna2026';
 
 type Route = 'team' | 'admin';
 
@@ -54,13 +60,12 @@ function App() {
     };
   }, []);
   
-  // Render admin panel if on admin route
-  if (route === 'admin') {
-    return <AdminPanel />;
-  }
-  
-  // Render team interface
-  return <TeamInterface />;
+  // Wrap everything in AccessGate
+  return (
+    <AccessGate accessCode={ACCESS_CODE}>
+      {route === 'admin' ? <AdminPanel /> : <TeamInterface />}
+    </AccessGate>
+  );
 }
 
 /**
