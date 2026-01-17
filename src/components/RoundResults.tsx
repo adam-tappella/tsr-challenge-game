@@ -55,8 +55,8 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
   
   if (!team || !gameState || !roundResults) {
     return (
-      <div className="min-h-screen bg-slate-900 flex items-center justify-center">
-        <div className="text-slate-400">Loading results...</div>
+      <div className="min-h-screen bg-magna-darker flex items-center justify-center">
+        <div className="text-magna-gray">Loading results...</div>
       </div>
     );
   }
@@ -67,31 +67,37 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900",
+      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
       "flex flex-col items-center justify-center p-8",
       className
     )}>
+      {/* Magna Header */}
+      <div className="flex items-center gap-2 mb-6">
+        <span className="text-2xl font-black text-white tracking-tight">MAGNA</span>
+        <span className="w-2 h-2 bg-magna-red rounded-full" />
+      </div>
+      
       {/* Round Badge */}
-      <div className="bg-slate-800 text-slate-300 px-6 py-2 rounded-full font-medium mb-4">
+      <div className="bg-white/10 text-white px-6 py-2 rounded-full font-medium mb-4">
         Round {roundResults.round} Complete • FY {2025 + roundResults.round}
       </div>
       
       {/* Team Badge */}
-      <div className="bg-blue-600 text-white px-6 py-2 rounded-full text-lg font-bold mb-8 shadow-lg shadow-blue-500/30">
+      <div className="bg-magna-red text-white px-6 py-2 rounded-full text-lg font-bold mb-8 shadow-lg shadow-magna-red/30">
         Team {teamId}
       </div>
       
       {/* Main Results Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-3xl p-8 w-full max-w-4xl mb-8">
+      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-4xl mb-8">
         {/* Rank Display */}
         <div className="text-center mb-8">
           <div className={cn(
             "inline-flex items-center gap-3 px-6 py-3 rounded-2xl mb-4",
-            isTopThree ? "bg-amber-500/20" : "bg-slate-700"
+            isTopThree ? "bg-amber-500/20" : "bg-white/10"
           )}>
             <Award className={cn(
               "w-8 h-8",
-              isTopThree ? "text-amber-400" : "text-slate-400"
+              isTopThree ? "text-amber-400" : "text-magna-gray"
             )} />
             <div>
               <div className={cn(
@@ -100,7 +106,7 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
               )}>
                 #{teamRank}
               </div>
-              <div className="text-sm text-slate-400">of {totalTeams} teams</div>
+              <div className="text-sm text-magna-gray">of {totalTeams} teams</div>
             </div>
           </div>
         </div>
@@ -133,8 +139,8 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
         </div>
         
         {/* Mini Leaderboard */}
-        <div className="bg-slate-800/50 rounded-2xl p-6 mb-8">
-          <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-4">
+        <div className="bg-black/30 rounded-xl p-6 mb-8">
+          <h3 className="text-sm font-medium text-magna-gray uppercase tracking-wide mb-4">
             Leaderboard
           </h3>
           <div className="space-y-2">
@@ -144,20 +150,20 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
                 className={cn(
                   "flex items-center justify-between p-3 rounded-xl transition-colors",
                   teamResult.teamId === teamId
-                    ? "bg-blue-600/20 border border-blue-500/30"
-                    : "bg-slate-700/50"
+                    ? "bg-magna-red/20 border border-magna-red/30"
+                    : "bg-white/5"
                 )}
               >
                 <div className="flex items-center gap-3">
                   <div className={cn(
                     "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm",
-                    teamResult.rank <= 3 ? "bg-amber-500/20 text-amber-400" : "bg-slate-600 text-slate-300"
+                    teamResult.rank <= 3 ? "bg-amber-500/20 text-amber-400" : "bg-white/10 text-white"
                   )}>
                     {teamResult.rank}
                   </div>
                   <span className={cn(
                     "font-medium",
-                    teamResult.teamId === teamId ? "text-blue-400" : "text-white"
+                    teamResult.teamId === teamId ? "text-magna-red" : "text-white"
                   )}>
                     Team {teamResult.teamId}
                     {teamResult.teamId === teamId && " (You)"}
@@ -167,7 +173,7 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
                   <div className="text-white font-medium">${teamResult.stockPrice.toFixed(2)}</div>
                   <div className={cn(
                     "text-xs",
-                    teamResult.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
+                    teamResult.cumulativeTSR >= 0 ? "text-emerald-400" : "text-magna-red"
                   )}>
                     {teamResult.cumulativeTSR >= 0 ? '+' : ''}{(teamResult.cumulativeTSR * 100).toFixed(1)}% TSR
                   </div>
@@ -213,24 +219,24 @@ export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
         )}
         
         {/* Scenario Narrative */}
-        <div className="bg-slate-800/30 rounded-2xl p-6 border border-slate-700">
-          <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-3">
+        <div className="bg-black/30 rounded-xl p-6 border border-white/10">
+          <h3 className="text-sm font-medium text-magna-gray uppercase tracking-wide mb-3">
             Market Conditions
           </h3>
-          <p className="text-slate-300 leading-relaxed">
+          <p className="text-white/80 leading-relaxed">
             {roundResults.scenarioNarrative}
           </p>
         </div>
       </div>
       
       {/* Waiting Indicator */}
-      <div className="flex items-center gap-3 text-slate-400">
+      <div className="flex items-center gap-3 text-magna-gray">
         <Clock className="w-5 h-5" />
         <span>Waiting for facilitator to start next round...</span>
         <div className="flex items-center gap-1">
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
         </div>
       </div>
     </div>
@@ -264,12 +270,12 @@ const MetricCard: React.FC<MetricCardProps> = ({
   const isPositive = hasChange ? change >= 0 : positive;
   
   return (
-    <div className="bg-slate-800/50 rounded-2xl p-4 text-center">
-      <div className="text-xs text-slate-500 uppercase tracking-wide mb-2">{label}</div>
+    <div className="bg-black/30 rounded-xl p-4 text-center">
+      <div className="text-xs text-magna-gray uppercase tracking-wide mb-2">{label}</div>
       <div className={cn(
         "text-2xl font-bold mb-1",
         isPercentage
-          ? isPositive ? "text-emerald-400" : "text-red-400"
+          ? isPositive ? "text-emerald-400" : "text-magna-red"
           : "text-white"
       )}>
         {value}
@@ -277,7 +283,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
       {hasChange && (
         <div className={cn(
           "flex items-center justify-center gap-1 text-sm",
-          isPositive ? "text-emerald-400" : "text-red-400"
+          isPositive ? "text-emerald-400" : "text-magna-red"
         )}>
           {isPositive ? (
             <TrendingUp className="w-4 h-4" />
@@ -288,7 +294,7 @@ const MetricCard: React.FC<MetricCardProps> = ({
         </div>
       )}
       {subLabel && (
-        <div className="text-xs text-slate-500 mt-1">{subLabel}</div>
+        <div className="text-xs text-magna-gray mt-1">{subLabel}</div>
       )}
     </div>
   );

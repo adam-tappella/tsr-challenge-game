@@ -208,19 +208,23 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
   
   return (
     <div className={cn(
-      "min-h-screen bg-slate-900",
+      "min-h-screen bg-magna-darker",
       className
     )}>
       {/* Header */}
-      <header className="bg-slate-800 border-b border-slate-700 sticky top-0 z-40">
+      <header className="bg-magna-dark border-b border-white/10 sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full text-sm font-medium">
+              <div className="flex items-center gap-2">
+                <span className="text-lg font-black text-white tracking-tight">MAGNA</span>
+                <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
+              </div>
+              <div className="bg-magna-red/20 text-magna-red px-3 py-1 rounded-full text-sm font-medium">
                 FACILITATOR
               </div>
               <h1 className="text-xl font-bold text-white">
-                Magna TSR Challenge Control Panel
+                Control Panel
               </h1>
             </div>
             
@@ -231,7 +235,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
               {/* Logout */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-3 py-2 text-slate-400 hover:text-white transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-magna-gray hover:text-white transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -265,39 +269,39 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
           {/* Left Column - Controls */}
           <div className="lg:col-span-2 space-y-6">
             {/* Game Status Card */}
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+            <div className="bg-magna-dark border border-white/10 rounded-xl p-6">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2">
-                  <Timer className="w-5 h-5 text-slate-400" />
+                  <Timer className="w-5 h-5 text-magna-gray" />
                   Game Status
                 </h2>
                 <button
                   onClick={fetchStatus}
-                  className="p-2 text-slate-400 hover:text-white transition-colors"
+                  className="p-2 text-magna-gray hover:text-white transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
                 </button>
               </div>
               
               <div className="grid grid-cols-3 gap-4 mb-6">
-                <div className="bg-slate-900 rounded-xl p-4 text-center">
+                <div className="bg-black/30 rounded-xl p-4 text-center">
                   <div className="text-3xl font-bold text-white">{currentRound}</div>
-                  <div className="text-sm text-slate-400">Current Round</div>
+                  <div className="text-sm text-magna-gray">Current Round</div>
                 </div>
-                <div className="bg-slate-900 rounded-xl p-4 text-center">
+                <div className="bg-black/30 rounded-xl p-4 text-center">
                   <div className={cn(
                     "text-3xl font-bold font-mono",
-                    timeRemaining <= 60 ? "text-red-400" : "text-white"
+                    timeRemaining <= 60 ? "text-magna-red" : "text-white"
                   )}>
                     {formattedTime}
                   </div>
-                  <div className="text-sm text-slate-400">Time Remaining</div>
+                  <div className="text-sm text-magna-gray">Time Remaining</div>
                 </div>
-                <div className="bg-slate-900 rounded-xl p-4 text-center">
+                <div className="bg-black/30 rounded-xl p-4 text-center">
                   <div className="text-3xl font-bold text-white">
                     {submittedTeams}/{claimedTeams}
                   </div>
-                  <div className="text-sm text-slate-400">Teams Submitted</div>
+                  <div className="text-sm text-magna-gray">Teams Submitted</div>
                 </div>
               </div>
               
@@ -311,7 +315,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                       "flex items-center gap-2 px-6 py-3 rounded-xl font-medium transition-colors",
                       claimedTeams > 0
                         ? "bg-emerald-600 text-white hover:bg-emerald-500"
-                        : "bg-slate-700 text-slate-500 cursor-not-allowed"
+                        : "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
                     )}
                   >
                     <Play className="w-5 h-5" />
@@ -342,7 +346,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                 {(status === 'active' || status === 'paused') && (
                   <button
                     onClick={handleEndRound}
-                    className="flex items-center gap-2 px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-500 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-magna-red text-white rounded-xl font-medium hover:bg-magna-red-dark transition-colors"
                   >
                     <StopCircle className="w-5 h-5" />
                     End Round
@@ -352,7 +356,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                 {status === 'results' && (
                   <button
                     onClick={handleNextRound}
-                    className="flex items-center gap-2 px-6 py-3 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-500 transition-colors"
+                    className="flex items-center gap-2 px-6 py-3 bg-magna-red text-white rounded-xl font-medium hover:bg-magna-red-dark transition-colors"
                   >
                     <SkipForward className="w-5 h-5" />
                     {currentRound < 5 ? `Start Round ${currentRound + 1}` : 'Finish Game'}
@@ -361,7 +365,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                 
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-2 px-6 py-3 bg-slate-700 text-slate-300 rounded-xl font-medium hover:bg-slate-600 transition-colors"
+                  className="flex items-center gap-2 px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors"
                 >
                   <RotateCcw className="w-5 h-5" />
                   Reset Game
@@ -371,16 +375,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
             
             {/* Configuration Card (only in lobby) */}
             {status === 'lobby' && (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+              <div className="bg-magna-dark border border-white/10 rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
-                  <Settings className="w-5 h-5 text-slate-400" />
+                  <Settings className="w-5 h-5 text-magna-gray" />
                   Game Configuration
                 </h2>
                 
                 <div className="grid grid-cols-2 gap-6">
                   {/* Team Count */}
                   <div>
-                    <label className="block text-sm text-slate-400 mb-2">
+                    <label className="block text-sm text-magna-gray mb-2">
                       Number of Teams
                     </label>
                     <div className="flex gap-2">
@@ -390,22 +394,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                         max={20}
                         value={teamCount}
                         onChange={(e) => setTeamCount(parseInt(e.target.value) || 15)}
-                        className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 bg-black/30 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-magna-red"
                       />
                       <button
                         onClick={handleConfigureTeams}
                         disabled={isLoading}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-500 transition-colors"
+                        className="px-4 py-2 bg-magna-red text-white rounded-xl font-medium hover:bg-magna-red-dark transition-colors"
                       >
                         Set
                       </button>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Min: 10, Max: 20</p>
+                    <p className="text-xs text-magna-gray mt-1">Min: 10, Max: 20</p>
                   </div>
                   
                   {/* Round Duration */}
                   <div>
-                    <label className="block text-sm text-slate-400 mb-2">
+                    <label className="block text-sm text-magna-gray mb-2">
                       Round Duration (seconds)
                     </label>
                     <div className="flex gap-2">
@@ -415,17 +419,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                         max={1800}
                         value={roundDuration}
                         onChange={(e) => setRoundDuration(parseInt(e.target.value) || 600)}
-                        className="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="flex-1 bg-black/30 border border-white/20 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-magna-red"
                       />
                       <button
                         onClick={handleConfigureDuration}
                         disabled={isLoading}
-                        className="px-4 py-2 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-500 transition-colors"
+                        className="px-4 py-2 bg-magna-red text-white rounded-xl font-medium hover:bg-magna-red-dark transition-colors"
                       >
                         Set
                       </button>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-magna-gray mt-1">
                       {Math.floor(roundDuration / 60)} min {roundDuration % 60} sec
                     </p>
                   </div>
@@ -435,7 +439,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
             
             {/* Event Triggers (only during active game) */}
             {(status === 'active' || status === 'paused') && (
-              <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6">
+              <div className="bg-magna-dark border border-white/10 rounded-xl p-6">
                 <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
                   <Zap className="w-5 h-5 text-amber-400" />
                   Scenario Events
@@ -446,12 +450,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                     <button
                       key={event.id}
                       onClick={() => handleTriggerEvent(event.id)}
-                      className="flex items-start gap-3 p-4 bg-slate-900 border border-slate-700 rounded-xl hover:border-amber-500/50 hover:bg-amber-500/5 transition-colors text-left"
+                      className="flex items-start gap-3 p-4 bg-black/30 border border-white/10 rounded-xl hover:border-amber-500/50 hover:bg-amber-500/5 transition-colors text-left"
                     >
                       <Zap className="w-5 h-5 text-amber-400 flex-shrink-0 mt-0.5" />
                       <div>
                         <div className="font-medium text-white">{event.name}</div>
-                        <div className="text-xs text-slate-400">{event.description}</div>
+                        <div className="text-xs text-magna-gray">{event.description}</div>
                       </div>
                     </button>
                   ))}
@@ -462,21 +466,21 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
           
           {/* Right Column - Teams Status */}
           <div>
-            <div className="bg-slate-800 border border-slate-700 rounded-2xl p-6 sticky top-24">
+            <div className="bg-magna-dark border border-white/10 rounded-xl p-6 sticky top-24">
               <h2 className="text-lg font-semibold text-white flex items-center gap-2 mb-6">
-                <Users className="w-5 h-5 text-slate-400" />
+                <Users className="w-5 h-5 text-magna-gray" />
                 Teams Status
               </h2>
               
               {/* Summary */}
-              <div className="bg-slate-900 rounded-xl p-4 mb-4">
+              <div className="bg-black/30 rounded-xl p-4 mb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-slate-400">Joined</span>
+                  <span className="text-magna-gray">Joined</span>
                   <span className="text-white font-medium">{claimedTeams} / {teamCount}</span>
                 </div>
-                <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                <div className="h-2 bg-magna-gray/20 rounded-full overflow-hidden">
                   <div 
-                    className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                    className="h-full bg-magna-red rounded-full transition-all duration-500"
                     style={{ width: `${(claimedTeams / teamCount) * 100}%` }}
                   />
                 </div>
@@ -484,10 +488,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                 {(status === 'active' || status === 'paused') && (
                   <>
                     <div className="flex items-center justify-between mb-2 mt-4">
-                      <span className="text-slate-400">Submitted</span>
+                      <span className="text-magna-gray">Submitted</span>
                       <span className="text-white font-medium">{submittedTeams} / {claimedTeams}</span>
                     </div>
-                    <div className="h-2 bg-slate-700 rounded-full overflow-hidden">
+                    <div className="h-2 bg-magna-gray/20 rounded-full overflow-hidden">
                       <div 
                         className="h-full bg-emerald-500 rounded-full transition-all duration-500"
                         style={{ width: claimedTeams > 0 ? `${(submittedTeams / claimedTeams) * 100}%` : '0%' }}
@@ -509,19 +513,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                       key={teamId}
                       className={cn(
                         "flex items-center justify-between p-3 rounded-xl",
-                        isClaimed ? "bg-slate-900" : "bg-slate-900/50"
+                        isClaimed ? "bg-black/30" : "bg-black/10"
                       )}
                     >
                       <div className="flex items-center gap-3">
                         <div className={cn(
                           "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm",
-                          isClaimed ? "bg-blue-500/20 text-blue-400" : "bg-slate-700 text-slate-500"
+                          isClaimed ? "bg-magna-red/20 text-magna-red" : "bg-magna-gray/20 text-magna-gray"
                         )}>
                           {teamId}
                         </div>
                         <span className={cn(
                           "font-medium",
-                          isClaimed ? "text-white" : "text-slate-500"
+                          isClaimed ? "text-white" : "text-magna-gray/50"
                         )}>
                           Team {teamId}
                         </span>
@@ -529,7 +533,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                       
                       <div className="flex items-center gap-2">
                         {!isClaimed && (
-                          <span className="text-xs text-slate-500">Not joined</span>
+                          <span className="text-xs text-magna-gray/50">Not joined</span>
                         )}
                         {isClaimed && !hasSubmitted && status === 'active' && (
                           <span className="text-xs text-amber-400">Deciding...</span>
@@ -538,7 +542,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
                           <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                         )}
                         {isClaimed && !hasSubmitted && status !== 'active' && (
-                          <span className="text-xs text-slate-400">Ready</span>
+                          <span className="text-xs text-magna-gray">Ready</span>
                         )}
                       </div>
                     </div>
