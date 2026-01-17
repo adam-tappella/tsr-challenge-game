@@ -1,0 +1,46 @@
+---
+alwaysApply: true
+---
+
+# Python Virtual Environment Management
+
+If there isn't already a virtual environment created, create one. This is to avoid installing packages repeatedly and to ensure consistent dependencies across the project.
+
+## Creating a Virtual Environment
+
+```bash
+# Create venv in project root
+python -m venv venv
+
+# Activate (macOS/Linux)
+source venv/bin/activate
+
+# Activate (Windows)
+.\venv\Scripts\activate
+```
+
+## Installing Dependencies
+
+```bash
+# Install from requirements.txt
+pip install -r requirements.txt
+
+# Or from pyproject.toml (if using Poetry/pip with pyproject)
+pip install -e .
+```
+
+## Updating the Virtual Environment
+
+When new packages are needed:
+
+1. Activate the virtual environment
+2. Install the new package: `pip install <package-name>`
+3. Update requirements: `pip freeze > requirements.txt`
+4. Commit the updated requirements.txt
+
+## Best Practices
+
+- Always activate the venv before running Python scripts
+- Keep requirements.txt up to date
+- Use specific version numbers for reproducibility
+- Add `venv/` to `.gitignore`

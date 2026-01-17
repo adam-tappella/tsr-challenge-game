@@ -1,0 +1,2544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CST-Rewired Setup Wizard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      /* McKinsey Brand Colors */
+      --mck-blue: #007CBF;
+      --mck-blue-dark: #004C7F;
+      --mck-blue-light: #E6F3F9;
+      --mck-blue-medium: #3399CC;
+      
+      /* Neutrals */
+      --gray-900: #1a1a2e;
+      --gray-800: #2d2d44;
+      --gray-700: #404060;
+      --gray-600: #666680;
+      --gray-500: #8888a0;
+      --gray-400: #a0a0b8;
+      --gray-300: #c8c8d8;
+      --gray-200: #e4e4ec;
+      --gray-100: #f4f4f8;
+      --gray-50: #fafafc;
+      
+      /* Status */
+      --success: #059669;
+      --success-light: #d1fae5;
+      --warning: #ca8a04;
+      --warning-light: #fef3c7;
+      --error: #dc2626;
+      --info: #2563eb;
+      
+      /* Spacing */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2rem;
+      --space-2xl: 3rem;
+      --space-3xl: 4rem;
+      
+      /* Typography */
+      --font-sans: 'Instrument Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+      
+      /* Transitions */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(135deg, var(--gray-900) 0%, #16162a 50%, var(--gray-900) 100%);
+      color: var(--gray-100);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Background Pattern */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(0, 124, 191, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(0, 76, 127, 0.1) 0%, transparent 40%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23007CBF' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Layout */
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: var(--space-xl);
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: var(--space-3xl) 0;
+      animation: fadeInUp 0.8s var(--ease-out-expo);
+    }
+
+    .hero__logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, var(--mck-blue) 0%, var(--mck-blue-dark) 100%);
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto var(--space-lg);
+      box-shadow: 
+        0 10px 40px rgba(0, 124, 191, 0.3),
+        0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    .hero__logo svg {
+      width: 48px;
+      height: 48px;
+    }
+
+    .hero__title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: var(--space-sm);
+      background: linear-gradient(135deg, #fff 0%, var(--gray-300) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero__subtitle {
+      font-size: 1.125rem;
+      color: var(--gray-400);
+      max-width: 500px;
+      margin: 0 auto;
+    }
+
+    /* OS Selector */
+    .os-selector {
+      display: flex;
+      gap: var(--space-md);
+      justify-content: center;
+      margin: var(--space-2xl) 0;
+      animation: fadeInUp 0.8s var(--ease-out-expo) 0.1s both;
+    }
+
+    .os-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-lg) var(--space-xl);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 16px;
+      cursor: pointer;
+      transition: all 0.3s var(--ease-out-expo);
+      min-width: 140px;
+    }
+
+    .os-btn:hover {
+      background: rgba(255, 255, 255, 0.06);
+      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .os-btn.active {
+      background: linear-gradient(135deg, rgba(0, 124, 191, 0.2) 0%, rgba(0, 76, 127, 0.1) 100%);
+      border-color: var(--mck-blue);
+      box-shadow: 0 0 30px rgba(0, 124, 191, 0.2);
+    }
+
+    .os-btn svg {
+      width: 32px;
+      height: 32px;
+      opacity: 0.7;
+    }
+
+    .os-btn.active svg {
+      opacity: 1;
+    }
+
+    .os-btn span {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-400);
+    }
+
+    .os-btn.active span {
+      color: var(--gray-100);
+    }
+
+    .os-detected {
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: calc(-1 * var(--space-md));
+      margin-bottom: var(--space-xl);
+    }
+
+    .os-detected strong {
+      color: var(--mck-blue-medium);
+    }
+
+    /* Progress Bar */
+    .progress-bar {
+      position: sticky;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      z-index: 100;
+      margin-bottom: var(--space-xl);
+    }
+
+    .progress-bar__fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--mck-blue) 0%, var(--mck-blue-medium) 100%);
+      width: 0%;
+      transition: width 0.5s var(--ease-out-expo);
+    }
+
+    /* Steps */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-lg);
+    }
+
+    .step {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 20px;
+      overflow: hidden;
+      transition: all 0.4s var(--ease-out-expo);
+      animation: fadeInUp 0.6s var(--ease-out-expo) both;
+    }
+
+    .step:nth-child(1) { animation-delay: 0.2s; }
+    .step:nth-child(2) { animation-delay: 0.3s; }
+    .step:nth-child(3) { animation-delay: 0.4s; }
+    .step:nth-child(4) { animation-delay: 0.5s; }
+    .step:nth-child(5) { animation-delay: 0.6s; }
+
+    .step.completed {
+      border-color: rgba(5, 150, 105, 0.3);
+    }
+
+    .step.active {
+      border-color: var(--mck-blue);
+      box-shadow: 0 0 40px rgba(0, 124, 191, 0.15);
+    }
+
+    .step__header {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-lg);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .step__header:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .step__number {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--gray-400);
+      flex-shrink: 0;
+      transition: all 0.3s var(--ease-out-expo);
+      position: relative;
+    }
+
+    .step.completed .step__number,
+    .step--completed .step__number {
+      background: var(--success);
+      border-color: var(--success);
+      color: transparent;
+    }
+
+    .step.completed .step__number::after,
+    .step--completed .step__number::after {
+      content: '✓';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: white;
+    }
+
+    .step--completed .step__title {
+      color: var(--gray-500);
+    }
+
+    .step.active .step__number,
+    .step--highlighted .step__number {
+      background: var(--mck-blue);
+      border-color: var(--mck-blue);
+      color: white;
+    }
+
+    .step__info {
+      flex: 1;
+    }
+
+    .step__title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-100);
+      margin-bottom: 2px;
+    }
+
+    .step__description {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+    }
+
+    .step__toggle {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s var(--ease-out-expo);
+    }
+
+    .step__toggle svg {
+      width: 20px;
+      height: 20px;
+      color: var(--gray-500);
+      transition: transform 0.3s var(--ease-out-expo);
+    }
+
+    .step.open .step__toggle svg {
+      transform: rotate(180deg);
+    }
+
+    .step__content {
+      padding: 0 var(--space-lg) var(--space-lg);
+      display: none;
+    }
+
+    .step.open .step__content {
+      display: block;
+      animation: slideDown 0.4s var(--ease-out-expo);
+    }
+
+    /* Setup Option Accordions */
+    .setup-option.open {
+      border-color: var(--mck-blue);
+      box-shadow: 0 0 40px rgba(0, 124, 191, 0.15);
+    }
+
+    .setup-option.open .setup-option__header {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .setup-option.open .setup-option__toggle svg {
+      transform: rotate(180deg);
+      color: var(--mck-blue-medium);
+    }
+
+    .setup-option.open .setup-option__content {
+      display: block;
+      animation: slideDown 0.4s var(--ease-out-expo);
+    }
+
+    .setup-option__header:hover {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Content Elements */
+    .content-section {
+      margin-bottom: var(--space-lg);
+    }
+
+    .content-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: var(--mck-blue-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: var(--space-md);
+    }
+
+    .info-box {
+      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid rgba(37, 99, 235, 0.2);
+      border-radius: 12px;
+      padding: var(--space-md);
+      display: flex;
+      gap: var(--space-md);
+      align-items: flex-start;
+    }
+
+    .info-box--warning {
+      background: rgba(202, 138, 4, 0.1);
+      border-color: rgba(202, 138, 4, 0.2);
+    }
+
+    .info-box--success {
+      background: rgba(5, 150, 105, 0.1);
+      border-color: rgba(5, 150, 105, 0.2);
+    }
+
+    .info-box svg {
+      width: 20px;
+      height: 20px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .info-box p {
+      font-size: 0.9rem;
+      color: var(--gray-300);
+    }
+
+    .info-box a {
+      color: var(--mck-blue-medium);
+      text-decoration: none;
+    }
+
+    .info-box a:hover {
+      text-decoration: underline;
+    }
+
+    /* Command Blocks */
+    .command-block {
+      background: var(--gray-900);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: var(--space-md) 0;
+    }
+
+    .command-block__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    .command-block__label {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .command-block__actions {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .command-block__copy,
+    .command-block__run {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      padding: var(--space-xs) var(--space-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: var(--gray-400);
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .command-block__copy:hover,
+    .command-block__run:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--gray-100);
+    }
+
+    .command-block__copy.copied {
+      background: rgba(5, 150, 105, 0.2);
+      border-color: var(--success);
+      color: var(--success);
+    }
+
+    .command-block__run {
+      background: rgba(0, 124, 191, 0.1);
+      border-color: rgba(0, 124, 191, 0.2);
+      color: var(--mck-blue-medium);
+    }
+
+    .command-block__run:hover {
+      background: rgba(0, 124, 191, 0.2);
+      border-color: var(--mck-blue);
+      color: var(--mck-blue-medium);
+    }
+
+    .command-block__copy svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .command-block__code {
+      padding: var(--space-md);
+      font-family: var(--font-mono);
+      font-size: 0.875rem;
+      color: var(--gray-200);
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .command-block__code .comment {
+      color: var(--gray-600);
+    }
+
+    .command-block__code .command {
+      color: var(--mck-blue-medium);
+    }
+
+    /* Cursor Prompt Blocks */
+    .cursor-prompt {
+      background: linear-gradient(135deg, rgba(0, 124, 191, 0.08) 0%, rgba(0, 76, 127, 0.05) 100%);
+      border: 1px solid rgba(0, 124, 191, 0.2);
+      border-radius: 12px;
+      overflow: hidden;
+      margin: var(--space-md) 0;
+    }
+
+    .cursor-prompt__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: var(--space-sm) var(--space-md);
+      background: rgba(0, 124, 191, 0.1);
+      border-bottom: 1px solid rgba(0, 124, 191, 0.15);
+    }
+
+    .cursor-prompt__label {
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: var(--mck-blue-medium);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .cursor-prompt__label svg {
+      width: 16px;
+      height: 16px;
+    }
+
+    .cursor-prompt__content {
+      padding: var(--space-md);
+      font-size: 0.9rem;
+      color: var(--gray-200);
+      white-space: pre-wrap;
+      line-height: 1.7;
+    }
+
+    /* Requirements Checklist */
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .checklist__item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      padding: var(--space-md);
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .checklist__item:hover {
+      background: rgba(255, 255, 255, 0.04);
+    }
+
+    .checklist__item.checked {
+      border-color: rgba(5, 150, 105, 0.3);
+      background: rgba(5, 150, 105, 0.05);
+    }
+
+    .checklist__checkbox {
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      border: 2px solid var(--gray-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+
+    .checklist__item.checked .checklist__checkbox {
+      background: var(--success);
+      border-color: var(--success);
+    }
+
+    .checklist__checkbox svg {
+      width: 14px;
+      height: 14px;
+      color: white;
+      opacity: 0;
+      transform: scale(0.5);
+      transition: all 0.2s;
+    }
+
+    .checklist__item.checked .checklist__checkbox svg {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .checklist__info {
+      flex: 1;
+    }
+
+    .checklist__name {
+      font-weight: 500;
+      color: var(--gray-100);
+      margin-bottom: 2px;
+    }
+
+    .checklist__desc {
+      font-size: 0.8rem;
+      color: var(--gray-500);
+    }
+
+    .checklist__link {
+      padding: var(--space-xs) var(--space-sm);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      color: var(--gray-400);
+      font-size: 0.75rem;
+      text-decoration: none;
+      transition: all 0.2s;
+    }
+
+    .checklist__link:hover {
+      background: var(--mck-blue);
+      border-color: var(--mck-blue);
+      color: white;
+    }
+
+    /* Mark Complete Button */
+    .mark-complete {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-sm);
+      width: 100%;
+      padding: var(--space-md);
+      background: rgba(5, 150, 105, 0.1);
+      border: 1px solid rgba(5, 150, 105, 0.3);
+      border-radius: 12px;
+      color: var(--success);
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: var(--space-lg);
+      transition: all 0.2s;
+    }
+
+    .mark-complete:hover {
+      background: var(--success);
+      color: white;
+    }
+
+    .mark-complete svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .step.completed .mark-complete {
+      background: var(--success);
+      color: white;
+      pointer-events: none;
+    }
+
+    /* Image Placeholder */
+    .image-placeholder {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px dashed rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: var(--space-2xl);
+      text-align: center;
+      color: var(--gray-500);
+      margin: var(--space-md) 0;
+    }
+
+    .image-placeholder svg {
+      width: 48px;
+      height: 48px;
+      margin-bottom: var(--space-sm);
+      opacity: 0.5;
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: var(--space-3xl) 0 var(--space-xl);
+      color: var(--gray-600);
+      font-size: 0.875rem;
+    }
+
+    .footer a {
+      color: var(--mck-blue-medium);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Animations */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Responsive */
+    @media (max-width: 640px) {
+      .hero__title {
+        font-size: 1.75rem;
+      }
+      
+      .os-selector {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .os-btn {
+        width: 100%;
+        max-width: 200px;
+        flex-direction: row;
+        justify-content: center;
+      }
+      
+      .step__header {
+        padding: var(--space-md);
+      }
+      
+      .step__content {
+        padding: 0 var(--space-md) var(--space-md);
+      }
+    }
+
+    /* Print Styles */
+    @media print {
+      body {
+        background: white;
+        color: black;
+      }
+      
+      .step {
+        break-inside: avoid;
+      }
+    }
+
+    /* Path Selection Styles */
+    .path-btn:hover {
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
+    .path-btn.selected {
+      background: rgba(255, 255, 255, 0.08) !important;
+      box-shadow: 0 0 20px rgba(255, 255, 255, 0.05);
+    }
+
+    #quickPathBtn.selected {
+      background: rgba(5, 150, 105, 0.15) !important;
+      border: 1px solid rgba(5, 150, 105, 0.3);
+    }
+
+    #manualPathBtn.selected {
+      background: rgba(37, 99, 235, 0.15) !important;
+      border: 1px solid rgba(37, 99, 235, 0.3);
+    }
+
+    /* Dimmed/skipped steps */
+    .step.skipped {
+      opacity: 0.4;
+      pointer-events: none;
+      transform: scale(0.98);
+      transition: all 0.4s var(--ease-out-expo);
+    }
+
+    .step.skipped .step__header {
+      cursor: default;
+    }
+
+    .step.skipped::before {
+      content: 'SKIPPED';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--gray-400);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      z-index: 10;
+    }
+
+    .step.highlighted {
+      border-color: var(--mck-blue) !important;
+      box-shadow: 0 0 30px rgba(0, 124, 191, 0.2);
+    }
+
+    /* Make step position relative for the skipped overlay */
+    .step {
+      position: relative;
+    }
+  </style>
+</head>
+<body>
+  <!-- Progress Bar -->
+  <div class="progress-bar">
+    <div class="progress-bar__fill" id="progressFill"></div>
+  </div>
+
+  <div class="container">
+    <!-- Hero -->
+    <header class="hero">
+      <div class="hero__logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 2L2 7l10 5 10-5-10-5z" stroke="white"/>
+          <path d="M2 17l10 5 10-5" stroke="white"/>
+          <path d="M2 12l10 5 10-5" stroke="white"/>
+        </svg>
+      </div>
+      <h1 class="hero__title">CST-Rewired Setup Wizard</h1>
+      <p class="hero__subtitle">Your step-by-step guide to building apps with AI - no prior coding experience needed! We'll walk you through every step.</p>
+    </header>
+
+    <!-- OS Selector (moved up) -->
+    <div class="os-selector" id="osSelector">
+      <button class="os-btn" data-os="mac" onclick="selectOS('mac')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+        </svg>
+        <span>macOS</span>
+      </button>
+      <button class="os-btn" data-os="windows" onclick="selectOS('windows')">
+        <svg viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25V22l-10-1.91V13.1l10 .15z"/>
+        </svg>
+        <span>Windows</span>
+      </button>
+    </div>
+    <p class="os-detected" id="osDetected"></p>
+
+    <!-- Progress Bar -->
+    <div id="progressContainer" style="position: sticky; top: 0; z-index: 100; background: var(--gray-900); padding: var(--space-md) 0; margin-bottom: var(--space-xl); display: none;">
+      <div style="max-width: 900px; margin: 0 auto; padding: 0 var(--space-xl);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-sm);">
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--gray-300);" id="progressLabel">Setup Progress</span>
+          <span style="font-size: 0.875rem; font-weight: 600; color: var(--mck-blue);" id="progressPercent">0%</span>
+        </div>
+        <div style="height: 8px; background: rgba(255, 255, 255, 0.08); border-radius: 4px; overflow: hidden;">
+          <div id="progressBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, var(--mck-blue) 0%, var(--mck-blue-medium) 100%); border-radius: 4px; transition: width 0.5s var(--ease-out-expo);"></div>
+        </div>
+        <div style="margin-top: var(--space-xs); font-size: 0.75rem; color: var(--gray-500);" id="progressText">Complete the required prerequisites to begin</div>
+      </div>
+    </div>
+
+    <!-- Step 1: Required Prerequisites -->
+    <div class="setup-option" style="background: linear-gradient(135deg, rgba(220, 38, 38, 0.1) 0%, rgba(220, 38, 38, 0.05) 100%); border: 1px solid rgba(220, 38, 38, 0.3); border-radius: 20px; margin-bottom: var(--space-xl); overflow: hidden; animation: fadeInUp 0.6s var(--ease-out-expo) 0.05s both;">
+      <div class="setup-option__header" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg);">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(220, 38, 38, 0.2); border: 1px solid rgba(220, 38, 38, 0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.25rem; font-weight: 700; color: #dc2626;">
+          1
+        </div>
+        <div style="flex: 1;">
+          <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-100); margin: 0 0 4px 0;">Step 1: Complete Required Prerequisites</h2>
+          <p style="font-size: 0.875rem; color: var(--gray-400); margin: 0;">Everyone must complete these three items first</p>
+        </div>
+      </div>
+      <div class="setup-option__content" style="display: block; padding: 0 var(--space-lg) var(--space-lg);">
+        <div class="info-box" style="margin-bottom: var(--space-md);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#dc2626" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <p><strong>Important:</strong> Complete all three items below before proceeding with either the Manual or Quick setup path.</p>
+        </div>
+        
+        <div class="checklist" id="requiredPrerequisitesList">
+          <div class="checklist__item" onclick="toggleCheck(this)" style="border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05);">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Create GitHub Account</div>
+              <div class="checklist__desc">Go to <a href="https://github.com" target="_blank" style="color: var(--mck-blue-medium); text-decoration: underline;">github.com</a> and create an account using your McKinsey email address</div>
+            </div>
+            <a href="https://github.com" target="_blank" class="checklist__link" style="background: rgba(220, 38, 38, 0.2); border-color: rgba(220, 38, 38, 0.4);">Create Account →</a>
+          </div>
+          
+          <div class="checklist__item" onclick="toggleCheck(this)" style="border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05);">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Get Access to OneFirm GitHub</div>
+              <div class="checklist__desc">Request access to the Firm GitHub organization via Platform McKinsey</div>
+            </div>
+            <a href="https://platform.mckinsey.com/workspace/no-team/create-service/3cb193ec-3882-43fe-8df8-4a16df064ed2/action/fb378514-b616-42d2-8879-be2fb28620d0?actionType=api" target="_blank" class="checklist__link" style="background: rgba(220, 38, 38, 0.2); border-color: rgba(220, 38, 38, 0.4);">Get Access →</a>
+          </div>
+          
+          <div class="checklist__item" onclick="toggleCheck(this)" style="border-color: rgba(220, 38, 38, 0.3); background: rgba(220, 38, 38, 0.05);">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Download and Install Cursor IDE</div>
+              <div class="checklist__desc">AI-powered code editor - required before running any setup script</div>
+            </div>
+            <a href="https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=1a9b2b55c38c9650cd5777f4e40131c9&table=pc_software_cat_item&searchTerm=cursor" target="_blank" class="checklist__link" style="background: rgba(220, 38, 38, 0.2); border-color: rgba(220, 38, 38, 0.4);">Download →</a>
+          </div>
+        </div>
+
+        <div class="info-box" style="margin-top: var(--space-md);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div>
+            <p style="margin-bottom: var(--space-sm);"><strong>OneFirm GitHub Setup Details:</strong></p>
+            <ol style="margin-left: var(--space-md); padding-left: var(--space-sm); color: var(--gray-300); font-size: 0.9rem;">
+              <li style="margin-bottom: var(--space-xs);">Create your GitHub account at <a href="https://github.com" target="_blank" style="color: var(--mck-blue-medium);">github.com</a> using your McKinsey email</li>
+              <li style="margin-bottom: var(--space-xs);">Click the "Get Access →" link above (or visit <a href="https://platform.mckinsey.com/workspace/no-team/create-service/3cb193ec-3882-43fe-8df8-4a16df064ed2/action/fb378514-b616-42d2-8879-be2fb28620d0?actionType=api" target="_blank" style="color: var(--mck-blue-medium);">Platform McKinsey</a>) to request access to the Firm GitHub organization</li>
+              <li>Wait for approval (usually processed quickly)</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Step 2: Choose Installation Method -->
+    <div style="background: linear-gradient(135deg, rgba(37, 99, 235, 0.15) 0%, rgba(37, 99, 235, 0.08) 100%); border: 1px solid rgba(37, 99, 235, 0.3); border-radius: 16px; padding: var(--space-lg); margin-bottom: var(--space-xl); text-align: center;">
+      <div style="display: flex; align-items: center; justify-content: center; gap: var(--space-sm); margin-bottom: var(--space-sm);">
+        <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 700; color: #2563eb;">
+          2
+        </div>
+        <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--gray-100); margin: 0;">Step 2: Choose How to Install Git & Node.js</h3>
+      </div>
+      <p style="color: var(--gray-300); font-size: 0.95rem; margin: 0; line-height: 1.6;">
+        <strong style="color: var(--gray-100);">Choose ONE option below:</strong> Either <strong style="color: var(--info);">Option A</strong> (manually install) <strong style="color: var(--gray-400);">OR</strong> <strong style="color: var(--success);">Option B</strong> (automated script).
+      </p>
+    </div>
+
+    <!-- Option A: Manual Installation -->
+    <div class="setup-option" id="manualPrerequisites" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.06); border-radius: 20px; margin-bottom: var(--space-lg); overflow: hidden; transition: all 0.4s var(--ease-out-expo); animation: fadeInUp 0.6s var(--ease-out-expo) 0.1s both;">
+      <div class="setup-option__header" onclick="toggleSetupOption('manual')" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg); cursor: pointer; transition: background 0.2s;">
+        <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(37, 99, 235, 0.2); border: 1px solid rgba(37, 99, 235, 0.3); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.125rem; font-weight: 700; color: #2563eb;">
+          A
+        </div>
+        <div style="flex: 1;">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--gray-100); margin: 0 0 2px 0;">Option A: Manual Installation</h2>
+          <p style="font-size: 0.875rem; color: var(--gray-500); margin: 0;">Manually install Git & Node.js yourself, then follow step-by-step instructions (Steps 3-5 below)</p>
+        </div>
+        <div class="setup-option__toggle" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease-out-expo);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; color: var(--gray-500); transition: transform 0.3s var(--ease-out-expo);">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="setup-option__content" style="display: none; padding: 0 var(--space-lg) var(--space-lg);">
+        <div class="info-box">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <p><strong>Option A:</strong> If you choose this option, manually install Git & Node.js using the commands or download links below. After installing, proceed to <strong>Step 3</strong> below to create your project manually. <strong>If you prefer automation, choose Option B instead.</strong></p>
+        </div>
+        
+        <!-- Quick Install Command -->
+        <div class="content-section">
+          <h3 class="section-title">🚀 Quick Install (One Command)</h3>
+          <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+            Already have a package manager? Run this single command to install Git and Node.js manually:
+          </p>
+          
+          <div class="command-block" data-os="mac">
+            <div class="command-block__header">
+              <span class="command-block__label">macOS (requires Homebrew)</span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'brew install git node@20')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="command-block__code"><span class="comment"># Install Git and Node.js 20 via Homebrew</span>
+brew install git node@20</div>
+          </div>
+          
+          <div class="command-block" data-os="windows" style="display: none;">
+            <div class="command-block__header">
+              <span class="command-block__label">Windows PowerShell (as Admin)</span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'winget install Git.Git OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="command-block__code"><span class="comment"># Install Git and Node.js via winget (Windows 10/11)</span>
+winget install Git.Git OpenJS.NodeJS.LTS --accept-package-agreements --accept-source-agreements</div>
+          </div>
+          
+          <div class="info-box info-box--warning" data-os="mac">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <p><strong>No Homebrew?</strong> Install it first: <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code> or download tools manually below.</p>
+          </div>
+        </div>
+        
+        <div class="content-section">
+          <h3 class="section-title">Or Download Individually</h3>
+        </div>
+
+        <div class="checklist" id="prerequisitesList">
+          <div class="checklist__item" onclick="toggleCheck(this)">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Git</div>
+              <div class="checklist__desc">Version control (2.30+) - will be auto-installed by setup script if missing</div>
+            </div>
+            <a href="https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=f732f1be1bcf3c10bcb9a938bd4bcbc9&table=pc_software_cat_item&searchTerm=git%20bash" target="_blank" class="checklist__link" id="gitDownloadLink">Download →</a>
+          </div>
+          
+          <div class="checklist__item" onclick="toggleCheck(this)">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Node.js 20 LTS</div>
+              <div class="checklist__desc">JavaScript runtime & npm - will be auto-installed by setup script if missing</div>
+            </div>
+            <a href="https://nodejs.org/" target="_blank" class="checklist__link">Download →</a>
+          </div>
+          
+          <div class="checklist__item" onclick="toggleCheck(this)">
+            <div class="checklist__checkbox">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+            </div>
+            <div class="checklist__info">
+              <div class="checklist__name">Docker Desktop <span style="color: var(--gray-500)">(Optional)</span></div>
+              <div class="checklist__desc">For local databases</div>
+            </div>
+            <a href="https://www.docker.com/products/docker-desktop/" target="_blank" class="checklist__link">Download →</a>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <h3 class="section-title">Verify Installation</h3>
+          <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+            Open your terminal and run these commands to verify everything is installed:
+          </p>
+          
+          <div class="command-block">
+            <div class="command-block__header">
+              <span class="command-block__label">Terminal</span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'git --version && node --version && npm --version')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="command-block__code"><span class="comment"># Check all versions at once</span>
+git --version && node --version && npm --version</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Option B: One-Command Setup -->
+    <div class="setup-option" id="oneCommandSetup" style="background: linear-gradient(135deg, rgba(5, 150, 105, 0.1) 0%, rgba(5, 150, 105, 0.05) 100%); border: 1px solid rgba(5, 150, 105, 0.3); border-radius: 20px; margin-bottom: var(--space-xl); overflow: hidden; transition: all 0.4s var(--ease-out-expo); animation: fadeInUp 0.6s var(--ease-out-expo) 0.2s both;">
+      <div class="setup-option__header" onclick="toggleSetupOption('oneCommand')" style="display: flex; align-items: center; gap: var(--space-md); padding: var(--space-lg); cursor: pointer; transition: background 0.2s;">
+        <div style="width: 48px; height: 48px; background: var(--success); border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.125rem; font-weight: 700; color: white;">
+          B
+        </div>
+        <div style="flex: 1;">
+          <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--gray-100); margin: 0 0 2px 0;">Option B: One-Command Setup (Recommended)</h2>
+          <p style="font-size: 0.875rem; color: var(--gray-400); margin: 0;">Run this script - it automatically installs Git & Node.js and sets up your entire project! Skip to Step 6 after running.</p>
+        </div>
+        <div class="setup-option__toggle" style="width: 32px; height: 32px; border-radius: 8px; background: rgba(255, 255, 255, 0.05); display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--ease-out-expo);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px; color: var(--gray-500); transition: transform 0.3s var(--ease-out-expo);">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </div>
+      </div>
+      <div class="setup-option__content" style="display: none; padding: 0 var(--space-lg) var(--space-lg);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-md);">
+        <div style="display: flex; align-items: center; gap: var(--space-md);">
+          <div style="width: 40px; height: 40px; background: var(--success); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 24px; height: 24px;">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+          </div>
+          <div>
+            <h2 style="font-size: 1.125rem; font-weight: 600; color: var(--gray-100); margin: 0;">Option B: One-Command Setup (Recommended)</h2>
+            <p style="font-size: 0.875rem; color: var(--gray-400); margin: 0;">Run this script - it automatically installs Git & Node.js and sets up your entire project! Skip to Step 6 after running.</p>
+          </div>
+        </div>
+        <button onclick="toggleShowBothOS()" id="showBothBtn" style="padding: 6px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--gray-400); font-size: 0.75rem; cursor: pointer; transition: all 0.2s;">
+          Show Both
+        </button>
+      </div>
+      
+      <!-- Single OS view (default) -->
+      <div id="singleOSView">
+            <div class="command-block" data-os="mac" style="margin: 0;">
+          <div class="command-block__header">
+            <span class="command-block__label">macOS Terminal - Run from starter kit folder</span>
+            <div class="command-block__actions">
+              <button class="command-block__run" onclick="runInTerminal('chmod +x scripts/setup-mac.sh && ./scripts/setup-mac.sh', 'mac')" title="Run in Terminal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Run</span>
+              </button>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'chmod +x scripts/setup-mac.sh && ./scripts/setup-mac.sh')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="command-block__code">chmod +x scripts/setup-mac.sh && ./scripts/setup-mac.sh</div>
+        </div>
+        
+        <div class="command-block" data-os="windows" style="margin: 0; display: none;">
+          <div class="command-block__header">
+            <span class="command-block__label">Windows PowerShell - Run from starter kit folder</span>
+            <div class="command-block__actions">
+              <button class="command-block__run" onclick="runInTerminal('Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser; .\\scripts\\setup-windows.ps1', 'windows')" title="Run in Terminal">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span>Run</span>
+              </button>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser; .\\scripts\\setup-windows.ps1')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+          </div>
+          <div class="command-block__code">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser; .\scripts\setup-windows.ps1</div>
+        </div>
+      </div>
+      
+      <!-- Both OS view (toggled) -->
+      <div id="bothOSView" style="display: none;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md);">
+          <div class="command-block" style="margin: 0;">
+            <div class="command-block__header">
+              <span class="command-block__label" style="display: flex; align-items: center; gap: 6px;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;">
+                  <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                </svg>
+                macOS
+              </span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'chmod +x scripts/setup-mac.sh && ./scripts/setup-mac.sh')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="command-block__code" style="font-size: 0.8rem;">chmod +x scripts/setup-mac.sh && ./scripts/setup-mac.sh</div>
+          </div>
+          
+          <div class="command-block" style="margin: 0;">
+            <div class="command-block__header">
+              <span class="command-block__label" style="display: flex; align-items: center; gap: 6px;">
+                <svg viewBox="0 0 24 24" fill="currentColor" style="width: 14px; height: 14px;">
+                  <path d="M3 12V6.75l6-1.32v6.48L3 12zm17-9v8.75l-10 .15V5.21L20 3zM3 13l6 .09v6.81l-6-1.15V13zm17 .25V22l-10-1.91V13.1l10 .15z"/>
+                </svg>
+                Windows
+              </span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, 'Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser; .\\scripts\\setup-windows.ps1')">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="command-block__code" style="font-size: 0.75rem; word-break: break-all;">Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser; .\scripts\setup-windows.ps1</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Step-by-step instructions for beginners -->
+      <div style="background: rgba(37, 99, 235, 0.1); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 12px; padding: var(--space-md); margin-top: var(--space-md);">
+        <div style="display: flex; gap: var(--space-sm); align-items: flex-start;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" style="width: 18px; height: 18px; flex-shrink: 0; margin-top: 2px;">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <div style="flex: 1;">
+            <p style="font-size: 0.85rem; color: var(--gray-200); margin: 0 0 var(--space-sm) 0; font-weight: 600;">📋 How to run this setup (step-by-step):</p>
+            
+            <div data-os="mac">
+              <p style="font-size: 0.8rem; color: var(--gray-300); margin: 0 0 var(--space-xs) 0; font-weight: 500;">For macOS users:</p>
+              <ol style="margin: 0; padding-left: 1.2rem; color: var(--gray-400); font-size: 0.75rem; line-height: 1.6;">
+                <li style="margin-bottom: 4px;">Complete the <strong>Required Prerequisites</strong> section above (GitHub account, OneFirm GitHub access, and Cursor installation)</li>
+                <li style="margin-bottom: 4px;">Download this starter kit folder to your computer (if you haven't already)</li>
+                <li style="margin-bottom: 4px;"><strong>Open Terminal</strong>: Press <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">Command + Space</code>, type "Terminal", and press Enter</li>
+                <li style="margin-bottom: 4px;">In Terminal, type <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">cd</code> (with a space after it), then drag the starter kit folder onto the Terminal window and press Enter</li>
+                <li style="margin-bottom: 4px;">Click the "Copy" button above, then paste into Terminal (right-click → Paste, or <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">Command + V</code>) and press Enter</li>
+                <li>Follow the prompts - the script will ask you questions and set everything up automatically!</li>
+              </ol>
+            </div>
+            
+            <div data-os="windows" style="display: none;">
+              <p style="font-size: 0.8rem; color: var(--gray-300); margin: 0 0 var(--space-xs) 0; font-weight: 500;">For Windows users:</p>
+              <ol style="margin: 0; padding-left: 1.2rem; color: var(--gray-400); font-size: 0.75rem; line-height: 1.6;">
+                <li style="margin-bottom: 4px;">Complete the <strong>Required Prerequisites</strong> section above (GitHub account, OneFirm GitHub access, and Cursor installation)</li>
+                <li style="margin-bottom: 4px;">Download this starter kit folder to your computer (if you haven't already)</li>
+                <li style="margin-bottom: 4px;"><strong>Open PowerShell</strong>: Press <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">Windows Key</code>, type "PowerShell", right-click on "Windows PowerShell" and select "Run as Administrator"</li>
+                <li style="margin-bottom: 4px;">In PowerShell, type <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">cd</code> (with a space after it), then type the path to your starter kit folder (e.g., <code style="background: rgba(255,255,255,0.1); padding: 1px 4px; border-radius: 3px;">cd C:\Downloads\CST-Rewired-Starter</code>) and press Enter</li>
+                <li style="margin-bottom: 4px;">Click the "Copy" button above, then paste into PowerShell (right-click to paste) and press Enter</li>
+                <li>Follow the prompts - the script will ask you questions and set everything up automatically!</li>
+              </ol>
+            </div>
+            
+            <p style="font-size: 0.75rem; color: var(--gray-500); margin-top: var(--space-sm); margin-bottom: 0;">💡 The script will automatically install Git & Node.js if you don't have them yet (via Homebrew on macOS or winget on Windows).</p>
+          </div>
+        </div>
+      </div>
+        <p style="font-size: 0.8rem; color: var(--gray-500); margin-top: var(--space-md); margin-bottom: 0;">
+          This script will: check prerequisites → auto-install Git/Node.js if needed → prompt for project name → create folder structure → copy templates → install dependencies → open in Cursor
+        </p>
+        
+        <div class="info-box info-box--success" style="margin-top: var(--space-lg);">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+          <div>
+            <p style="margin: 0; font-size: 0.9rem;"><strong>After running this script:</strong> Your project is created and open in Cursor. Skip Steps 3, 4, and 5 below and jump directly to <strong>Step 6: Configure with Cursor AI</strong> to customize your project.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Steps 3-5: Manual Path Only -->
+    <div style="background: rgba(37, 99, 235, 0.08); border: 1px solid rgba(37, 99, 235, 0.2); border-radius: 12px; padding: var(--space-md); margin-bottom: var(--space-xl); text-align: center;">
+      <p style="color: var(--gray-300); font-size: 0.9rem; margin: 0;">
+        <strong style="color: var(--gray-100);">📋 If you chose Option A (Manual):</strong> Continue with Steps 3-5 below.<br/>
+        <strong style="color: var(--gray-100);">✅ If you chose Option B (One-Command):</strong> Skip to Step 6 below.
+      </p>
+    </div>
+
+    <!-- Steps -->
+    <div class="steps" id="steps">
+      
+      <!-- Step 3: Create Project -->
+      <section class="step" data-step="3">
+        <div class="step__header" onclick="toggleStep(3)">
+          <div class="step__number">3</div>
+          <div class="step__info">
+            <h2 class="step__title">Step 3: Create Your Project (Option A - Manual Only)</h2>
+            <p class="step__description">Set up a new folder and initialize it — skip if you ran Option B</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="info-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+              <p style="margin-bottom: var(--space-xs);"><strong>New to Terminal/Command Line?</strong></p>
+              <p style="margin: 0; font-size: 0.9rem;">Don't worry! The "Terminal" (macOS) or "PowerShell" (Windows) is just a text-based way to give your computer commands. We'll guide you through each step.</p>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <h3 class="section-title">Step 1.1: Open Terminal/PowerShell</h3>
+            <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: var(--space-md); margin-bottom: var(--space-md);">
+              <div data-os="mac">
+                <p style="color: var(--gray-300); font-size: 0.9rem; font-weight: 600; margin: 0 0 var(--space-xs) 0;">macOS: Opening Terminal</p>
+                <ol style="margin: 0; padding-left: 1.2rem; color: var(--gray-400); font-size: 0.85rem; line-height: 1.6;">
+                  <li style="margin-bottom: 6px;">Press <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Command + Space</code> on your keyboard</li>
+                  <li style="margin-bottom: 6px;">Type "Terminal" in the search box that appears</li>
+                  <li>Press <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Enter</code> - a black or white window will open (this is Terminal!)</li>
+                </ol>
+              </div>
+              <div data-os="windows" style="display: none;">
+                <p style="color: var(--gray-300); font-size: 0.9rem; font-weight: 600; margin: 0 0 var(--space-xs) 0;">Windows: Opening PowerShell</p>
+                <ol style="margin: 0; padding-left: 1.2rem; color: var(--gray-400); font-size: 0.85rem; line-height: 1.6;">
+                  <li style="margin-bottom: 6px;">Press the <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Windows Key</code> on your keyboard (usually has a Windows logo)</li>
+                  <li style="margin-bottom: 6px;">Type "PowerShell" in the search box</li>
+                  <li style="margin-bottom: 6px;">Right-click on "Windows PowerShell" in the results</li>
+                  <li>Select "Run as Administrator" - a blue window will open (this is PowerShell!)</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <h3 class="section-title">Step 1.2: Create project folder</h3>
+            <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+              Copy and paste these commands into your Terminal/PowerShell window. <strong>Press Enter after pasting to run the commands.</strong>
+            </p>
+            
+            <div class="command-block" data-os="mac">
+              <div class="command-block__header">
+                <span class="command-block__label">macOS Terminal</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, getCommandText('create-project-mac'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code" id="create-project-mac"><span class="comment"># Navigate to where you want your project</span>
+cd ~/Documents
+
+<span class="comment"># Create and enter your project folder (change "my-project" to your project name)</span>
+mkdir my-project && cd my-project
+
+<span class="comment"># Initialize git</span>
+git init</div>
+            </div>
+            
+            <div class="command-block" data-os="windows" style="display: none;">
+              <div class="command-block__header">
+                <span class="command-block__label">Windows PowerShell</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, getCommandText('create-project-windows'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code" id="create-project-windows"><span class="comment"># Navigate to where you want your project</span>
+cd $HOME\Documents
+
+<span class="comment"># Create and enter your project folder (change "my-project" to your project name)</span>
+mkdir my-project; cd my-project
+
+<span class="comment"># Initialize git</span>
+git init</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">Step 1.3: Copy the starter kit</h3>
+            <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+              Now copy the CST-Rewired-Starter files into your new project. <strong>Important:</strong> Replace <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">/path/to/CST-Rewired-Starter</code> with the actual path where you downloaded the starter kit (e.g., <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">~/Downloads/CST-Rewired-Starter</code>).
+            </p>
+            
+            <div class="command-block" data-os="mac">
+              <div class="command-block__header">
+                <span class="command-block__label">macOS Terminal</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, getCommandText('copy-starter-mac'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code" id="copy-starter-mac"><span class="comment"># Copy essential folders from the starter kit</span>
+<span class="comment"># Replace /path/to/CST-Rewired-Starter with the actual path</span>
+
+cp -r /path/to/CST-Rewired-Starter/.cursor .
+cp -r /path/to/CST-Rewired-Starter/code-templates .
+cp -r /path/to/CST-Rewired-Starter/config-templates .
+cp -r /path/to/CST-Rewired-Starter/docs-templates ./docs
+cp -r /path/to/CST-Rewired-Starter/ui .
+cp /path/to/CST-Rewired-Starter/.cursorrules .</div>
+            </div>
+            
+            <div class="command-block" data-os="windows" style="display: none;">
+              <div class="command-block__header">
+                <span class="command-block__label">Windows PowerShell</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, getCommandText('copy-starter-windows'))">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code" id="copy-starter-windows"><span class="comment"># Copy essential folders from the starter kit</span>
+<span class="comment"># Replace C:\path\to\CST-Rewired-Starter with the actual path</span>
+
+Copy-Item -Recurse "C:\path\to\CST-Rewired-Starter\.cursor" -Destination ".\"
+Copy-Item -Recurse "C:\path\to\CST-Rewired-Starter\code-templates" -Destination ".\"
+Copy-Item -Recurse "C:\path\to\CST-Rewired-Starter\config-templates" -Destination ".\"
+Copy-Item -Recurse "C:\path\to\CST-Rewired-Starter\docs-templates" -Destination ".\docs"
+Copy-Item -Recurse "C:\path\to\CST-Rewired-Starter\ui" -Destination ".\"
+Copy-Item "C:\path\to\CST-Rewired-Starter\.cursorrules" -Destination ".\"</div>
+            </div>
+          </div>
+
+          <button class="mark-complete" onclick="completeStep(1)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Mark as Complete</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 4: Open in Cursor -->
+      <section class="step" data-step="4">
+        <div class="step__header" onclick="toggleStep(4)">
+          <div class="step__number">4</div>
+          <div class="step__info">
+            <h2 class="step__title">Step 4: Open in Cursor (Option A - Manual Only)</h2>
+            <p class="step__description">Launch your project in Cursor IDE — skip if you ran Option B</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="info-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <div>
+              <p style="margin: 0; font-size: 0.9rem;">Now we'll open your project in Cursor IDE - this is where you'll write and edit your code.</p>
+            </div>
+          </div>
+          
+          <div class="content-section">
+            <h3 class="section-title">Method 1: Using Terminal/PowerShell (Recommended)</h3>
+            <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+              If you still have Terminal/PowerShell open from Step 2, just run this command:
+            </p>
+            
+            <div class="command-block" data-os="mac">
+              <div class="command-block__header">
+                <span class="command-block__label">macOS Terminal</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, 'cursor .')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code"><span class="comment"># From your project folder, open in Cursor</span>
+cursor .</div>
+            </div>
+            
+            <div class="command-block" data-os="windows" style="display: none;">
+              <div class="command-block__header">
+                <span class="command-block__label">Windows PowerShell</span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, 'cursor .')">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="command-block__code"><span class="comment"># From your project folder, open in Cursor</span>
+cursor .</div>
+            </div>
+          </div>
+
+          <div class="info-box info-box--warning">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2">
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+            </svg>
+            <p><strong>Command not found?</strong> If <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">cursor</code> isn't recognized, open Cursor manually and use <strong>File → Open Folder</strong> to open your project. You can then enable the <code>cursor</code> command from the Command Palette (Cmd/Ctrl+Shift+P → "Install 'cursor' command").</p>
+          </div>
+
+          <div class="image-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+              <circle cx="8.5" cy="8.5" r="1.5"></circle>
+              <polyline points="21 15 16 10 5 21"></polyline>
+            </svg>
+            <p>Your project should now be open in Cursor with the file tree visible on the left.</p>
+          </div>
+
+          <button class="mark-complete" onclick="completeStep(2)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Mark as Complete</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 5: Install Dependencies (Manual Path Only) -->
+      <section class="step" data-step="5">
+        <div class="step__header" onclick="toggleStep(5)">
+          <div class="step__number">5</div>
+          <div class="step__info">
+            <h2 class="step__title">Step 5: Install Dependencies (Option A - Manual Only)</h2>
+            <p class="step__description">Install npm packages — skip if you ran Option B</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="info-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <p>Open Cursor's chat with <strong>Cmd+L</strong> (Mac) or <strong>Ctrl+L</strong> (Windows), then paste the prompt below. Fill in the bracketed sections with your project details.</p>
+          </div>
+
+          <div class="cursor-prompt">
+            <div class="cursor-prompt__header">
+              <span class="cursor-prompt__label">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2zm-3 12H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1zm0-3H7c-.55 0-1-.45-1-1s.45-1 1-1h10c.55 0 1 .45 1 1s-.45 1-1 1z"/>
+                </svg>
+                Paste into Cursor Chat
+              </span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, document.getElementById('prompt1').innerText)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="cursor-prompt__content" id="prompt1">I'm starting a new project using the CST-Rewired-Starter template. Here's what I need:
+
+**Project Name**: [YOUR PROJECT NAME]
+**Description**: [What does this project do?]
+
+**Tech Stack**:
+- Frontend: React + Vite + Tailwind
+- Backend: [Node.js + Express / Python + FastAPI / None]
+- Database: [PostgreSQL / SQLite / None]
+
+Please help me:
+1. Create the folder structure based on the config-templates/
+2. Set up package.json using the templates
+3. Create the initial src/ files (main.tsx, App.tsx, index.css with design tokens)
+4. Update .cursorrules with my project name
+5. Create a tech-stack.mdc file in .cursor/rules/
+
+Use the code-templates/ and config-templates/ as reference for patterns.</div>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">What Cursor Will Create</h3>
+            <div class="command-block">
+              <div class="command-block__header">
+                <span class="command-block__label">Project Structure</span>
+              </div>
+              <div class="command-block__code">my-project/
+├── .cursor/rules/          <span class="comment"># AI rules (already copied)</span>
+├── .cursorrules            <span class="comment"># Project-level rules</span>
+├── src/
+│   ├── components/ui/      <span class="comment"># Reusable UI components</span>
+│   ├── hooks/              <span class="comment"># Custom React hooks</span>
+│   ├── stores/             <span class="comment"># Zustand state stores</span>
+│   ├── lib/utils.ts        <span class="comment"># Utility functions</span>
+│   ├── App.tsx             <span class="comment"># Main app component</span>
+│   ├── main.tsx            <span class="comment"># Entry point</span>
+│   └── index.css           <span class="comment"># Tailwind + design tokens</span>
+├── docs/                   <span class="comment"># Documentation</span>
+├── index.html
+├── package.json
+├── tailwind.config.js
+├── tsconfig.json
+└── vite.config.ts</div>
+            </div>
+          </div>
+
+          <button class="mark-complete" onclick="completeStep(3)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Mark as Complete</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 6: Configure with Cursor AI -->
+      <section class="step" data-step="6">
+        <div class="step__header" onclick="toggleStep(6)">
+          <div class="step__number">6</div>
+          <div class="step__info">
+            <h2 class="step__title">Step 6: Configure with Cursor AI (Everyone)</h2>
+            <p class="step__description">Use AI to customize your project</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="content-section">
+            <h3 class="section-title">Install packages</h3>
+            <p style="color: var(--gray-400); font-size: 0.9rem; margin-bottom: var(--space-md);">
+              Open the integrated terminal in Cursor (Ctrl+` or View → Terminal) and run:
+            </p>
+            
+            <div class="command-block">
+              <div class="command-block__header">
+                <span class="command-block__label">Terminal</span>
+                <div class="command-block__actions">
+                  <button class="command-block__run" onclick="runInTerminal('npm install')" title="Run in Terminal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Run</span>
+                  </button>
+                  <button class="command-block__copy" onclick="copyToClipboard(this, 'npm install')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+              <div class="command-block__code">npm install</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">Start development server</h3>
+            
+            <div class="command-block">
+              <div class="command-block__header">
+                <span class="command-block__label">Terminal</span>
+                <div class="command-block__actions">
+                  <button class="command-block__run" onclick="runInTerminal('npm run dev')" title="Run in Terminal">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                    </svg>
+                    <span>Run</span>
+                  </button>
+                  <button class="command-block__copy" onclick="copyToClipboard(this, 'npm run dev')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                    </svg>
+                    <span>Copy</span>
+                  </button>
+                </div>
+              </div>
+              <div class="command-block__code">npm run dev</div>
+            </div>
+          </div>
+
+          <div class="info-box info-box--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <div>
+              <p style="margin-bottom: var(--space-xs);"><strong>Success!</strong> Your app is now running.</p>
+              <p style="margin: 0; font-size: 0.9rem;">Open your web browser (Chrome, Firefox, Safari, etc.) and go to <a href="http://localhost:5173" target="_blank" style="color: var(--mck-blue-medium); text-decoration: underline;">http://localhost:5173</a> to see your app! You should see a welcome page.</p>
+            </div>
+          </div>
+          
+          <div style="background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: var(--space-md); margin-top: var(--space-md);">
+            <p style="color: var(--gray-400); font-size: 0.85rem; margin: 0;">
+              <strong>💡 Tip:</strong> Keep the terminal running while you work. The server will automatically refresh your browser whenever you save changes to your code. To stop the server, press <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl + C</code> in the terminal.
+            </p>
+          </div>
+
+          <button class="mark-complete" onclick="completeStep(4)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>Mark as Complete</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Bonus: Auto-Setup Prompt -->
+      <section class="step bonus-step" data-step="bonus" style="border-color: rgba(0, 124, 191, 0.4); background: linear-gradient(135deg, rgba(0, 124, 191, 0.05) 0%, rgba(0, 76, 127, 0.02) 100%);">
+        <div class="step__header" onclick="toggleBonusStep()">
+          <div class="step__number" style="background: linear-gradient(135deg, var(--mck-blue) 0%, var(--mck-blue-dark) 100%); border-color: var(--mck-blue); color: white;">✨</div>
+          <div class="step__info">
+            <h2 class="step__title">🤖 Auto-Setup with AI</h2>
+            <p class="step__description">Let Cursor do all the work for you!</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="info-box info-box--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <p><strong>The Ultimate Shortcut!</strong> Once you have the starter kit copied to your project, paste this mega-prompt into Cursor and let it set up everything automatically.</p>
+          </div>
+
+          <div class="cursor-prompt" style="border-color: var(--mck-blue);">
+            <div class="cursor-prompt__header" style="background: rgba(0, 124, 191, 0.15);">
+              <span class="cursor-prompt__label">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
+                </svg>
+                🚀 MEGA SETUP PROMPT - Paste into Cursor
+              </span>
+              <button class="command-block__copy" onclick="copyToClipboard(this, document.getElementById('mega-prompt').innerText)">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+                <span>Copy</span>
+              </button>
+            </div>
+            <div class="cursor-prompt__content" id="mega-prompt">I'm setting up a new project using the CST-Rewired-Starter template. Please help me do a complete setup:
+
+**Project Details:**
+- Project Name: [YOUR PROJECT NAME]  
+- Description: [Brief description of what this app does]
+- Backend needed: [Yes/No - if yes, Node.js + Express]
+- Database needed: [Yes/No - if yes, PostgreSQL]
+
+**Please do all of these automatically:**
+
+1. **Create package.json** using config-templates/frontend/package.json.template
+   - Update the name and description fields
+   
+2. **Create all config files:**
+   - vite.config.ts from config-templates/frontend/vite.config.ts.template
+   - tailwind.config.js from config-templates/frontend/tailwind.config.js.template  
+   - tsconfig.json from config-templates/frontend/tsconfig.json.template
+   - postcss.config.js from config-templates/frontend/postcss.config.js.template
+
+3. **Create the src/ folder structure:**
+   - src/main.tsx (React entry point)
+   - src/App.tsx (main component with a welcome message)
+   - src/index.css (with Tailwind directives and design tokens from ui/DESIGN_TOKENS.md)
+   - src/lib/utils.ts (cn utility for class merging)
+   - src/components/ui/ folder
+   - src/hooks/ folder
+   - src/stores/ folder
+   - src/types/ folder
+
+4. **Create index.html** with proper meta tags and title
+
+5. **Update .cursorrules** with my project name
+
+6. **Create .cursor/rules/tech-stack.mdc** with my tech stack details
+
+7. **Create docs/ folder structure:**
+   - Rename docs-templates/ contents appropriately
+   - docs/CHANGELOG.md
+   - docs/NOMENCLATURE.md
+   - docs/backlog/BACKLOG.md
+   - docs/ai/LESSONS_LEARNED.md
+
+8. **If backend needed:** Set up backend/ folder with Express server using the code-templates/backend/ files
+
+After creating everything, give me the commands to:
+- Install dependencies
+- Start the dev server
+- Verify everything works
+
+Use the code-templates/ and ui/STYLE_GUIDE.md for all patterns and conventions.</div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); margin-top: var(--space-lg);">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+              <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--success);">✅ What this does</div>
+              <ul style="font-size: 0.8rem; color: var(--gray-400); list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 4px;">• Creates all config files</li>
+                <li style="margin-bottom: 4px;">• Sets up folder structure</li>
+                <li style="margin-bottom: 4px;">• Configures Tailwind & TypeScript</li>
+                <li style="margin-bottom: 4px;">• Applies design tokens</li>
+                <li>• Updates documentation</li>
+              </ul>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+              <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--warning);">⏱️ Time saved</div>
+              <ul style="font-size: 0.8rem; color: var(--gray-400); list-style: none; padding: 0; margin: 0;">
+                <li style="margin-bottom: 4px;">• Manual setup: ~30 min</li>
+                <li style="margin-bottom: 4px;">• With this prompt: ~2 min</li>
+                <li style="margin-bottom: 4px;">• Zero typos or mistakes</li>
+                <li style="margin-bottom: 4px;">• Consistent every time</li>
+                <li>• Best practices built-in</li>
+              </ul>
+            </div>
+          </div>
+          
+          <button onclick="markStepComplete(3)" class="btn btn-primary" style="margin-top: var(--space-lg); padding: var(--space-sm) var(--space-lg); background: var(--success); color: white; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s;">
+            ✓ Mark Step 3 Complete
+          </button>
+        </div>
+      </section>
+
+      <!-- Step 7: Start Building -->
+      <section class="step" data-step="7">
+        <div class="step__header" onclick="toggleStep(7)">
+          <div class="step__number">7</div>
+          <div class="step__info">
+            <h2 class="step__title">Step 7: Start Building! 🚀 (Everyone)</h2>
+            <p class="step__description">You're ready to vibe-code with Cursor AI</p>
+          </div>
+          <div class="step__toggle">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+        </div>
+        <div class="step__content">
+          <div class="info-box info-box--success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+            <p><strong>Congratulations!</strong> Your project is set up and ready to go. Here are some helpful prompts to get you started.</p>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">Create a New Component</h3>
+            <div class="cursor-prompt">
+              <div class="cursor-prompt__header">
+                <span class="cursor-prompt__label">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                  Example Prompt
+                </span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, document.getElementById('prompt-component').innerText)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="cursor-prompt__content" id="prompt-component">Create a new Button component in src/components/ui/Button.tsx
+
+It should:
+- Follow the COMPONENT_TEMPLATE.tsx pattern
+- Have variants: primary, secondary, outline, ghost
+- Have sizes: sm, md, lg
+- Support disabled state
+- Use the design tokens from ui/DESIGN_TOKENS.md</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">Generate a PRD for a Feature</h3>
+            <div class="cursor-prompt">
+              <div class="cursor-prompt__header">
+                <span class="cursor-prompt__label">
+                  <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4V4c0-1.1-.9-2-2-2z"/>
+                  </svg>
+                  Example Prompt
+                </span>
+                <button class="command-block__copy" onclick="copyToClipboard(this, document.getElementById('prompt-prd').innerText)">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                  </svg>
+                  <span>Copy</span>
+                </button>
+              </div>
+              <div class="cursor-prompt__content" id="prompt-prd">I want to add a new feature: [describe your feature]
+
+Please use the prd-generator rule (in .cursor/rules/prd-generator.mdc) to create a Product Requirements Document.
+
+Ask me clarifying questions first, then save the PRD to docs/prd-[feature-name].md</div>
+            </div>
+          </div>
+
+          <div class="content-section">
+            <h3 class="section-title">Quick Reference</h3>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-md);">
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+                <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--gray-200);">📁 UI Style Guide</div>
+                <div style="font-size: 0.8rem; color: var(--gray-500);">ui/STYLE_GUIDE.md</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+                <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--gray-200);">🎨 Design Tokens</div>
+                <div style="font-size: 0.8rem; color: var(--gray-500);">ui/DESIGN_TOKENS.md</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+                <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--gray-200);">📝 Code Templates</div>
+                <div style="font-size: 0.8rem; color: var(--gray-500);">code-templates/</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: var(--space-md);">
+                <div style="font-weight: 600; margin-bottom: var(--space-xs); color: var(--gray-200);">🤖 Cursor Rules</div>
+                <div style="font-size: 0.8rem; color: var(--gray-500);">.cursor/rules/</div>
+              </div>
+            </div>
+          </div>
+
+          <button class="mark-complete" onclick="completeStep(5)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>All Done! 🎉</span>
+          </button>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <p>CST-Rewired-Starter v1.0.0 • Created for McKinsey CST Teams</p>
+      <p style="margin-top: var(--space-sm);">
+        Questions? Check the <a href="./README.md">README</a> or <a href="./docs-templates/">documentation templates</a>
+      </p>
+    </footer>
+  </div>
+
+  <script>
+    // Configuration - Update these URLs with the actual links
+    const DOWNLOAD_LINKS = {
+      cursor: 'https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=1a9b2b55c38c9650cd5777f4e40131c9&table=pc_software_cat_item&searchTerm=cursor', // Cursor IDE download page (via GHD)
+      git: 'https://mckinsey.service-now.com/ghd?id=mck_app_cat_item&utm_medium=web&utm_source=ghd_website&utm_content=ai_search_result&sys_id=f732f1be1bcf3c10bcb9a938bd4bcbc9&table=pc_software_cat_item&searchTerm=git%20bash', // Git SCM download page (via GHD)
+      githubAccess: 'https://platform.mckinsey.com/workspace/no-team/create-service/3cb193ec-3882-43fe-8df8-4a16df064ed2/action/fb378514-b616-42d2-8879-be2fb28620d0?actionType=api' // OneFirm GitHub access request link
+    };
+
+    // State
+    let currentOS = 'mac';
+    let completedSteps = new Set();
+    let selectedPath = null; // 'quick' or 'manual'
+    const totalSteps = 7;
+
+    // Progress tracking
+    function updateProgress() {
+      const progressContainer = document.getElementById('progressContainer');
+      const progressBar = document.getElementById('progressBar');
+      const progressPercent = document.getElementById('progressPercent');
+      const progressText = document.getElementById('progressText');
+      const progressLabel = document.getElementById('progressLabel');
+
+      // Count required prerequisites (Step 1)
+      const requiredChecks = document.querySelectorAll('#requiredPrerequisitesList .checklist__item');
+      const requiredCompleted = Array.from(requiredChecks).filter(item => 
+        item.querySelector('.checklist__checkbox').style.background === 'rgb(5, 150, 105)'
+      ).length;
+      const requiredTotal = requiredChecks.length;
+
+      let totalTasks, completedTasks, pathLabel;
+
+      if (selectedPath === 'quick') {
+        // Option B path: Step 1 (3 items) + Step 2 (choose) + Step 6 + Step 7 = 6 tasks
+        totalTasks = 6;
+        completedTasks = requiredCompleted; // 3 from required prerequisites
+        
+        if (selectedPath) completedTasks++; // +1 for choosing Option B
+        
+        // Check if steps 6 and 7 are marked complete
+        const step6 = document.querySelector('[data-step="6"]');
+        const step7 = document.querySelector('[data-step="7"]');
+        if (step6?.classList.contains('step--completed')) completedTasks++;
+        if (step7?.classList.contains('step--completed')) completedTasks++;
+        
+        pathLabel = 'Option B Progress';
+        progressText.textContent = `${completedTasks} of ${totalTasks} tasks completed`;
+      } else if (selectedPath === 'manual') {
+        // Option A path: Step 1 (3 items) + Step 2 (choose) + Steps 3-5 = 6 tasks
+        totalTasks = 6;
+        completedTasks = requiredCompleted; // 3 from required prerequisites
+        
+        if (selectedPath) completedTasks++; // +1 for choosing Option A
+        
+        // Check if steps 3-5 are marked complete
+        for (let i = 3; i <= 5; i++) {
+          const step = document.querySelector(`[data-step="${i}"]`);
+          if (step?.classList.contains('step--completed')) completedTasks++;
+        }
+        
+        pathLabel = 'Option A Progress';
+        progressText.textContent = `${completedTasks} of ${totalTasks} tasks completed`;
+      } else {
+        // No path selected yet - just show required prerequisites
+        totalTasks = requiredTotal;
+        completedTasks = requiredCompleted;
+        pathLabel = 'Setup Progress';
+        progressText.textContent = completedTasks === requiredTotal 
+          ? 'Required prerequisites complete! Choose your installation method below.' 
+          : `${completedTasks} of ${totalTasks} required prerequisites completed`;
+      }
+
+      // Calculate percentage
+      const percentage = Math.round((completedTasks / totalTasks) * 100);
+      
+      // Update UI
+      progressBar.style.width = `${percentage}%`;
+      progressPercent.textContent = `${percentage}%`;
+      progressLabel.textContent = pathLabel;
+
+      // Show progress bar once user starts interacting
+      if (completedTasks > 0 || selectedPath) {
+        progressContainer.style.display = 'block';
+      }
+
+      // Celebration when complete
+      if (completedTasks === totalTasks) {
+        progressBar.style.background = 'linear-gradient(90deg, var(--success) 0%, #10b981 100%)';
+        progressText.innerHTML = '<strong>🎉 Setup Complete! You\'re ready to build amazing things!</strong>';
+        progressText.style.color = 'var(--success)';
+      } else {
+        progressBar.style.background = 'linear-gradient(90deg, var(--mck-blue) 0%, var(--mck-blue-medium) 100%)';
+        progressText.style.color = 'var(--gray-500)';
+      }
+    }
+
+    // Detect OS on load
+    function detectOS() {
+      const userAgent = navigator.userAgent.toLowerCase();
+      if (userAgent.includes('win')) {
+        return 'windows';
+      }
+      return 'mac'; // Default to mac for macOS/Linux
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', () => {
+      const detectedOS = detectOS();
+      selectOS(detectedOS);
+      document.getElementById('osDetected').innerHTML = `We detected you're on <strong>${detectedOS === 'mac' ? 'macOS' : 'Windows'}</strong>. Commands shown for your platform.`;
+      
+      // Set download links
+      const cursorLink = document.getElementById('cursorDownloadLink');
+      const gitLink = document.getElementById('gitDownloadLink');
+      const githubLink = document.getElementById('githubAccessLink');
+      if (cursorLink) cursorLink.href = DOWNLOAD_LINKS.cursor;
+      if (gitLink) gitLink.href = DOWNLOAD_LINKS.git;
+      if (githubLink) githubLink.href = DOWNLOAD_LINKS.githubAccess;
+      
+      // Load saved progress from localStorage
+      const savedProgress = localStorage.getItem('cst-wizard-progress');
+      if (savedProgress) {
+        completedSteps = new Set(JSON.parse(savedProgress));
+        completedSteps.forEach(step => {
+          const stepEl = document.querySelector(`[data-step="${step}"]`);
+          if (stepEl) {
+            stepEl.classList.add('completed');
+          }
+        });
+        updateProgress();
+        
+        // Open first incomplete step
+        const firstIncomplete = Array.from({length: totalSteps}, (_, i) => i + 1)
+          .find(s => !completedSteps.has(s));
+        if (firstIncomplete) {
+          openStep(firstIncomplete);
+        }
+      }
+      
+      // Load saved path selection
+      const savedPath = localStorage.getItem('cst-wizard-path');
+      if (savedPath) {
+        selectPath(savedPath);
+      }
+    });
+
+    // Path Selection
+    function selectPath(path) {
+      selectedPath = path;
+      
+      // Update button states
+      const quickBtn = document.getElementById('quickPathBtn');
+      const manualBtn = document.getElementById('manualPathBtn');
+      const banner = document.getElementById('pathStatusBanner');
+      const bannerText = document.getElementById('pathStatusText');
+      
+      quickBtn.classList.toggle('selected', path === 'quick');
+      manualBtn.classList.toggle('selected', path === 'manual');
+      
+      // Update steps based on path
+      const step3 = document.querySelector('[data-step="3"]');
+      const step4 = document.querySelector('[data-step="4"]');
+      const step5 = document.querySelector('[data-step="5"]');
+      const step6 = document.querySelector('[data-step="6"]');
+      const step7 = document.querySelector('[data-step="7"]');
+      
+      // Clear all states first
+      document.querySelectorAll('.step').forEach(s => {
+        s.classList.remove('skipped', 'highlighted');
+      });
+      
+      if (path === 'quick') {
+        // Quick path: skip steps 3-5, highlight step 6
+        step3.classList.add('skipped');
+        step4.classList.add('skipped');
+        step5.classList.add('skipped');
+        step6.classList.add('highlighted');
+        
+        // Close steps 3-5, open step 6
+        step3.classList.remove('open', 'active');
+        step4.classList.remove('open', 'active');
+        step5.classList.remove('open', 'active');
+        openStep(6);
+        
+        // Show banner
+        banner.style.display = 'block';
+        banner.style.background = 'rgba(5, 150, 105, 0.1)';
+        banner.style.border = '1px solid rgba(5, 150, 105, 0.3)';
+        bannerText.innerHTML = '⚡ <strong>Option B selected</strong> — Steps 3-5 are skipped. Starting at Step 6.';
+        bannerText.style.color = 'var(--success)';
+        
+        // Save to localStorage
+        localStorage.setItem('cst-wizard-path', 'quick');
+      } else if (path === 'manual') {
+        // Manual path: skip steps 6-7, highlight step 3
+        step6.classList.add('skipped');
+        step7.classList.add('skipped');
+        step3.classList.add('highlighted');
+        
+        // Close steps 6-7, open step 3
+        step6.classList.remove('open', 'active');
+        step7.classList.remove('open', 'active');
+        openStep(3);
+        
+        // Show banner
+        banner.style.display = 'block';
+        banner.style.background = 'rgba(37, 99, 235, 0.1)';
+        banner.style.border = '1px solid rgba(37, 99, 235, 0.3)';
+        bannerText.innerHTML = '📋 <strong>Option A selected</strong> — Steps 6-7 are skipped. Follow steps 3-5.';
+        bannerText.style.color = 'var(--info)';
+        
+        // Save to localStorage
+        localStorage.setItem('cst-wizard-path', 'manual');
+      }
+      
+      // Update progress bar
+      updateProgress();
+      
+      // Scroll to steps
+      setTimeout(() => {
+        document.getElementById('steps').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+    
+    function clearPath() {
+      selectedPath = null;
+      
+      // Clear button states
+      document.getElementById('quickPathBtn').classList.remove('selected');
+      document.getElementById('manualPathBtn').classList.remove('selected');
+      
+      // Clear step states
+      document.querySelectorAll('.step').forEach(s => {
+        s.classList.remove('skipped', 'highlighted');
+      });
+      
+      // Hide banner
+      document.getElementById('pathStatusBanner').style.display = 'none';
+      
+      // Remove from localStorage
+      localStorage.removeItem('cst-wizard-path');
+    }
+
+    // OS Selection
+    function selectOS(os) {
+      currentOS = os;
+      
+      // Update buttons
+      document.querySelectorAll('.os-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.os === os);
+      });
+      
+      // Show/hide OS-specific commands
+      document.querySelectorAll('[data-os]').forEach(el => {
+        el.style.display = el.dataset.os === os ? '' : 'none';
+      });
+    }
+
+    // Setup Option Accordion (mutually exclusive)
+    function toggleSetupOption(option) {
+      const manualEl = document.getElementById('manualPrerequisites');
+      const oneCommandEl = document.getElementById('oneCommandSetup');
+      const manualContent = manualEl?.querySelector('.setup-option__content');
+      const oneCommandContent = oneCommandEl?.querySelector('.setup-option__content');
+      
+      if (option === 'manual') {
+        // Toggle manual, close one-command if open
+        if (manualEl.classList.contains('open')) {
+          manualEl.classList.remove('open');
+          if (manualContent) manualContent.style.display = 'none';
+        } else {
+          manualEl.classList.add('open');
+          if (manualContent) manualContent.style.display = 'block';
+          oneCommandEl.classList.remove('open');
+          if (oneCommandContent) oneCommandContent.style.display = 'none';
+        }
+      } else if (option === 'oneCommand') {
+        // Toggle one-command, close manual if open
+        if (oneCommandEl.classList.contains('open')) {
+          oneCommandEl.classList.remove('open');
+          if (oneCommandContent) oneCommandContent.style.display = 'none';
+        } else {
+          oneCommandEl.classList.add('open');
+          if (oneCommandContent) oneCommandContent.style.display = 'block';
+          manualEl.classList.remove('open');
+          if (manualContent) manualContent.style.display = 'none';
+        }
+      }
+    }
+
+    // Step Navigation
+    function toggleStep(stepNum) {
+      const step = document.querySelector(`[data-step="${stepNum}"]`);
+      
+      // Don't toggle if step is skipped
+      if (step.classList.contains('skipped')) {
+        return;
+      }
+      
+      if (step.classList.contains('open')) {
+        step.classList.remove('open');
+      } else {
+        openStep(stepNum);
+      }
+    }
+
+    function openStep(stepNum) {
+      // Close all regular steps (not bonus)
+      document.querySelectorAll('.step:not(.bonus-step)').forEach(s => s.classList.remove('open', 'active'));
+      
+      // Open and activate this step
+      const step = document.querySelector(`[data-step="${stepNum}"]`);
+      step.classList.add('open', 'active');
+      
+      // Scroll into view
+      setTimeout(() => {
+        step.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 100);
+    }
+    
+    function markStepComplete(stepNum) {
+      const stepEl = document.querySelector(`[data-step="${stepNum}"]`);
+      if (!stepEl) return;
+      
+      stepEl.classList.toggle('step--completed');
+      
+      // Update progress
+      updateProgress();
+    }
+
+    function toggleBonusStep() {
+      const bonus = document.querySelector('[data-step="bonus"]');
+      bonus.classList.toggle('open');
+    }
+
+    // Toggle between single OS view and both OS view
+    let showBothOS = false;
+    function toggleShowBothOS() {
+      showBothOS = !showBothOS;
+      const singleView = document.getElementById('singleOSView');
+      const bothView = document.getElementById('bothOSView');
+      const btn = document.getElementById('showBothBtn');
+      
+      if (showBothOS) {
+        singleView.style.display = 'none';
+        bothView.style.display = 'block';
+        btn.textContent = 'Show One';
+        btn.style.background = 'rgba(0, 124, 191, 0.2)';
+        btn.style.borderColor = 'var(--mck-blue)';
+        btn.style.color = 'var(--mck-blue-medium)';
+      } else {
+        singleView.style.display = 'block';
+        bothView.style.display = 'none';
+        btn.textContent = 'Show Both';
+        btn.style.background = 'rgba(255,255,255,0.05)';
+        btn.style.borderColor = 'rgba(255,255,255,0.1)';
+        btn.style.color = 'var(--gray-400)';
+      }
+    }
+
+    // Step Completion
+    function completeStep(stepNum) {
+      const step = document.querySelector(`[data-step="${stepNum}"]`);
+      step.classList.add('completed');
+      completedSteps.add(stepNum);
+      
+      // Save to localStorage
+      localStorage.setItem('cst-wizard-progress', JSON.stringify([...completedSteps]));
+      
+      updateProgress();
+      
+      // Open next step
+      if (stepNum < totalSteps) {
+        setTimeout(() => openStep(stepNum + 1), 500);
+      }
+    }
+
+    function updateProgress() {
+      const progress = (completedSteps.size / totalSteps) * 100;
+      document.getElementById('progressFill').style.width = progress + '%';
+    }
+
+    // Checklist
+    function toggleCheck(item) {
+      item.classList.toggle('checked');
+      
+      // Update progress after any checkbox change
+      updateProgress();
+    }
+
+    // Copy to Clipboard
+    function copyToClipboard(button, text) {
+      navigator.clipboard.writeText(text).then(() => {
+        const span = button.querySelector('span');
+        const originalText = span.textContent;
+        
+        button.classList.add('copied');
+        span.textContent = 'Copied!';
+        
+        setTimeout(() => {
+          button.classList.remove('copied');
+          span.textContent = originalText;
+        }, 2000);
+      });
+    }
+
+    // Run in Terminal
+    function runInTerminal(command, os) {
+      const osType = os || currentOS;
+      const timestamp = Date.now();
+      
+      if (osType === 'mac') {
+        // macOS: Create a .command file that opens Terminal automatically when double-clicked
+        const scriptContent = `#!/bin/bash
+# Auto-generated script - CST Setup Wizard
+# Command: ${command.replace(/\n/g, ' ')}
+cd "$(dirname "$0")" 2>/dev/null || cd ~/Documents
+clear
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "  CST Setup Wizard - Running Command"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo ""
+${command.split('\n').map(line => {
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.startsWith('#')) return '';
+  return `echo "$ ${trimmed}"\n${trimmed}`;
+}).filter(Boolean).join('\necho ""\n')}
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "Command completed! Press any key to close..."
+read -n 1
+`;
+        
+        const blob = new Blob([scriptContent], { type: 'application/x-sh' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cst-command-${timestamp}.command`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Show instructions with Gatekeeper bypass info
+        setTimeout(() => {
+          const fileName = `cst-command-${timestamp}.command`;
+          const message = `✅ Script downloaded!\n\n📁 File: ${fileName}\n\n🚀 To open Terminal and run:\n\nOption 1 (Easiest - bypasses security warning):\n1. Open Finder → Downloads folder\n2. Right-click "${fileName}"\n3. Select "Open" (NOT double-click)\n4. Click "Open" in the security dialog\n5. Terminal will open automatically\n\nOption 2 (From Terminal):\nOpen Terminal and run:\nchmod +x ~/Downloads/${fileName} && ~/Downloads/${fileName}\n\n⚠️ macOS Security: If you see a warning, right-click → Open bypasses it.`;
+          alert(message);
+        }, 100);
+      } else {
+        // Windows: Create a .ps1 file and a .vbs launcher
+        const scriptContent = `# Auto-generated script - CST Setup Wizard
+# Command: ${command.replace(/\n/g, ' ')}
+$Host.UI.RawUI.WindowTitle = "CST Setup Wizard"
+Clear-Host
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host "  CST Setup Wizard - Running Command" -ForegroundColor Cyan
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host ""
+${command.split('\n').map(line => {
+  const trimmed = line.trim();
+  if (!trimmed || trimmed.startsWith('#')) return '';
+  return `Write-Host "$ ${trimmed}" -ForegroundColor Gray\n${trimmed}`;
+}).filter(Boolean).join('\nWrite-Host ""\n')}
+Write-Host ""
+Write-Host "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" -ForegroundColor Cyan
+Write-Host "Command completed! Press any key to close..." -ForegroundColor Green
+$null = $Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
+`;
+        
+        const blob = new Blob([scriptContent], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `cst-command-${timestamp}.ps1`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        
+        // Create a VBScript that opens PowerShell and runs the command
+        const vbScript = `Set objShell = CreateObject("WScript.Shell")
+Set objFSO = CreateObject("Scripting.FileSystemObject")
+strDownloads = objShell.SpecialFolders("MyDocuments") & "\\..\\Downloads"
+strScript = strDownloads & "\\cst-command-${timestamp}.ps1"
+objShell.Run "powershell.exe -ExecutionPolicy Bypass -NoExit -File """ & strScript & """", 1, False`;
+        
+        const vbBlob = new Blob([vbScript], { type: 'text/plain' });
+        const vbUrl = URL.createObjectURL(vbBlob);
+        const vbLink = document.createElement('a');
+        vbLink.href = vbUrl;
+        vbLink.download = `open-terminal-${timestamp}.vbs`;
+        document.body.appendChild(vbLink);
+        vbLink.click();
+        document.body.removeChild(vbLink);
+        URL.revokeObjectURL(vbUrl);
+        
+        // Show instructions
+        setTimeout(() => {
+          const message = `✅ Scripts downloaded!\n\n📁 Files:\n- cst-command-${timestamp}.ps1\n- open-terminal-${timestamp}.vbs\n\n🚀 To open PowerShell automatically:\n1. Go to Downloads folder\n2. Double-click open-terminal-${timestamp}.vbs\n3. PowerShell will open and run the command\n\nOr right-click cst-command-${timestamp}.ps1 and select "Run with PowerShell"`;
+          alert(message);
+        }, 100);
+      }
+    }
+
+    // Get command text by ID (for multi-line commands)
+    function getCommandText(id) {
+      const el = document.getElementById(id);
+      if (!el) return '';
+      
+      // Get text content but preserve structure
+      return el.innerText;
+    }
+
+    // Reset progress (for testing)
+    function resetProgress() {
+      localStorage.removeItem('cst-wizard-progress');
+      localStorage.removeItem('cst-wizard-path');
+      location.reload();
+    }
+  </script>
+</body>
+</html>

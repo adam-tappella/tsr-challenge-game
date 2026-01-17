@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+backend/node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Cache
+.cache/
+.parcel-cache/
+.vite/
+
+# Test coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp

@@ -1,0 +1,149 @@
+# =============================================================================
+# AWS ECS Infrastructure - Terraform Template
+# =============================================================================
+# This is an example template. Customize for your project.
+# =============================================================================
+
+terraform {
+  required_version = ">= 1.0.0"
+  
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
+    }
+  }
+  
+  # Uncomment to use S3 backend for state
+  # backend "s3" {
+  #   bucket = "your-terraform-state-bucket"
+  #   key    = "myapp/terraform.tfstate"
+  #   region = "us-east-1"
+  # }
+}
+
+provider "aws" {
+  region = var.aws_region
+  
+  default_tags {
+    tags = {
+      Project     = var.project_name
+      Environment = var.environment
+      ManagedBy   = "Terraform"
+    }
+  }
+}
+
+# =============================================================================
+# Variables
+# =============================================================================
+
+variable "aws_region" {
+  description = "AWS region"
+  type        = string
+  default     = "us-east-1"
+}
+
+variable "project_name" {
+  description = "Project name for resource naming"
+  type        = string
+}
+
+variable "environment" {
+  description = "Environment (dev, staging, production)"
+  type        = string
+  default     = "production"
+}
+
+# =============================================================================
+# VPC and Networking
+# =============================================================================
+
+# Use default VPC for simplicity, or create a custom VPC
+data "aws_vpc" "default" {
+  default = true
+}
+
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
+  }
+}
+
+# =============================================================================
+# ECR Repositories
+# =============================================================================
+
+resource "aws_ecr_repository" "frontend" {
+  name                 = "${var.project_name}-frontend"
+  image_tag_mutability = "MUTABLE"
+  
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+resource "aws_ecr_repository" "backend" {
+  name                 = "${var.project_name}-backend"
+  image_tag_mutability = "MUTABLE"
+  
+  image_scanning_configuration {
+    scan_on_push = true
+  }
+}
+
+# =============================================================================
+# ECS Cluster
+# =============================================================================
+
+resource "aws_ecs_cluster" "main" {
+  name = "${var.project_name}-cluster"
+  
+  setting {
+    name  = "containerInsights"
+    value = "enabled"
+  }
+}
+
+# =============================================================================
+# IAM Roles
+# =============================================================================
+
+resource "aws_iam_role" "ecs_task_execution" {
+  name = "${var.project_name}-ecs-execution-role"
+  
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ecs-tasks.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
+  role       = aws_iam_role.ecs_task_execution.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+# =============================================================================
+# Outputs
+# =============================================================================
+
+output "ecr_frontend_url" {
+  value = aws_ecr_repository.frontend.repository_url
+}
+
+output "ecr_backend_url" {
+  value = aws_ecr_repository.backend.repository_url
+}
+
+output "ecs_cluster_name" {
+  value = aws_ecs_cluster.main.name
+}

@@ -1,0 +1,109 @@
+# =============================================================================
+# GitHub Actions - AWS ECS Deployment
+# =============================================================================
+# This workflow builds and deploys to AWS ECS on push to main branch.
+# =============================================================================
+
+name: Deploy to AWS ECS
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual triggers
+
+env:
+  AWS_REGION: us-east-1
+  ECR_FRONTEND_REPOSITORY: myapp-frontend
+  ECR_BACKEND_REPOSITORY: myapp-backend
+  ECS_CLUSTER: myapp-cluster
+  ECS_SERVICE_FRONTEND: myapp-frontend-service
+  ECS_SERVICE_BACKEND: myapp-backend-service
+
+jobs:
+  # ---------------------------------------------------------------------------
+  # Build and Push Docker Images
+  # ---------------------------------------------------------------------------
+  build:
+    name: Build and Push
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build and push frontend image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f deployment/docker/Dockerfile.frontend -t $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_FRONTEND_REPOSITORY:latest
+
+      - name: Build and push backend image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -f deployment/docker/Dockerfile.backend -t $ECR_REGISTRY/$ECR_BACKEND_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_BACKEND_REPOSITORY:$IMAGE_TAG
+          docker tag $ECR_REGISTRY/$ECR_BACKEND_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_BACKEND_REPOSITORY:latest
+          docker push $ECR_REGISTRY/$ECR_BACKEND_REPOSITORY:latest
+
+  # ---------------------------------------------------------------------------
+  # Deploy to ECS
+  # ---------------------------------------------------------------------------
+  deploy:
+    name: Deploy to ECS
+    needs: build
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Update frontend ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE_FRONTEND }} \
+            --force-new-deployment
+
+      - name: Update backend ECS service
+        run: |
+          aws ecs update-service \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --service ${{ env.ECS_SERVICE_BACKEND }} \
+            --force-new-deployment
+
+      - name: Wait for frontend deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE_FRONTEND }}
+
+      - name: Wait for backend deployment
+        run: |
+          aws ecs wait services-stable \
+            --cluster ${{ env.ECS_CLUSTER }} \
+            --services ${{ env.ECS_SERVICE_BACKEND }}
+
+      - name: Deployment complete
+        run: echo "Deployment completed successfully!"

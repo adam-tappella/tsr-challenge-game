@@ -1,0 +1,149 @@
+/**
+ * App Component
+ * 
+ * Main application entry point for the Magna TSR Challenge.
+ * Handles routing between screens based on URL and game state:
+ * 
+ * Routes:
+ * - / (or /game) - Team interface
+ * - /admin - Facilitator control panel
+ * 
+ * Team Interface States:
+ * - Team Selection (not joined)
+ * - Lobby (joined, game not started)
+ * - Decision Screen (active round)
+ * - Round Results (round ended)
+ * - Final Results (game finished)
+ */
+
+import React, { useEffect, useState } from 'react';
+import { useGameStore, useGameStatus } from '@/stores/gameStore';
+import { useSocket } from '@/hooks/useSocket';
+import { TeamSelection } from '@/components/TeamSelection';
+import { Lobby } from '@/components/Lobby';
+import { DecisionScreen } from '@/components/DecisionScreen';
+import { RoundResults } from '@/components/RoundResults';
+import { FinalResults } from '@/components/FinalResults';
+import { AdminPanel } from '@/components/admin';
+
+type Route = 'team' | 'admin';
+
+function App() {
+  const [route, setRoute] = useState<Route>('team');
+  
+  // Handle routing based on URL
+  useEffect(() => {
+    const handleRouteChange = () => {
+      const path = window.location.pathname;
+      const hash = window.location.hash;
+      
+      if (path === '/admin' || hash === '#admin') {
+        setRoute('admin');
+      } else {
+        setRoute('team');
+      }
+    };
+    
+    handleRouteChange();
+    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('hashchange', handleRouteChange);
+    };
+  }, []);
+  
+  // Render admin panel if on admin route
+  if (route === 'admin') {
+    return <AdminPanel />;
+  }
+  
+  // Render team interface
+  return <TeamInterface />;
+}
+
+/**
+ * TeamInterface - The main player-facing interface
+ */
+function TeamInterface() {
+  // Initialize socket connection
+  const { isConnected, isConnecting, error } = useSocket();
+  
+  // Game state
+  const hasJoinedGame = useGameStore((s) => s.hasJoinedGame);
+  const gameStatus = useGameStatus();
+  const availableDecisions = useGameStore((s) => s.availableDecisions);
+  
+  // Log connection status changes
+  useEffect(() => {
+    if (isConnected) {
+      console.log('[App] Connected to game server');
+    }
+  }, [isConnected]);
+  
+  // Handle connection error
+  if (error && !isConnected && !isConnecting) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center p-8">
+        <div className="bg-red-500/10 border border-red-500/30 rounded-3xl p-8 max-w-md text-center">
+          <div className="w-16 h-16 bg-red-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+          </div>
+          <h2 className="text-xl font-bold text-white mb-2">Connection Error</h2>
+          <p className="text-red-400 mb-6">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-6 py-3 bg-red-600 text-white rounded-xl font-medium hover:bg-red-500 transition-colors"
+          >
+            Retry Connection
+          </button>
+        </div>
+      </div>
+    );
+  }
+  
+  // Determine which screen to show
+  const renderScreen = () => {
+    // Not joined yet - show team selection
+    if (!hasJoinedGame) {
+      return <TeamSelection />;
+    }
+    
+    // Game finished - show final results
+    if (gameStatus === 'finished') {
+      return <FinalResults />;
+    }
+    
+    // Round results - show results screen
+    if (gameStatus === 'results') {
+      return <RoundResults />;
+    }
+    
+    // Active or paused round - show decision screen
+    if ((gameStatus === 'active' || gameStatus === 'paused') && availableDecisions.length > 0) {
+      return <DecisionScreen />;
+    }
+    
+    // Lobby - waiting for game to start
+    return <Lobby />;
+  };
+  
+  return (
+    <div className="min-h-screen bg-slate-900">
+      {renderScreen()}
+      
+      {/* Admin Link (subtle, bottom right) */}
+      <a
+        href="#admin"
+        className="fixed bottom-4 right-4 text-slate-600 hover:text-slate-400 text-xs transition-colors"
+      >
+        Admin
+      </a>
+    </div>
+  );
+}
+
+export default App;

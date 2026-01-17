@@ -1,0 +1,135 @@
+---
+description: Browser automation with persistent page state for UI testing and verification
+alwaysApply: false
+---
+
+# Dev Browser (Cursor Rule)
+
+This rule provides a consistent playbook for browser automation and UI verification.
+
+## Cursor MCP Mapping
+
+This repository uses Cursor's MCP browser tools (persistent page state across tool calls). Use these mappings:
+
+- **Navigate**: `mcp_cursor-browser-extension_browser_navigate`
+- **Element discovery (ARIA snapshot)**: `mcp_cursor-browser-extension_browser_snapshot`
+- **Wait for UI/state**: `mcp_cursor-browser-extension_browser_wait_for`
+- **Click**: `mcp_cursor-browser-extension_browser_click` (use `ref` from snapshot)
+- **Type into inputs**: `mcp_cursor-browser-extension_browser_type` (use `ref` from snapshot)
+- **Select dropdown options**: `mcp_cursor-browser-extension_browser_select_option`
+- **Screenshots (visual verification)**: `mcp_cursor-browser-extension_browser_take_screenshot`
+- **Tabs (multi-page workflows)**: `mcp_cursor-browser-extension_browser_tabs`
+- **Debug**: `mcp_cursor-browser-extension_browser_console_messages`, `mcp_cursor-browser-extension_browser_network_requests`
+
+## Recommended Workflow Loop
+
+1. **Navigate** - Go to the page to test
+2. **Snapshot** - Find element refs in the accessibility tree
+3. **Interact** - Click/type/select using refs
+4. **Re-snapshot** - Confirm state changed
+5. **Screenshot** - When visual verification is needed
+
+---
+
+# Dev Browser Skill
+
+Browser automation that maintains page state across script executions. Write small, focused scripts to accomplish tasks incrementally.
+
+## Choosing Your Approach
+
+- **Local/source-available sites**: Read the source code first to write selectors directly
+- **Unknown page layouts**: Use `getAISnapshot()` to discover elements and `selectSnapshotRef()` to interact with them
+- **Visual feedback**: Take screenshots to see what the user sees
+
+## Key Principles
+
+1. **Small scripts**: Each script does ONE thing (navigate, click, fill, check)
+2. **Evaluate state**: Log/return state at the end to decide next steps
+3. **Descriptive page names**: Use `"checkout"`, `"login"`, not `"main"`
+4. **Disconnect to exit**: `await client.disconnect()` - pages persist on server
+5. **Plain JS in evaluate**: `page.evaluate()` runs in browser - no TypeScript syntax
+
+## Workflow Loop
+
+Follow this pattern for complex tasks:
+
+1. **Write a script** to perform one action
+2. **Run it** and observe the output
+3. **Evaluate** - did it work? What's the current state?
+4. **Decide** - is the task complete or do we need another script?
+5. **Repeat** until task is done
+
+### No TypeScript in Browser Context
+
+Code passed to `page.evaluate()` runs in the browser, which doesn't understand TypeScript:
+
+```typescript
+// Correct: plain JavaScript
+const text = await page.evaluate(() => {
+  return document.body.innerText;
+});
+
+// Wrong: TypeScript syntax will fail at runtime
+const text = await page.evaluate(() => {
+  const el: HTMLElement = document.body; // Type annotation breaks in browser!
+  return el.innerText;
+});
+```
+
+## ARIA Snapshot (Element Discovery)
+
+Use `getAISnapshot()` to discover page elements. Returns YAML-formatted accessibility tree:
+
+```yaml
+- banner:
+  - link "Hacker News" [ref=e1]
+  - navigation:
+    - link "new" [ref=e2]
+- main:
+  - list:
+    - listitem:
+      - link "Article Title" [ref=e8]
+      - link "328 comments" [ref=e9]
+- contentinfo:
+  - textbox [ref=e10]
+    - /placeholder: "Search"
+```
+
+**Interpreting refs:**
+
+- `[ref=eN]` - Element reference for interaction (visible, clickable elements only)
+- `[checked]`, `[disabled]`, `[expanded]` - Element states
+- `[level=N]` - Heading level
+- `/url:`, `/placeholder:` - Element properties
+
+**Interacting with refs:**
+
+```typescript
+const snapshot = await client.getAISnapshot("hackernews");
+console.log(snapshot); // Find the ref you need
+
+const element = await client.selectSnapshotRef("hackernews", "e2");
+await element.click();
+```
+
+## Error Recovery
+
+Page state persists after failures. Debug with:
+
+```bash
+cd ~/.config/amp/skills/dev-browser && npx tsx <<'EOF'
+import { connect } from "@/client.js";
+
+const client = await connect();
+const page = await client.page("hackernews");
+
+await page.screenshot({ path: "tmp/debug.png" });
+console.log({
+  url: page.url(),
+  title: await page.title(),
+  bodyText: await page.textContent("body").then((t) => t?.slice(0, 200)),
+});
+
+await client.disconnect();
+EOF
+```

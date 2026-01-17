@@ -1,0 +1,66 @@
+# Cursor Rules (bootstrap)
+
+Use these as the minimal "entry point" for AI work in this project.
+
+## Source of Truth
+
+- **Engineering rules**: `docs/ai/CURSOR_RULES.md` (create this for your project)
+- **UI/UX Style Guide**: `ui/STYLE_GUIDE.md` and `ui/DESIGN_TOKENS.md`
+- **Code Templates**: `code-templates/` - Component, hook, store templates
+- **Documentation**: `docs/` folder - consult before changes, update when you make changes
+- **Backlog**: `docs/backlog/BACKLOG.md` - capture out-of-scope ideas here
+
+## Project Information
+
+**Project Name**: TSR-CEO-demo
+**Repository**: [YOUR_GITHUB_REPO_URL]
+**Team**: [YOUR_TEAM_NAME]
+
+## Local Development
+
+| Service | Port | URL |
+|---------|------|-----|
+| Frontend | 5173 | http://localhost:5173 |
+| Backend | 3000 | http://localhost:3000 |
+
+### Starting Development
+
+```bash
+# Frontend
+npm run dev
+
+# Backend
+npm run dev:backend
+```
+
+## Non-Negotiables
+
+- **UI consistency**: Always match `ui/STYLE_GUIDE.md` patterns
+- **Code consistency**: Match existing conventions (TypeScript strict, `@/` imports, Tailwind + `cn()`)
+- **Performance**: Do not introduce UI-blocking synchronous loops
+- **Security**: Never commit secrets; validate untrusted inputs
+- **Documentation**: Consult relevant docs before changes; update docs when behavior changes
+
+## Quick Doc Lookup
+
+| Change Type | Consult | Update |
+|-------------|---------|--------|
+| New component | `code-templates/frontend/` | - |
+| UI patterns | `ui/STYLE_GUIDE.md` | - |
+| Bug fix (recurring) | - | `docs/ai/LESSONS_LEARNED.md` |
+| Out-of-scope idea | `docs/backlog/BACKLOG.md` | `docs/backlog/BACKLOG.md` |
+| User-visible change | - | `docs/CHANGELOG.md` |
+
+## Tech Stack
+
+See `.cursor/rules/tech-stack.mdc` for specific versions.
+
+### Frontend
+- React 18 + TypeScript
+- Vite
+- Tailwind CSS
+- Zustand
+
+### Backend
+- Node.js + Express
+- TypeScript

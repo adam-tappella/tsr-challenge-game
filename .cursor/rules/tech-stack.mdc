@@ -1,0 +1,70 @@
+---
+description: Technology stack and versions for TSR-CEO-demo
+globs: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
+alwaysApply: false
+---
+
+# Tech Stack - TSR-CEO-demo
+
+## Frontend
+
+| Technology | Version | Purpose |
+|---|---|---|
+| React | ^18.3.1 | UI Framework |
+| TypeScript | ^5.5.4 | Type Safety |
+| Vite | ^5.4.1 | Build Tool & Dev Server |
+| Tailwind CSS | ^3.4.10 | Utility-First CSS |
+| Zustand | ^5.0.9 | State Management |
+
+## UI Libraries
+
+| Library | Version | Purpose |
+|---|---|---|
+| Radix UI | Various | Accessible UI Primitives |
+| Lucide React | ^0.441.0 | Icon Library |
+| class-variance-authority | ^0.7.1 | Component Variants |
+| clsx | ^2.1.1 | Conditional Classes |
+| tailwind-merge | ^3.4.0 | Tailwind Class Merging |
+| tailwindcss-animate | ^1.0.7 | Animation Utilities |
+
+## Backend
+
+| Technology | Version | Purpose |
+|---|---|---|
+| Node.js | 20 LTS | Runtime |
+| Express | ^4.21.2 | Web Framework |
+| TypeScript | ^5.5.4 | Type Safety |
+| tsx | ^4.7.0 | TypeScript Execution |
+
+## Development Tools
+
+| Tool | Version | Purpose |
+|---|---|---|
+| Node.js | 20 LTS | Runtime |
+| npm | Latest | Package Manager |
+
+## Key Conventions
+
+- Use `@/` path aliases for imports (e.g., `@/components/ui/Button`)
+- Use `cn()` utility for merging Tailwind classes
+- Follow component patterns in `code-templates/frontend/`
+- Follow design tokens in `ui/DESIGN_TOKENS.md`
+
+## Commands
+
+```bash
+# Frontend Development
+npm run dev          # Start frontend dev server at http://localhost:5173
+
+# Backend Development
+npm run dev:backend  # Start backend dev server at http://localhost:3000
+
+# Build
+npm run build        # TypeScript check + Vite build
+
+# Preview
+npm run preview      # Preview production build
+
+# Lint
+npm run lint         # ESLint check
+```
