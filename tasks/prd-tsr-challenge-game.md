@@ -30,17 +30,109 @@ Magna's leadership needs to internalize complex capital allocation trade-offs an
 
 ## Core Learning Objectives
 
-The game mechanics should be designed so that teams who follow these principles tend to outperform:
+The game mechanics should be designed so that teams who follow these principles tend to outperform.
 
-### Confirmed Lessons (from stakeholder)
-1. **Margin expansion > Growth** — At Magna's current position on the growth spread matrix (ROIC slightly above WACC), improving margins creates more value than chasing growth
-2. **Diversification pays off** — Even at a cost premium, spreading risk across customers, suppliers, and geographies is strategically valuable
-3. **Cash optionality matters** — Sometimes holding cash beats investing, especially before downturns
-4. **Balance sheet flexibility enables opportunism** — Dry powder allows opportunistic M&A during recessions
-5. **Position for recovery** — Those who maintain investment capacity can ride the rising tide
+### Magna's Four Guiding Principles
 
-### Additional Lessons (to be added)
-- *More lessons will be defined during development — do not invent; flag inferences explicitly*
+The game reinforces Magna's strategic framework through experiential learning:
+
+| Guiding Principle | What It Means | Key Behaviors |
+|-------------------|---------------|---------------|
+| **Long-Term Ownership Mentality** | Incentives aligned to execution and long-term value; partnership-driven approach with OEMs | Avoid short-term cuts that destroy long-term value; maintain investment capacity |
+| **Portfolio Management** | Target attractive markets; back leaders with path to profitable growth; exit non-core assets | Diversify across customers/suppliers/geographies; actively manage portfolio |
+| **Maintain Strong Balance Sheet** | Protect liquidity and investment-grade leverage (Debt/EBITDA: 1.0-1.5x) | Preserve cash optionality; maintain flexibility through cycles |
+| **Capital Allocation Strategy** | Maximize long-term FCF per share; prioritize profitable growth | Margin improvement over volume growth; return excess capital appropriately |
+
+### Core Lessons Mapped to Principles
+
+| Lesson | Guiding Principle | Why It Matters |
+|--------|-------------------|----------------|
+| **Margin expansion > Growth** | Capital Allocation Strategy | At MGA's position on the growth spread matrix (ROIC slightly above WACC), margin improvement creates significantly more value than chasing growth |
+| **Diversification pays off** | Portfolio Management | Spreading risk across customers, suppliers, and geographies protects against concentrated failures |
+| **Cash optionality matters** | Maintain Strong Balance Sheet | Sometimes holding cash beats investing, especially before downturns |
+| **Balance sheet flexibility enables opportunism** | Maintain Strong Balance Sheet | Dry powder allows opportunistic M&A when competitors struggle |
+| **Position for recovery** | Long-Term Ownership Mentality | Those who maintain investment capacity can ride the rising tide |
+
+### KPI Scorecard
+
+Teams will be assessed against Magna's Financial Framework targets:
+
+| KPI | Target | Assessment Criteria |
+|-----|--------|---------------------|
+| **Growth over Market** | 2-4% | 🟢 On target / 🟡 Below target / 🔴 Chasing volume unsustainably |
+| **EBIT Margin** | ≥10% | 🟢 ≥10% / 🟡 8-10% / 🔴 <8% |
+| **CapEx to Sales** | 4-4.5% | 🟢 In range / 🟡 Under-investing / 🔴 Over-investing |
+| **FCF Conversion** | >70% | 🟢 ≥70% / 🟡 50-70% / 🔴 <50% |
+| **ROIC** | ≥15% | 🟢 ≥15% / 🟡 12-15% / 🔴 <12% |
+| **Debt / EBITDA** | 1.0-1.5x | 🟢 In range / 🔴 Overleveraged or under-leveraged |
+
+---
+
+## Scenario Dynamics & Expected Responses
+
+### Macro Environment by Round
+
+| Round | Year | Scenario | What Happens | Smart Response | Trap to Avoid |
+|-------|------|----------|--------------|----------------|---------------|
+| 1 | 2026 | **Business as Usual** | Stable market, EV transition underway | Balance growth & optimization; build foundation | Over-investing in risky growth bets too early |
+| 2 | 2027 | **Business as Usual** | Continued stability; investments ramping | Execute on strategy; position for efficiency; diversify OEM exposure | Complacency; concentrating on single OEM relationships |
+| 3 | 2028 | **Cost Pressure** | Raw materials ↑, labor ↑, OEM pushback; **OEM program cancellation hits** | Pivot to Optimize decisions; preserve cash | Doubling down on Grow (penalized at 0.7x!) |
+| 4 | 2029 | **Recession** | Auto sales ↓↓, cash is king | Sustain investments; opportunistic M&A if cash available | Aggressive expansion (penalized at 0.5x!) |
+| 5 | 2030 | **Recovery** | Market rebounds, optimism returns | Grow investments rewarded (1.3x); ride the wave | Over-defensive play; excessive Sustain (0.8x) |
+
+### Scenario Multipliers
+
+| Scenario | Grow | Optimize | Sustain | Strategic Implication |
+|----------|------|----------|---------|----------------------|
+| Business as Usual (R1-2) | 1.0x | 1.0x | 1.0x | Balanced approach works |
+| Cost Pressure (R3) | **0.7x** | **1.2x** | 1.0x | Margin focus rewarded |
+| Recession (R4) | **0.5x** | 1.0x | **1.5x** | Survival mode; protect the base |
+| Recovery (R5) | **1.3x** | 1.0x | **0.8x** | Growth bets pay off |
+
+---
+
+## Special Events (Facilitator-Triggered)
+
+These events test whether teams have built resilience through diversification and risk management:
+
+| Event | Round | Description | Protected If... | Punished If... |
+|-------|-------|-------------|-----------------|----------------|
+| **OEM Program Cancellation** | 3 | Major OEM cancels high-volume program that was expected to drive significant returns | Diversified OEM investments (spread across multiple customers) | Concentrated single-OEM investment (the "bait" card from Round 2) |
+| **Supply Chain Disruption** | 3-4 | Major supplier failure disrupts production | Invested in dual-sourcing, supplier relationships | Single-source dependencies |
+| **Key Customer Loss** | 3-4 | OEM in-sources a key component | Diversified customer base | Over-reliance on single customer |
+| **Technology Shift** | 2-3 | EV transition accelerates faster than expected | Early investment in EV/next-gen portfolio | Underinvestment in technology transition |
+| **Regulatory Change** | 3-4 | New environmental regulations announced | Proactive compliance investments | Deferred compliance spending |
+| **Competitor Acquisition** | 4-5 | Competitor acquired, creating market opportunities | Have capacity and cash to capture share | Overleveraged or capacity-constrained |
+
+### Round 2 "Bait" Decisions
+
+Two key Grow decisions in Round 2 test diversification learning:
+
+| Decision | Apparent Return | Actual Outcome | Learning |
+|----------|-----------------|----------------|----------|
+| **Diversified OEM Capacity Investment** | Lower projected return (+$80M/yr) | Stable, predictable return | Diversification provides insurance |
+| **Concentrated OEM Capacity Investment** | Higher projected return (+$120M/yr) | **Returns to $0** when OEM cancels program in R3 | Concentration risk is real |
+
+---
+
+## Risky Decision Outcomes (Pre-Determined)
+
+Risky decisions have a ~20% failure rate. The following outcomes are **pre-determined** for consistency:
+
+| Decision | Round | Category | Projected Outcome | **Actual Outcome** | Rationale |
+|----------|-------|----------|-------------------|-------------------|-----------|
+| Southeast Asia Market Entry | 1 | Grow | +$120M/yr | ✅ **Succeeds** (+$100M/yr) | Execution slightly below plan but viable |
+| Autonomous Driving Systems Unit | 1 | Grow | +$180M/yr | ❌ **Fails** (-$50M/yr) | Technology pivot required; investment lost |
+| Software-Defined Vehicle Platform | 2 | Grow | +$200M/yr | ✅ **Succeeds** (+$220M/yr) | Industry adoption exceeds expectations |
+| Distressed Competitor Acquisition | 3 | Grow | +$250M/yr | ✅ **Succeeds** (+$200M/yr) | Integration challenges reduce synergies |
+| Chinese OEM Partnership | 3 | Grow | +$180M/yr | ❌ **Fails** (-$80M/yr) | Geopolitical tensions force exit |
+| Vehicle-to-Grid Services Business | 3 | Grow | +$60M/yr | ✅ **Succeeds** (+$40M/yr) | Slower market development |
+| Solid-State Battery Research | 3 | Grow | +$120M/yr | ✅ **Succeeds** (+$150M/yr) | Breakthrough accelerates timeline |
+| Hydrogen Fuel Cell Alliance | 4 | Grow | +$50M/yr | ✅ **Succeeds** (+$30M/yr) | Modest returns as expected |
+| Deep Cost Restructuring | 4 | Optimize | +$150M/yr | ✅ **Succeeds** (+$130M/yr) | Some capability damage but net positive |
+| Minimum Viable Maintenance | 4 | Sustain | Risk prevention | ❌ **Fails** (Equipment failure: -$100M) | Deferred maintenance catches up |
+
+**Summary:** 3 of 10 risky decisions fail (30% failure rate), teaching that high-risk bets should be selective.
 
 ---
 
@@ -555,3 +647,4 @@ Subcategories include:
 | Version | Date | Author | Changes |
 |---------|------|--------|---------|
 | 0.1 | 2026-01-16 | AI + Adam | Initial PRD draft |
+| 0.2 | 2026-01-17 | AI + Adam | Added learning framework: guiding principles, KPI scorecard, scenario dynamics, special events |

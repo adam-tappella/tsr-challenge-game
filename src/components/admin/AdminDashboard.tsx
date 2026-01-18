@@ -25,6 +25,7 @@ import {
   RotateCcw,
   LogOut,
   Loader2,
+  BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
@@ -35,6 +36,7 @@ import type { GameStatus } from '@/types/game';
 
 interface AdminDashboardProps {
   className?: string;
+  onOpenFramework?: () => void;
 }
 
 interface TeamInfo {
@@ -45,6 +47,7 @@ interface TeamInfo {
 }
 
 const SCENARIO_EVENTS = [
+  { id: 'oem_program_cancellation', name: 'OEM Program Cancellation', description: 'Major OEM cancels flagship program (R3 - hits concentrated investments)' },
   { id: 'supply_chain_disruption', name: 'Supply Chain Disruption', description: 'Major supply chain issue' },
   { id: 'key_customer_loss', name: 'Key Customer Loss', description: 'OEM in-sourcing announcement' },
   { id: 'technology_shift', name: 'Technology Shift', description: 'EV technology breakthrough' },
@@ -52,7 +55,7 @@ const SCENARIO_EVENTS = [
   { id: 'competitor_acquisition', name: 'Competitor Acquired', description: 'Major competitor acquired' },
 ];
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework }) => {
   // Local state
   const [teamCount, setTeamCount] = useState(15);
   const [roundDuration, setRoundDuration] = useState(600);
@@ -231,6 +234,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className }) => 
             <div className="flex items-center gap-4">
               {/* Status Badge */}
               <StatusBadge status={status} />
+              
+              {/* Framework Button */}
+              {onOpenFramework && (
+                <button
+                  onClick={onOpenFramework}
+                  className="flex items-center gap-2 px-4 py-2 bg-magna-red/20 text-magna-red rounded-xl hover:bg-magna-red/30 transition-colors font-medium"
+                >
+                  <BookOpen className="w-4 h-4" />
+                  Principles & Dynamics
+                </button>
+              )}
               
               {/* Logout */}
               <button

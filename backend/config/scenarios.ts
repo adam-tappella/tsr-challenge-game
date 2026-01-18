@@ -106,24 +106,46 @@ export function createScenarioState(round: RoundNumber): ScenarioState {
  * Special events that can be triggered by the facilitator
  */
 export const SPECIAL_EVENTS = {
+  oem_program_cancellation: {
+    description: 'BREAKING: A major OEM has abruptly cancelled their flagship EV program citing market conditions. Teams who invested heavily in dedicated capacity for this program face significant losses. Those with diversified OEM investments are protected.',
+    round: 3,
+    affectedDecisions: ['grow-2-5'], // Concentrated OEM Capacity Investment
+    protectedBy: ['grow-2-4'], // Diversified OEM Capacity Investment
+    impactType: 'zero_returns', // The vulnerable decision's returns go to $0
+  },
   supply_chain_disruption: {
     description: 'A major supply chain disruption has occurred. Teams with diversified suppliers are protected.',
-    affectedDecisions: ['diversify_suppliers', 'dual_source_critical'],
+    round: 3,
+    affectedDecisions: [],
+    protectedBy: ['optimize-1-3', 'sustain-2-4'], // Dual-sourcing, Supplier relationships
+    impactType: 'penalty',
   },
   key_customer_loss: {
     description: 'A major OEM has announced they are in-sourcing a key component. Customer diversification matters.',
-    affectedDecisions: ['diversify_customers', 'expand_customer_base'],
+    round: 4,
+    affectedDecisions: [],
+    protectedBy: ['sustain-1-5', 'sustain-3-4'], // Customer diversification cards
+    impactType: 'penalty',
   },
   technology_shift: {
     description: 'A breakthrough in EV technology has accelerated the transition timeline. Early movers benefit.',
-    affectedDecisions: ['ev_investment', 'next_gen_portfolio'],
+    round: 2,
+    affectedDecisions: [],
+    protectedBy: ['grow-1-1', 'grow-1-4'], // EV Powertrain R&D, Battery JV
+    impactType: 'bonus',
   },
   regulatory_change: {
     description: 'New environmental regulations are announced. Compliance investments prove valuable.',
-    affectedDecisions: ['compliance_upgrade', 'sustainability_initiative'],
+    round: 3,
+    affectedDecisions: [],
+    protectedBy: ['sustain-1-4', 'sustain-5-3'], // Environmental compliance
+    impactType: 'penalty',
   },
   competitor_acquisition: {
     description: 'A major competitor has been acquired, creating market opportunities for those with capacity.',
-    affectedDecisions: ['expand_capacity', 'market_expansion'],
+    round: 5,
+    affectedDecisions: [],
+    protectedBy: ['grow-4-5', 'grow-5-3'], // Capacity expansion cards
+    impactType: 'bonus',
   },
 };

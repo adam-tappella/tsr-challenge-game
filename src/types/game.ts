@@ -95,6 +95,9 @@ export interface Decision {
   
   /** Which risk event this prevents (for Sustain decisions) */
   riskPrevention?: string;
+  
+  /** Which special event makes this decision's returns go to $0 (trap cards) */
+  vulnerableTo?: string;
 }
 
 // =============================================================================
