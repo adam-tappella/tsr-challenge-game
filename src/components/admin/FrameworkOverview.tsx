@@ -107,7 +107,7 @@ const SCENARIOS = [
     round: 1,
     year: 2026,
     name: 'Business as Usual',
-    description: 'Stable market, EV transition underway',
+    description: 'Stable market, technology evolution underway',
     smartResponse: 'Balance growth & optimization; build foundation',
     trap: 'Over-investing in risky growth bets too early',
     multipliers: { grow: 1.0, optimize: 1.0, sustain: 1.0 },
@@ -154,7 +154,7 @@ const SPECIAL_EVENTS = [
   {
     name: 'OEM Program Cancellation',
     round: 3,
-    description: 'Major OEM cancels flagship EV program',
+    description: 'Major OEM cancels flagship vehicle program',
     protected: 'Diversified OEM investments',
     punished: 'Concentrated single-OEM investment (R2 bait card)',
     isCritical: true,
@@ -178,8 +178,8 @@ const SPECIAL_EVENTS = [
   {
     name: 'Technology Shift',
     round: 2,
-    description: 'EV transition accelerates faster than expected',
-    protected: 'Early EV/next-gen portfolio investment',
+    description: 'Technology transition accelerates faster than expected',
+    protected: 'Early next-gen portfolio investment',
     punished: 'Underinvestment in technology transition',
     isCritical: false,
   },

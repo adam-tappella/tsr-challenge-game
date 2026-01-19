@@ -26,7 +26,7 @@ export const SCENARIO_BY_ROUND: Record<RoundNumber, ScenarioDefinition> = {
   1: {
     type: 'business_as_usual',
     narrative: `Welcome to fiscal year 2026. The automotive market remains stable with moderate growth expectations. 
-OEMs are increasing their EV commitments, creating both opportunities and challenges for suppliers. 
+OEMs are investing in next-generation vehicle platforms, creating both opportunities and challenges for suppliers. 
 Your task: Make strategic capital allocation decisions to maximize shareholder value over the coming years.`,
     modifiers: {
       growMultiplier: 1.0,
@@ -38,7 +38,7 @@ Your task: Make strategic capital allocation decisions to maximize shareholder v
   2: {
     type: 'business_as_usual',
     narrative: `Fiscal year 2027 begins with continued stability. Your previous investments are beginning to show results.
-EV adoption is accelerating, but ICE vehicles still dominate sales. Supply chain pressures are normalizing.
+Technology adoption is accelerating across vehicle platforms. Supply chain pressures are normalizing.
 Continue executing on your strategy while positioning for future market shifts.`,
     modifiers: {
       growMultiplier: 1.0,
@@ -107,7 +107,7 @@ export function createScenarioState(round: RoundNumber): ScenarioState {
  */
 export const SPECIAL_EVENTS = {
   oem_program_cancellation: {
-    description: 'BREAKING: A major OEM has abruptly cancelled their flagship EV program citing market conditions. Teams who invested heavily in dedicated capacity for this program face significant losses. Those with diversified OEM investments are protected.',
+    description: 'BREAKING: A major OEM has abruptly cancelled their flagship vehicle program citing market conditions. Teams who invested heavily in dedicated capacity for this program face significant losses. Those with diversified OEM investments are protected.',
     round: 3,
     affectedDecisions: ['grow-2-5'], // Concentrated OEM Capacity Investment
     protectedBy: ['grow-2-4'], // Diversified OEM Capacity Investment
@@ -128,10 +128,10 @@ export const SPECIAL_EVENTS = {
     impactType: 'penalty',
   },
   technology_shift: {
-    description: 'A breakthrough in EV technology has accelerated the transition timeline. Early movers benefit.',
+    description: 'A breakthrough in powertrain technology has accelerated the industry transition timeline. Early movers benefit.',
     round: 2,
     affectedDecisions: [],
-    protectedBy: ['grow-1-1', 'grow-1-4'], // EV Powertrain R&D, Battery JV
+    protectedBy: ['grow-1-1', 'grow-1-4'], // Advanced Powertrain R&D, Battery JV
     impactType: 'bonus',
   },
   regulatory_change: {

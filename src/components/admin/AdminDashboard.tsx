@@ -50,7 +50,7 @@ const SCENARIO_EVENTS = [
   { id: 'oem_program_cancellation', name: 'OEM Program Cancellation', description: 'Major OEM cancels flagship program (R3 - hits concentrated investments)' },
   { id: 'supply_chain_disruption', name: 'Supply Chain Disruption', description: 'Major supply chain issue' },
   { id: 'key_customer_loss', name: 'Key Customer Loss', description: 'OEM in-sourcing announcement' },
-  { id: 'technology_shift', name: 'Technology Shift', description: 'EV technology breakthrough' },
+  { id: 'technology_shift', name: 'Technology Shift', description: 'Powertrain technology breakthrough' },
   { id: 'regulatory_change', name: 'Regulatory Change', description: 'New environmental regulations' },
   { id: 'competitor_acquisition', name: 'Competitor Acquired', description: 'Major competitor acquired' },
 ];
