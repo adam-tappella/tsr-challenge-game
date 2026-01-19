@@ -75,6 +75,28 @@ Review and refine the 75 decision cards:
 
 ---
 
+### Risk Tier Classification System
+**Effort:** Medium | **Type:** Content + Feature
+
+Categorize all 75 decision cards into risk tiers with probability-based outcomes:
+
+| Tier | Success Rate | Player Guidance |
+|------|--------------|-----------------|
+| Low Risk | ~90% | "High confidence" |
+| Medium Risk | ~75% | "Moderate uncertainty" |
+| High Risk | ~20% | "Speculative bet" |
+
+**Implementation:**
+- [ ] Classify each card into a risk tier
+- [ ] Display risk tier indicator on card UI
+- [ ] Pre-determine outcomes so actual success rates match guidance (~90%, ~75%, ~20%)
+- [ ] Update calculation engine to apply outcomes based on tier
+- [ ] Validate distribution across rounds (not all high-risk in one round)
+
+**Note:** Replaces current binary "isRisky" flag with more nuanced 3-tier system
+
+---
+
 ## 🧪 Analysis & Validation
 
 ### Monte Carlo Simulation
