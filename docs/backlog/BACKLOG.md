@@ -10,13 +10,31 @@
 ### Personalized Round Summary Screens
 **Effort:** Large | **Type:** Feature
 
-Add screens between rounds that highlight each team's performance against Magna's business plan:
-- Show KPI scorecard (EBIT Margin, ROIC, FCF Conversion, etc.) with RAG status
-- Explain what drove their results (decisions made + external environment)
-- Assessment of alignment to the 4 Guiding Principles
-- Narrative feedback on strategic positioning
+Add screens between rounds with 4 key elements:
 
-**Dependencies:** Calculation engine needs to output principle alignment scores
+**1. Financial Performance**
+- Revenue, earnings, margin, ROIC
+- Other key elements of the financial framework (FCF conversion, etc.)
+- Year-over-year trends
+
+**2. Performance Drivers (CEO/CFO Style)**
+- Narrative explanation like an investor call: "Cost pressures compressed our margins" or "Strong execution on efficiency initiatives drove margin expansion"
+- Link results to decisions made and external environment
+
+**3. Analyst Quotes (1-2 per round)**
+- Generate fictional analyst commentary on the company's performance
+- E.g., "Management's disciplined capital allocation is paying off" or "We're concerned about concentration risk in the customer portfolio"
+- *Note: May need templated quotes based on performance patterns*
+
+**4. Performance vs Business Plan**
+- Compare actual results to targets (revenue, earnings)
+- Load in BP targets for each year (2026-2030)
+- Show variance and RAG status
+
+**Dependencies:** 
+- Calculation engine needs to output driver attribution
+- Need to define BP targets for each year
+- Template library for analyst quotes
 
 ---
 
@@ -140,6 +158,17 @@ Align the app's visual design with Magna's official brand guidelines:
 
 ---
 
+### Instructions Page
+**Effort:** Small | **Type:** UX
+
+Add a simple instructions page accessible at any time:
+- Explain game flow (5 rounds, decision categories, scoring)
+- How to read decision cards
+- What the timer means
+- Accessible via button/link from main game screens
+
+---
+
 ### Timer Warnings
 **Effort:** Small | **Type:** UX
 
@@ -148,31 +177,6 @@ Add escalating warnings as round timer runs low:
 - 1 minute: Orange warning + subtle pulse
 - 30 seconds: Red warning + more urgent pulse
 - 10 seconds: Countdown overlay
-
----
-
-### Animations & Transitions
-**Effort:** Medium | **Type:** UX
-
-Add polish to key moments:
-- Card flip animations
-- Round transition effects
-- Results reveal (staggered number animations)
-- Leaderboard position changes
-- Winner celebration
-
----
-
-### Sound Effects (Optional)
-**Effort:** Small | **Type:** UX
-
-Consider audio cues for:
-- Timer warnings
-- Decision submission confirmation
-- Round end fanfare
-- Final results
-
-**Note:** May not be appropriate for boardroom setting - make optional
 
 ---
 
