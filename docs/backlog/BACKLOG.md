@@ -126,6 +126,20 @@ Conduct internal playtest before the event:
 
 ## 🎨 UX & Polish
 
+### Update Web Design to Match Brand Standards
+**Effort:** Medium | **Type:** UX
+
+Align the app's visual design with Magna's official brand guidelines:
+- [ ] Review Magna brand guidelines (colors, typography, logo usage)
+- [ ] Update color palette to match official brand colors
+- [ ] Update fonts to brand-approved typefaces
+- [ ] Ensure logo usage follows guidelines
+- [ ] Review overall look/feel for executive presentation quality
+
+**Reference:** `mck-branding/` folder in repo
+
+---
+
 ### Timer Warnings
 **Effort:** Small | **Type:** UX
 
