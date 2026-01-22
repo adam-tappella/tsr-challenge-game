@@ -1,118 +1,206 @@
-# Design Tokens
+# Design Tokens - Magna Brand
 
-This document defines the CSS variables and Tailwind configuration for consistent theming.
+This document defines the CSS variables and Tailwind configuration for the Magna-branded TSR Challenge game.
 
-## CSS Variables (add to `src/index.css`)
+> **Brand Source**: Magna Brand Center (brand.apps-magna.com)
+
+## Magna Brand Colors
+
+| Color | Hex | Tailwind Class | Usage |
+|-------|-----|----------------|-------|
+| Ignition Red | `#DA291C` | `magna-ignition-red` | Primary accent (~4%) |
+| Carbon Black | `#000000` | `magna-carbon-black` | Dominant color (~54%) |
+| Chrome White | `#FFFFFF` | `magna-chrome-white` | Backgrounds |
+| Cool Gray | `#8B8B8D` | `magna-cool-gray` | Secondary (~14%) |
+| Electric Blue | `#4299B4` | `magna-electric-blue` | Secondary accent |
+
+## CSS Variables (in `src/index.css`)
 
 ```css
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Light mode */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 0%;
     
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 0%;
     
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 0 0% 0%;
     
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
+    /* Ignition Red as primary - HSL: 4 83% 48% */
+    --primary: 4 83% 48%;
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 0 0% 96%;
+    --secondary-foreground: 0 0% 0%;
     
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 0 0% 55%;
+    --muted-foreground: 0 0% 45%;
     
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 4 83% 48%;
+    --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 83% 48%;
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --border: 0 0% 85%;
+    --input: 0 0% 85%;
+    --ring: 4 83% 48%;
     
     --radius: 0.5rem;
     
-    /* Chart colors */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
+    /* Direct Magna hex values */
+    --magna-ignition-red: #DA291C;
+    --magna-carbon-black: #000000;
+    --magna-chrome-white: #FFFFFF;
+    --magna-cool-gray: #8B8B8D;
+    --magna-electric-blue: #4299B4;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    /* Dark mode - Carbon Black dominant */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 95%;
     
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 95%;
     
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 95%;
     
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 4 83% 48%;
+    --primary-foreground: 0 0% 100%;
     
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 95%;
     
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: 0 0% 55%;
+    --muted-foreground: 0 0% 65%;
     
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 4 83% 48%;
+    --accent-foreground: 0 0% 100%;
     
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 4 83% 48%;
+    --destructive-foreground: 0 0% 100%;
     
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
+    --ring: 4 83% 48%;
   }
 }
 ```
 
-## Tailwind Configuration
+## Typography
 
-See `config-templates/frontend/tailwind.config.js.template` for the full configuration.
+### Font Stack
+
+```css
+/* Magna Primary Typography */
+font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+```
+
+### Font Weights
+
+| Usage | Weight | Magna Equivalent |
+|-------|--------|------------------|
+| Headlines | 700 (Bold) | Helvetica Neue LT Pro 75 Bold |
+| Subheads | 300 (Light) | Helvetica Neue LT Pro 45 Light |
+| Body | 400 (Regular) | Helvetica Neue LT Pro 55 Roman |
+
+### Tailwind Classes
+
+```tsx
+// Headlines
+className="font-bold text-2xl"
+
+// Subheads  
+className="font-light text-lg"
+
+// Body text
+className="font-normal text-base"
+```
 
 ## Status Colors
 
-| Status | Color | Tailwind Class | Hex |
-|--------|-------|----------------|-----|
-| Success/Active | Green | `text-emerald-600` | #059669 |
-| Warning | Yellow | `text-yellow-600` | #CA8A04 |
-| Error/Critical | Red | `text-red-600` | #DC2626 |
-| Info/Primary | Blue | `text-blue-600` | #2563EB |
-| Neutral/Muted | Gray | `text-slate-400` | #94A3B8 |
+| Status | Tailwind Class | Notes |
+|--------|----------------|-------|
+| Success | `text-emerald-600` | Use for confirmations |
+| Warning | `text-amber-500` | Use for cautions |
+| Error | `text-magna-ignition-red` | Use Magna Red |
+| Info | `text-magna-electric-blue` | Use Electric Blue |
+| Neutral | `text-magna-cool-gray` | Use Cool Gray |
 
 ## Component Patterns
 
 ### Cards
 
 ```tsx
-className="rounded-[22px] border border-border bg-card p-6 shadow-sm"
+// Light mode card
+className="rounded-xl border border-border bg-card p-6 shadow-sm"
+
+// Dark mode card
+className="rounded-xl bg-magna-dark border border-magna-gray/20 p-6"
 ```
 
-### Buttons (Pill Shape)
+### Buttons
 
 ```tsx
-className="rounded-full px-4 py-2 bg-primary text-primary-foreground"
+// Primary button (Ignition Red)
+className="rounded-lg px-6 py-3 bg-magna-ignition-red text-white hover:bg-magna-red-dark font-bold transition-colors"
+
+// Secondary button
+className="rounded-lg px-6 py-3 bg-magna-cool-gray/20 text-foreground hover:bg-magna-cool-gray/30 transition-colors"
+
+// Ghost button
+className="rounded-lg px-6 py-3 text-magna-cool-gray hover:text-foreground transition-colors"
 ```
 
-### Inputs (Pill Shape)
+### Inputs
 
 ```tsx
-className="rounded-full border border-input px-4 py-2"
+className="rounded-lg border border-input bg-background px-4 py-2 focus:ring-2 focus:ring-magna-ignition-red/50"
 ```
 
 ### Badges
 
 ```tsx
-className="rounded-full px-2.5 py-0.5 text-xs bg-slate-100"
+// Accent badge
+className="rounded-full px-3 py-1 text-xs font-medium bg-magna-ignition-red/10 text-magna-ignition-red"
+
+// Neutral badge
+className="rounded-full px-3 py-1 text-xs font-medium bg-magna-cool-gray/10 text-magna-cool-gray"
 ```
+
+## Decorative Elements
+
+### Chevron
+
+The Magna chevron is a distinctive diagonal design element:
+
+```tsx
+// Add chevron decoration to a container
+className="magna-chevron"
+
+// Red variant
+className="magna-chevron magna-chevron-red"
+```
+
+## Color Balance Reference
+
+When designing screens, aim for this approximate color distribution:
+
+| Color | Percentage | Usage |
+|-------|------------|-------|
+| Carbon Black | ~54% | Backgrounds, text |
+| Chrome White | ~24% | Backgrounds, text on dark |
+| Cool Gray | ~14% | Secondary elements, borders |
+| Ignition Red | ~4% | Accents, CTAs (use sparingly!) |
+
+## Accessibility
+
+- Maintain WCAG 2.1 AA contrast ratios
+- Ignition Red on white: 4.8:1 ✅
+- White on Carbon Black: 21:1 ✅
+- Cool Gray is for decorative use only (3.5:1 on white)
