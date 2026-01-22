@@ -45,15 +45,27 @@ export default {
           '4': 'hsl(var(--chart-4))',
           '5': 'hsl(var(--chart-5))'
         },
-        // Magna Brand Colors
+        // Magna Brand Colors (Official from Brand Center)
         magna: {
-          red: '#E22E2F',
-          'red-dark': '#C41E1F',
-          'red-light': '#FF4A4B',
-          black: '#000000',
-          gray: '#ACACAC',
+          // Primary Colors
+          'ignition-red': '#DA291C',      // Primary accent - use sparingly (4%)
+          'red-dark': '#B71C1C',          // Darker variant for hover states
+          'carbon-black': '#000000',      // Primary dark color (54%)
+          'chrome-white': '#FFFFFF',      // Primary light color
+          'cool-gray': '#8B8B8D',         // Secondary gray (14%)
+          
+          // Secondary Colors
+          'electric-blue': '#4299B4',     // Secondary accent for highlights
+          
+          // Extended Palette
           'gray-dark': '#666666',
           'gray-light': '#D4D4D4',
+          'gray-100': '#F5F5F5',
+          
+          // Legacy aliases (for backwards compatibility)
+          red: '#DA291C',
+          black: '#000000',
+          gray: '#8B8B8D',
           dark: '#1a1a1a',
           darker: '#121212',
         }
@@ -64,7 +76,10 @@ export default {
         sm: 'calc(var(--radius) - 4px)'
       },
       fontFamily: {
-        sans: ['Inter', 'system-ui', 'sans-serif'],
+        // Magna Typography: Helvetica Neue LT Pro (primary), Arial (digital fallback)
+        sans: ['Helvetica Neue', 'Arial', 'Helvetica', 'sans-serif'],
+        // Headlines use bold weight
+        display: ['Helvetica Neue', 'Arial', 'Helvetica', 'sans-serif'],
       },
     }
   },
