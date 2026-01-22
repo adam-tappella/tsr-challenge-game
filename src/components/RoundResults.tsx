@@ -1,303 +1,31 @@
 /**
  * RoundResults Component
  * 
- * Displays results after each round:
- * - Team's updated financial metrics with deltas
- * - Round TSR and cumulative TSR
- * - Team rank
- * - Scenario narrative
+ * Displays results after each round in an investor report format:
+ * - Comprehensive financial KPIs with year-over-year comparisons
+ * - Analyst commentary quotes
+ * - Market benchmark comparisons
+ * - Leaderboard snapshot
+ * 
+ * Uses the InvestorReportSummary component for the main display.
  */
 
-import React, { useMemo } from 'react';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Award,
-  DollarSign,
-  BarChart3,
-  AlertTriangle,
-  CheckCircle2,
-  Clock,
-} from 'lucide-react';
+import React from 'react';
 import { cn } from '@/lib/utils';
-import { useGameStore, useCurrentTeam, useTeamRank } from '@/stores/gameStore';
+import { InvestorReportSummary } from './investor-report';
 
 interface RoundResultsProps {
   className?: string;
 }
 
+/**
+ * RoundResults Component
+ * 
+ * Wraps the InvestorReportSummary component for the round results display.
+ * This provides a professional investor report-style view of end-of-round results.
+ */
 export const RoundResults: React.FC<RoundResultsProps> = ({ className }) => {
-  const team = useCurrentTeam();
-  const teamId = useGameStore((s) => s.teamId);
-  const gameState = useGameStore((s) => s.gameState);
-  const roundResults = useGameStore((s) => s.lastRoundResults);
-  const teamRank = useTeamRank();
-  
-  // Find our team's results
-  const ourResult = useMemo(() => {
-    if (!roundResults || !teamId) return null;
-    return roundResults.teamResults.find((r) => r.teamId === teamId);
-  }, [roundResults, teamId]);
-  
-  // Get nearby teams for mini leaderboard
-  const nearbyTeams = useMemo(() => {
-    if (!roundResults || !teamRank) return [];
-    
-    const sorted = [...roundResults.teamResults].sort((a, b) => a.rank - b.rank);
-    const ourIndex = sorted.findIndex((t) => t.teamId === teamId);
-    
-    // Show 2 above and 2 below us (max 5 teams)
-    const start = Math.max(0, ourIndex - 2);
-    const end = Math.min(sorted.length, ourIndex + 3);
-    
-    return sorted.slice(start, end);
-  }, [roundResults, teamRank, teamId]);
-  
-  if (!team || !gameState || !roundResults) {
-    return (
-      <div className="min-h-screen bg-magna-darker flex items-center justify-center">
-        <div className="text-magna-gray">Loading results...</div>
-      </div>
-    );
-  }
-  
-  const totalTeams = gameState.teamCount;
-  const isTopThree = teamRank && teamRank <= 3;
-  const isImproved = ourResult && ourResult.stockPriceChange > 0;
-  
-  return (
-    <div className={cn(
-      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
-      "flex flex-col items-center justify-center p-8",
-      className
-    )}>
-      {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-6">
-        <span className="text-2xl font-black text-white tracking-tight">MAGNA</span>
-        <span className="w-2 h-2 bg-magna-red rounded-full" />
-      </div>
-      
-      {/* Round Badge */}
-      <div className="bg-white/10 text-white px-6 py-2 rounded-full font-medium mb-4">
-        Round {roundResults.round} Complete • FY {2025 + roundResults.round}
-      </div>
-      
-      {/* Team Badge */}
-      <div className="bg-magna-red text-white px-6 py-2 rounded-full text-lg font-bold mb-8 shadow-lg shadow-magna-red/30">
-        Team {teamId}
-      </div>
-      
-      {/* Main Results Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-4xl mb-8">
-        {/* Rank Display */}
-        <div className="text-center mb-8">
-          <div className={cn(
-            "inline-flex items-center gap-3 px-6 py-3 rounded-2xl mb-4",
-            isTopThree ? "bg-amber-500/20" : "bg-white/10"
-          )}>
-            <Award className={cn(
-              "w-8 h-8",
-              isTopThree ? "text-amber-400" : "text-magna-gray"
-            )} />
-            <div>
-              <div className={cn(
-                "text-4xl font-bold",
-                isTopThree ? "text-amber-400" : "text-white"
-              )}>
-                #{teamRank}
-              </div>
-              <div className="text-sm text-magna-gray">of {totalTeams} teams</div>
-            </div>
-          </div>
-        </div>
-        
-        {/* Key Metrics Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <MetricCard
-            label="Stock Price"
-            value={`$${ourResult?.stockPrice.toFixed(2) || team.stockPrice.toFixed(2)}`}
-            change={ourResult?.stockPriceChange}
-            changeLabel="vs prev"
-          />
-          <MetricCard
-            label="Round TSR"
-            value={`${((ourResult?.roundTSR || team.roundTSR) * 100).toFixed(1)}%`}
-            isPercentage
-            positive={(ourResult?.roundTSR || team.roundTSR) > 0}
-          />
-          <MetricCard
-            label="Cumulative TSR"
-            value={`${((ourResult?.cumulativeTSR || team.cumulativeTSR) * 100).toFixed(1)}%`}
-            isPercentage
-            positive={(ourResult?.cumulativeTSR || team.cumulativeTSR) > 0}
-          />
-          <MetricCard
-            label="Decisions Made"
-            value={ourResult?.decisionsCount.toString() || '0'}
-            subLabel={`$${ourResult?.totalSpent || 0}M spent`}
-          />
-        </div>
-        
-        {/* Mini Leaderboard */}
-        <div className="bg-black/30 rounded-xl p-6 mb-8">
-          <h3 className="text-sm font-medium text-magna-gray uppercase tracking-wide mb-4">
-            Leaderboard
-          </h3>
-          <div className="space-y-2">
-            {nearbyTeams.map((teamResult) => (
-              <div
-                key={teamResult.teamId}
-                className={cn(
-                  "flex items-center justify-between p-3 rounded-xl transition-colors",
-                  teamResult.teamId === teamId
-                    ? "bg-magna-red/20 border border-magna-red/30"
-                    : "bg-white/5"
-                )}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={cn(
-                    "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm",
-                    teamResult.rank <= 3 ? "bg-amber-500/20 text-amber-400" : "bg-white/10 text-white"
-                  )}>
-                    {teamResult.rank}
-                  </div>
-                  <span className={cn(
-                    "font-medium",
-                    teamResult.teamId === teamId ? "text-magna-red" : "text-white"
-                  )}>
-                    Team {teamResult.teamId}
-                    {teamResult.teamId === teamId && " (You)"}
-                  </span>
-                </div>
-                <div className="text-right">
-                  <div className="text-white font-medium">${teamResult.stockPrice.toFixed(2)}</div>
-                  <div className={cn(
-                    "text-xs",
-                    teamResult.cumulativeTSR >= 0 ? "text-emerald-400" : "text-magna-red"
-                  )}>
-                    {teamResult.cumulativeTSR >= 0 ? '+' : ''}{(teamResult.cumulativeTSR * 100).toFixed(1)}% TSR
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-        
-        {/* Risky Outcomes */}
-        {roundResults.riskyOutcomes.length > 0 && (
-          <div className="mb-8">
-            <h3 className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-4">
-              Risky Investment Outcomes
-            </h3>
-            <div className="space-y-2">
-              {roundResults.riskyOutcomes.map((outcome) => (
-                <div
-                  key={outcome.decisionId}
-                  className={cn(
-                    "flex items-center gap-3 p-3 rounded-xl",
-                    outcome.triggered ? "bg-red-500/10 border border-red-500/30" : "bg-emerald-500/10 border border-emerald-500/30"
-                  )}
-                >
-                  {outcome.triggered ? (
-                    <AlertTriangle className="w-5 h-5 text-red-400 flex-shrink-0" />
-                  ) : (
-                    <CheckCircle2 className="w-5 h-5 text-emerald-400 flex-shrink-0" />
-                  )}
-                  <div>
-                    <div className={cn(
-                      "font-medium",
-                      outcome.triggered ? "text-red-400" : "text-emerald-400"
-                    )}>
-                      {outcome.decisionName}
-                    </div>
-                    <div className="text-sm text-slate-400">{outcome.impact}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-        
-        {/* Scenario Narrative */}
-        <div className="bg-black/30 rounded-xl p-6 border border-white/10">
-          <h3 className="text-sm font-medium text-magna-gray uppercase tracking-wide mb-3">
-            Market Conditions
-          </h3>
-          <p className="text-white/80 leading-relaxed">
-            {roundResults.scenarioNarrative}
-          </p>
-        </div>
-      </div>
-      
-      {/* Waiting Indicator */}
-      <div className="flex items-center gap-3 text-magna-gray">
-        <Clock className="w-5 h-5" />
-        <span>Waiting for facilitator to start next round...</span>
-        <div className="flex items-center gap-1">
-          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-          <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// =============================================================================
-// Helper Components
-// =============================================================================
-
-interface MetricCardProps {
-  label: string;
-  value: string;
-  change?: number;
-  changeLabel?: string;
-  isPercentage?: boolean;
-  positive?: boolean;
-  subLabel?: string;
-}
-
-const MetricCard: React.FC<MetricCardProps> = ({
-  label,
-  value,
-  change,
-  changeLabel,
-  isPercentage,
-  positive,
-  subLabel,
-}) => {
-  const hasChange = change !== undefined;
-  const isPositive = hasChange ? change >= 0 : positive;
-  
-  return (
-    <div className="bg-black/30 rounded-xl p-4 text-center">
-      <div className="text-xs text-magna-gray uppercase tracking-wide mb-2">{label}</div>
-      <div className={cn(
-        "text-2xl font-bold mb-1",
-        isPercentage
-          ? isPositive ? "text-emerald-400" : "text-magna-red"
-          : "text-white"
-      )}>
-        {value}
-      </div>
-      {hasChange && (
-        <div className={cn(
-          "flex items-center justify-center gap-1 text-sm",
-          isPositive ? "text-emerald-400" : "text-magna-red"
-        )}>
-          {isPositive ? (
-            <TrendingUp className="w-4 h-4" />
-          ) : (
-            <TrendingDown className="w-4 h-4" />
-          )}
-          {isPositive ? '+' : ''}{change.toFixed(2)} {changeLabel}
-        </div>
-      )}
-      {subLabel && (
-        <div className="text-xs text-magna-gray mt-1">{subLabel}</div>
-      )}
-    </div>
-  );
+  return <InvestorReportSummary className={cn(className)} />;
 };
 
 RoundResults.displayName = 'RoundResults';
