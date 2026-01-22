@@ -26,13 +26,14 @@ import { DecisionScreen } from '@/components/DecisionScreen';
 import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
+import { InvestorReportDemo } from '@/components/investor-report';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'team' | 'admin';
+type Route = 'team' | 'admin' | 'demo';
 
 function App() {
   const [route, setRoute] = useState<Route>('team');
@@ -45,6 +46,8 @@ function App() {
       
       if (path === '/admin' || hash === '#admin') {
         setRoute('admin');
+      } else if (path === '/demo' || hash === '#demo') {
+        setRoute('demo');
       } else {
         setRoute('team');
       }
@@ -59,6 +62,15 @@ function App() {
       window.removeEventListener('hashchange', handleRouteChange);
     };
   }, []);
+  
+  // Demo route doesn't need access gate or socket connection
+  if (route === 'demo') {
+    return (
+      <AccessGate accessCode={ACCESS_CODE}>
+        <InvestorReportDemo />
+      </AccessGate>
+    );
+  }
   
   // Wrap everything in AccessGate
   return (
