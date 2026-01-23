@@ -31,8 +31,9 @@ interface UseSocketReturn {
   isConnected: boolean;
   isConnecting: boolean;
   error: string | null;
-  joinGame: (teamId: number) => Promise<{ success: boolean; error?: string }>;
+  joinGame: (teamName: string) => Promise<{ success: boolean; error?: string; teamId?: number }>;
   submitDecisions: (decisionIds: string[]) => Promise<{ success: boolean; error?: string }>;
+  unsubmitDecisions: () => Promise<{ success: boolean; error?: string }>;
   toggleDecision: (decisionId: string, selected: boolean) => void;
   disconnect: () => void;
 }
@@ -157,8 +158,8 @@ export function useSocket(): UseSocketReturn {
     setFinalResults,
   ]);
   
-  // Join game
-  const joinGame = useCallback(async (teamId: number): Promise<{ success: boolean; error?: string }> => {
+  // Join game with team name
+  const joinGame = useCallback(async (teamName: string): Promise<{ success: boolean; error?: string; teamId?: number }> => {
     return new Promise((resolve) => {
       const socket = socketRef.current;
       
@@ -167,14 +168,15 @@ export function useSocket(): UseSocketReturn {
         return;
       }
       
-      socket.emit('join-game', teamId, (success: boolean, error?: string) => {
-        if (success) {
+      socket.emit('join-game', teamName, (success: boolean, error?: string, teamId?: number) => {
+        if (success && teamId) {
           useGameStore.getState().setTeamId(teamId);
+          useGameStore.getState().setTeamName(teamName);
           useGameStore.getState().setJoinedGame(true);
         } else {
           useGameStore.getState().setJoinedGame(false, error);
         }
-        resolve({ success, error });
+        resolve({ success, error, teamId });
       });
     });
   }, []);
@@ -193,6 +195,25 @@ export function useSocket(): UseSocketReturn {
       
       socket.emit('submit-decisions', decisionIds, (success: boolean, error?: string) => {
         useGameStore.getState().setSubmitted(success, error);
+        resolve({ success, error });
+      });
+    });
+  }, []);
+  
+  // Unsubmit decisions (to edit before round ends)
+  const unsubmitDecisions = useCallback(async (): Promise<{ success: boolean; error?: string }> => {
+    return new Promise((resolve) => {
+      const socket = socketRef.current;
+      
+      if (!socket?.connected) {
+        resolve({ success: false, error: 'Not connected to server' });
+        return;
+      }
+      
+      socket.emit('unsubmit-decisions', (success: boolean, error?: string) => {
+        if (success) {
+          useGameStore.getState().setSubmitted(false);
+        }
         resolve({ success, error });
       });
     });
@@ -218,6 +239,7 @@ export function useSocket(): UseSocketReturn {
     error: connectionError,
     joinGame,
     submitDecisions,
+    unsubmitDecisions,
     toggleDecision,
     disconnect,
   };

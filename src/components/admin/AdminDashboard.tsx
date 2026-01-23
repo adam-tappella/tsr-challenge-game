@@ -41,6 +41,7 @@ interface AdminDashboardProps {
 
 interface TeamInfo {
   teamId: number;
+  teamName: string;
   isClaimed: boolean;
   hasSubmitted: boolean;
   decisionsCount: number;
@@ -85,7 +86,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
   // Initialize socket connection for real-time updates
   useSocket();
   
-  // Fetch status periodically
+  // Fetch status periodically (faster during active rounds)
   const fetchStatus = useCallback(async () => {
     const status = await getStatus();
     if (status) {
@@ -96,9 +97,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
   
   useEffect(() => {
     fetchStatus();
-    const interval = setInterval(fetchStatus, 3000);
+    // Poll every 1 second during active rounds, 3 seconds otherwise
+    const pollInterval = (gameState?.status === 'active' || gameState?.status === 'paused') ? 1000 : 3000;
+    const interval = setInterval(fetchStatus, pollInterval);
     return () => clearInterval(interval);
-  }, [fetchStatus]);
+  }, [fetchStatus, gameState?.status]);
   
   // Show action message
   const showMessage = (type: 'success' | 'error', text: string) => {
@@ -315,7 +318,9 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                   <div className="text-3xl font-bold text-white">
                     {submittedTeams}/{claimedTeams}
                   </div>
-                  <div className="text-sm text-magna-gray">Teams Submitted</div>
+                  <div className="text-sm text-magna-gray">
+                    {submittedTeams === 1 ? '1 team' : `${submittedTeams} teams`} submitted
+                  </div>
                 </div>
               </div>
               
@@ -538,10 +543,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                           {teamId}
                         </div>
                         <span className={cn(
-                          "font-medium",
+                          "font-medium truncate max-w-[150px]",
                           isClaimed ? "text-white" : "text-magna-gray/50"
                         )}>
-                          Team {teamId}
+                          {team?.teamName || `Team ${teamId}`}
                         </span>
                       </div>
                       
@@ -549,13 +554,19 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                         {!isClaimed && (
                           <span className="text-xs text-magna-gray/50">Not joined</span>
                         )}
-                        {isClaimed && !hasSubmitted && status === 'active' && (
+                        {isClaimed && !hasSubmitted && (status === 'active' || status === 'paused') && (
                           <span className="text-xs text-amber-400">Deciding...</span>
                         )}
-                        {isClaimed && hasSubmitted && (
+                        {isClaimed && hasSubmitted && (status === 'active' || status === 'paused') && (
+                          <div className="flex items-center gap-1">
+                            <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                            <span className="text-xs text-emerald-400 font-medium">Decided</span>
+                          </div>
+                        )}
+                        {isClaimed && hasSubmitted && status !== 'active' && status !== 'paused' && (
                           <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                         )}
-                        {isClaimed && !hasSubmitted && status !== 'active' && (
+                        {isClaimed && !hasSubmitted && status !== 'active' && status !== 'paused' && (
                           <span className="text-xs text-magna-gray">Ready</span>
                         )}
                       </div>

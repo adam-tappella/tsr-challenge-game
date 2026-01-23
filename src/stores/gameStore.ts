@@ -32,6 +32,7 @@ interface GameStoreState {
   
   // Team identity
   teamId: number | null;
+  teamName: string | null;
   hasJoinedGame: boolean;
   joinError: string | null;
   
@@ -61,6 +62,7 @@ interface GameStoreActions {
   
   // Team
   setTeamId: (teamId: number) => void;
+  setTeamName: (teamName: string) => void;
   setJoinedGame: (joined: boolean, error?: string) => void;
   leaveGame: () => void;
   
@@ -97,6 +99,7 @@ const initialState: GameStoreState = {
   connectionError: null,
   
   teamId: null,
+  teamName: null,
   hasJoinedGame: false,
   joinError: null,
   
@@ -141,6 +144,8 @@ export const useGameStore = create<GameStore>()(
       // Team actions
       setTeamId: (teamId) => set({ teamId }),
       
+      setTeamName: (teamName) => set({ teamName }),
+      
       setJoinedGame: (joined, error) => set({
         hasJoinedGame: joined,
         joinError: error || null,
@@ -148,6 +153,7 @@ export const useGameStore = create<GameStore>()(
       
       leaveGame: () => set({
         teamId: null,
+        teamName: null,
         hasJoinedGame: false,
         joinError: null,
         selectedDecisionIds: new Set(),

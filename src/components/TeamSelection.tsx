@@ -1,14 +1,12 @@
 /**
  * TeamSelection Component
  * 
- * Allows players to select and join a team number.
- * Shows which teams are already claimed (disabled).
+ * Allows players to enter their team name and join the game.
  */
 
-import React, { useState, useMemo } from 'react';
-import { Users, Loader2, CheckCircle2, XCircle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Users, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useGameStore } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
 
 interface TeamSelectionProps {
@@ -16,50 +14,25 @@ interface TeamSelectionProps {
 }
 
 export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
-  const [selectedTeam, setSelectedTeam] = useState<number | null>(null);
+  const [teamName, setTeamName] = useState('');
   const [isJoining, setIsJoining] = useState(false);
   const [error, setError] = useState<string | null>(null);
   
-  const gameState = useGameStore((s) => s.gameState);
   const { joinGame, isConnected } = useSocket();
   
-  // Get team count and claimed status from game state
-  const teamCount = gameState?.teamCount || 15;
-  const teams = gameState?.teams || {};
-  
-  // Generate team buttons
-  const teamButtons = useMemo(() => {
-    return Array.from({ length: teamCount }, (_, i) => {
-      const teamId = i + 1;
-      const team = teams[teamId];
-      const isClaimed = team?.isClaimed || false;
-      
-      return {
-        teamId,
-        isClaimed,
-        isSelected: selectedTeam === teamId,
-      };
-    });
-  }, [teamCount, teams, selectedTeam]);
-  
-  // Handle team selection
-  const handleSelectTeam = (teamId: number) => {
-    if (teams[teamId]?.isClaimed) return;
-    setSelectedTeam(teamId);
-    setError(null);
-  };
-  
-  // Handle join game
-  const handleJoinGame = async () => {
-    if (!selectedTeam || !isConnected) return;
+  // Handle form submission
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!teamName.trim() || !isConnected || isJoining) return;
     
     setIsJoining(true);
     setError(null);
     
-    const result = await joinGame(selectedTeam);
+    const result = await joinGame(teamName.trim());
     
     if (!result.success) {
-      setError(result.error || 'Failed to join team');
+      setError(result.error || 'Failed to join game');
     }
     
     setIsJoining(false);
@@ -101,102 +74,74 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
         </span>
       </div>
       
-      {/* Team Selection Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-2xl">
+      {/* Team Name Entry Card */}
+      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-md">
         <div className="flex items-center gap-3 mb-6">
           <div className="p-2 bg-magna-red/20 rounded-xl">
             <Users className="w-6 h-6 text-magna-red" />
           </div>
-          <h2 className="text-xl font-semibold text-white">Select Your Team</h2>
+          <h2 className="text-xl font-semibold text-white">Enter Your Team Name</h2>
         </div>
         
-        {/* Team Grid */}
-        <div className="grid grid-cols-5 gap-3 mb-8">
-          {teamButtons.map(({ teamId, isClaimed, isSelected }) => (
-            <button
-              key={teamId}
-              onClick={() => handleSelectTeam(teamId)}
-              disabled={isClaimed || !isConnected}
+        <form onSubmit={handleSubmit}>
+          {/* Team Name Input */}
+          <div className="mb-6">
+            <label htmlFor="teamName" className="block text-sm font-medium text-magna-gray mb-2">
+              Team Name
+            </label>
+            <input
+              type="text"
+              id="teamName"
+              value={teamName}
+              onChange={(e) => setTeamName(e.target.value)}
+              placeholder="e.g., Alpha Team, The Strategists"
+              disabled={!isConnected || isJoining}
               className={cn(
-                "relative h-16 rounded-xl font-bold text-lg transition-all duration-200",
-                "flex items-center justify-center",
-                "focus:outline-none focus:ring-2 focus:ring-magna-red focus:ring-offset-2 focus:ring-offset-magna-darker",
-                isClaimed && [
-                  "bg-magna-gray/20 text-magna-gray/50 cursor-not-allowed",
-                ],
-                !isClaimed && !isSelected && [
-                  "bg-white/10 text-white hover:bg-white/20",
-                  "border-2 border-transparent hover:border-magna-red/50",
-                ],
-                isSelected && [
-                  "bg-magna-red text-white",
-                  "border-2 border-magna-red-light",
-                  "shadow-lg shadow-magna-red/30",
-                  "scale-105",
-                ],
+                "w-full px-4 py-3 rounded-xl text-lg font-medium",
+                "bg-white/10 border-2 border-white/20 text-white placeholder-magna-gray/50",
+                "focus:outline-none focus:border-magna-red focus:ring-2 focus:ring-magna-red/20",
+                "transition-all duration-200",
+                (!isConnected || isJoining) && "opacity-50 cursor-not-allowed"
               )}
-            >
-              {teamId}
-              {isClaimed && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-xl">
-                  <XCircle className="w-5 h-5 text-magna-gray" />
-                </div>
-              )}
-              {isSelected && (
-                <CheckCircle2 className="absolute -top-1 -right-1 w-5 h-5 text-white" />
-              )}
-            </button>
-          ))}
-        </div>
-        
-        {/* Legend */}
-        <div className="flex items-center justify-center gap-6 text-sm text-magna-gray mb-8">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-white/10" />
-            <span>Available</span>
+              autoFocus
+              maxLength={30}
+            />
+            <p className="text-xs text-magna-gray mt-2">
+              Choose a memorable name for your team (max 30 characters)
+            </p>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-magna-gray/20 flex items-center justify-center">
-              <XCircle className="w-3 h-3 text-magna-gray/50" />
+          
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
+              <p className="text-red-400 text-sm text-center">{error}</p>
             </div>
-            <span>Claimed</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded bg-magna-red" />
-            <span>Selected</span>
-          </div>
-        </div>
-        
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
-            <p className="text-red-400 text-sm text-center">{error}</p>
-          </div>
-        )}
-        
-        {/* Join Button */}
-        <button
-          onClick={handleJoinGame}
-          disabled={!selectedTeam || !isConnected || isJoining}
-          className={cn(
-            "w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200",
-            "flex items-center justify-center gap-2",
-            selectedTeam && isConnected && !isJoining
-              ? "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
-              : "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
           )}
-        >
-          {isJoining ? (
-            <>
-              <Loader2 className="w-5 h-5 animate-spin" />
-              Joining Team {selectedTeam}...
-            </>
-          ) : selectedTeam ? (
-            <>Join as Team {selectedTeam}</>
-          ) : (
-            'Select a Team to Continue'
-          )}
-        </button>
+          
+          {/* Join Button */}
+          <button
+            type="submit"
+            disabled={!teamName.trim() || !isConnected || isJoining}
+            className={cn(
+              "w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200",
+              "flex items-center justify-center gap-2",
+              teamName.trim() && isConnected && !isJoining
+                ? "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
+                : "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
+            )}
+          >
+            {isJoining ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Joining...
+              </>
+            ) : teamName.trim() ? (
+              <>Join Game</>
+            ) : (
+              'Enter Team Name to Continue'
+            )}
+          </button>
+        </form>
       </div>
       
       {/* Footer */}

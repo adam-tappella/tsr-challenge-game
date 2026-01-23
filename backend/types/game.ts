@@ -131,6 +131,9 @@ export interface TeamState {
   /** Team number (1-20, based on configuration) */
   teamId: number;
   
+  /** Team name entered by the player */
+  teamName: string;
+  
   /** Whether this team slot has been claimed */
   isClaimed: boolean;
   
@@ -374,6 +377,9 @@ export interface ClientToServerEvents {
   /** Team submits decisions for current round */
   'submit-decisions': (decisions: string[], callback: (success: boolean, error?: string) => void) => void;
   
+  /** Team unsubmits to edit decisions before round ends */
+  'unsubmit-decisions': (callback: (success: boolean, error?: string) => void) => void;
+  
   /** Team selects/deselects a decision (for real-time tracking) */
   'toggle-decision': (decisionId: string, selected: boolean) => void;
 }
@@ -400,6 +406,9 @@ export interface ServerToClientEvents {
   
   /** A team has submitted decisions */
   'team-submitted': (teamId: number) => void;
+  
+  /** A team has unsubmitted to edit decisions */
+  'team-unsubmitted': (teamId: number) => void;
   
   /** Scenario event triggered by facilitator */
   'scenario-event': (description: string) => void;

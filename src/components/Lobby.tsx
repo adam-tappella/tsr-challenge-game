@@ -16,6 +16,7 @@ interface LobbyProps {
 
 export const Lobby: React.FC<LobbyProps> = ({ className }) => {
   const teamId = useGameStore((s) => s.teamId);
+  const teamName = useGameStore((s) => s.teamName);
   const gameState = useGameStore((s) => s.gameState);
   
   // Count joined teams
@@ -45,8 +46,8 @@ export const Lobby: React.FC<LobbyProps> = ({ className }) => {
       </div>
       
       {/* Team Badge */}
-      <div className="bg-magna-red text-white px-6 py-2 rounded-full text-lg font-bold mb-8 shadow-lg shadow-magna-red/30">
-        Team {teamId}
+      <div className="bg-magna-red text-white px-6 py-2 rounded-full text-lg font-bold mb-8 shadow-lg shadow-magna-red/30 max-w-xs truncate">
+        {teamName || `Team ${teamId}`}
       </div>
       
       {/* Main Card */}

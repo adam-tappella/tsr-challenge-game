@@ -85,7 +85,7 @@ const gameManager = initializeGameStateManager({
 // CORS configuration - supports multiple origins for dev and production
 const allowedOrigins = process.env.CORS_ORIGIN 
   ? process.env.CORS_ORIGIN.split(',').map(o => o.trim())
-  : ['http://localhost:5173'];
+  : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175', 'http://localhost:5176', 'http://localhost:5177'];
 
 const corsOptions = {
   origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
@@ -379,16 +379,16 @@ io.on('connection', (socket: Socket<ClientToServerEvents & AdminToServerEvents, 
 
   // ===== Team Events =====
   
-  socket.on('join-game', (teamId: number, callback: (success: boolean, error?: string) => void) => {
-    console.log(`[Socket] Team ${teamId} attempting to join from ${socket.id}`);
-    const result = gameManager.joinGame(teamId, socket.id);
+  socket.on('join-game', (teamName: string, callback: (success: boolean, error?: string, teamId?: number) => void) => {
+    console.log(`[Socket] Team "${teamName}" attempting to join from ${socket.id}`);
+    const result = gameManager.joinGame(teamName, socket.id);
     
-    if (result.success) {
-      socket.join(`team-${teamId}`);
-      io.emit('team-joined', teamId);
-      console.log(`[Socket] Team ${teamId} joined successfully`);
+    if (result.success && result.teamId) {
+      socket.join(`team-${result.teamId}`);
+      io.emit('team-joined', result.teamId);
+      console.log(`[Socket] Team "${teamName}" (ID: ${result.teamId}) joined successfully`);
     }
-    callback(result.success, result.error);
+    callback(result.success, result.error, result.teamId);
   });
 
   socket.on('submit-decisions', (decisions: string[], callback: (success: boolean, error?: string) => void) => {
@@ -398,6 +398,17 @@ io.on('connection', (socket: Socket<ClientToServerEvents & AdminToServerEvents, 
     if (result.success && result.teamId) {
       io.emit('team-submitted', result.teamId);
       console.log(`[Socket] Team ${result.teamId} submitted ${decisions.length} decisions`);
+    }
+    callback(result.success, result.error);
+  });
+
+  socket.on('unsubmit-decisions', (callback: (success: boolean, error?: string) => void) => {
+    console.log(`[Socket] Unsubmit requested from ${socket.id}`);
+    const result = gameManager.unsubmitDecisions(socket.id);
+    
+    if (result.success && result.teamId) {
+      io.emit('team-unsubmitted', result.teamId);
+      console.log(`[Socket] Team ${result.teamId} unsubmitted their decisions`);
     }
     callback(result.success, result.error);
   });

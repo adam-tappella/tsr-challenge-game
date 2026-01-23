@@ -34,11 +34,19 @@ import {
 } from './calculation-engine.js';
 
 // =============================================================================
+// Constants
+// =============================================================================
+
+// Frontend countdown duration (3-2-1-GO) - add this to round time so timer starts after countdown
+const COUNTDOWN_DURATION_SECONDS = 4;
+
+// =============================================================================
 // Types
 // =============================================================================
 
 interface TeamSubmissionInfo {
   teamId: number;
+  teamName: string;
   isClaimed: boolean;
   hasSubmitted: boolean;
   socketId?: string;
@@ -117,6 +125,7 @@ export class GameStateManager {
   private createTeamState(teamId: number): TeamState {
     return {
       teamId,
+      teamName: '', // Will be set when team joins
       isClaimed: false,
       socketId: undefined,
       cashBalance: STARTING_INVESTMENT_CASH,
@@ -182,6 +191,7 @@ export class GameStateManager {
   getTeamsSubmissionInfo(): TeamSubmissionInfo[] {
     return Object.values(this.state.teams).map(team => ({
       teamId: team.teamId,
+      teamName: team.teamName,
       isClaimed: team.isClaimed,
       hasSubmitted: team.hasSubmitted,
       socketId: team.socketId,
@@ -264,32 +274,58 @@ export class GameStateManager {
   // ===========================================================================
 
   /**
-   * Team claims a team number
+   * Team joins with a team name (auto-assigns team ID)
    */
-  joinGame(teamId: number, socketId: string): { success: boolean; error?: string } {
+  joinGame(teamName: string, socketId: string): { success: boolean; error?: string; teamId?: number } {
     // Validate game state
     if (this.state.status === 'finished') {
       return { success: false, error: 'Game has ended' };
     }
 
-    // Validate team ID
-    if (teamId < 1 || teamId > this.state.teamCount) {
-      return { success: false, error: `Invalid team number. Must be 1-${this.state.teamCount}` };
+    // Validate team name
+    if (!teamName || teamName.trim().length === 0) {
+      return { success: false, error: 'Team name is required' };
     }
 
-    const team = this.state.teams[teamId];
-    
-    // Check if already claimed by someone else
-    if (team.isClaimed && team.socketId !== socketId) {
-      return { success: false, error: `Team ${teamId} is already taken` };
+    const trimmedName = teamName.trim();
+
+    // Check if this socket is already connected to a team
+    for (const team of Object.values(this.state.teams)) {
+      if (team.socketId === socketId) {
+        // Already connected, just update the name if needed
+        team.teamName = trimmedName;
+        this.broadcastStateChange();
+        return { success: true, teamId: team.teamId };
+      }
     }
 
-    // Claim or reconnect to team
-    team.isClaimed = true;
-    team.socketId = socketId;
+    // Check if team name is already taken
+    for (const team of Object.values(this.state.teams)) {
+      if (team.isClaimed && team.teamName.toLowerCase() === trimmedName.toLowerCase()) {
+        return { success: false, error: `Team name "${trimmedName}" is already taken` };
+      }
+    }
+
+    // Find first available team slot
+    let availableTeam: TeamState | null = null;
+    for (const team of Object.values(this.state.teams)) {
+      if (!team.isClaimed) {
+        availableTeam = team;
+        break;
+      }
+    }
+
+    if (!availableTeam) {
+      return { success: false, error: 'All team slots are full' };
+    }
+
+    // Claim the team slot
+    availableTeam.isClaimed = true;
+    availableTeam.socketId = socketId;
+    availableTeam.teamName = trimmedName;
     
     this.broadcastStateChange();
-    return { success: true };
+    return { success: true, teamId: availableTeam.teamId };
   }
 
   /**
@@ -404,6 +440,36 @@ export class GameStateManager {
   }
 
   /**
+   * Unsubmit decisions (allow team to edit before round ends)
+   */
+  unsubmitDecisions(socketId: string): { success: boolean; error?: string; teamId?: number } {
+    // Validate game state
+    if (this.state.status !== 'active' && this.state.status !== 'paused') {
+      return { success: false, error: 'Round is not active' };
+    }
+
+    // Find team by socket
+    const team = Object.values(this.state.teams).find(t => t.socketId === socketId);
+    if (!team) {
+      return { success: false, error: 'Team not found' };
+    }
+
+    // Check if actually submitted
+    if (!team.hasSubmitted) {
+      return { success: false, error: 'Not submitted yet' };
+    }
+
+    // Restore cash and clear submission
+    const totalCost = team.currentRoundDecisions.reduce((sum, d) => sum + d.cost, 0);
+    team.cashBalance += totalCost;
+    team.hasSubmitted = false;
+    // Keep currentRoundDecisions so their selections are preserved
+
+    this.broadcastStateChange();
+    return { success: true, teamId: team.teamId };
+  }
+
+  /**
    * Track decision toggle (for real-time preview, not final submission)
    */
   toggleDecision(socketId: string, decisionId: string, selected: boolean): void {
@@ -433,7 +499,8 @@ export class GameStateManager {
     // Transition to active
     this.state.status = 'active';
     this.state.currentRound = 1;
-    this.state.roundTimeRemaining = this.roundDuration;
+    // Add countdown offset so timer effectively starts after 3-2-1 countdown completes
+    this.state.roundTimeRemaining = this.roundDuration + COUNTDOWN_DURATION_SECONDS;
     this.state.scenario = createScenarioState(1);
     this.state.startedAt = new Date().toISOString();
     this.state.roundStartedAt = new Date().toISOString();
@@ -512,18 +579,42 @@ export class GameStateManager {
     
     this.state.status = 'active';
     this.state.currentRound = nextRound;
-    this.state.roundTimeRemaining = this.roundDuration;
+    // Add countdown offset so timer effectively starts after 3-2-1 countdown completes
+    this.state.roundTimeRemaining = this.roundDuration + COUNTDOWN_DURATION_SECONDS;
     this.state.scenario = createScenarioState(nextRound);
     this.state.roundStartedAt = new Date().toISOString();
 
-    // Reset teams for new round
+    // Reset teams for new round with dynamic cash allocation
     for (const team of Object.values(this.state.teams)) {
       // Move current round decisions to all decisions
       team.allDecisions.push(...team.currentRoundDecisions);
+      
+      // Calculate next round's cash based on prior decisions
+      // Simulate: spending on "grow" investments generates more future cash
+      // spending on "sustain" maintains cash, "optimize" is neutral
+      const priorDecisions = team.currentRoundDecisions;
+      const growSpend = priorDecisions.filter(d => d.category === 'grow').reduce((sum, d) => sum + d.cost, 0);
+      const optimizeSpend = priorDecisions.filter(d => d.category === 'optimize').reduce((sum, d) => sum + d.cost, 0);
+      const sustainSpend = priorDecisions.filter(d => d.category === 'sustain').reduce((sum, d) => sum + d.cost, 0);
+      
+      // Base cash + growth return + efficiency savings - sustain costs
+      // Grow investments return 15-25% in future cash generation
+      // Optimize investments return 5-10% in efficiency savings
+      // Sustain investments cost money but prevent penalties
+      const growReturn = growSpend * (0.15 + Math.random() * 0.10);
+      const optimizeReturn = optimizeSpend * (0.05 + Math.random() * 0.05);
+      const sustainCost = sustainSpend * 0.02; // Small ongoing cost
+      
+      // Calculate new cash: base + returns, with some randomness for market conditions
+      const marketFactor = 0.95 + Math.random() * 0.10; // 95% to 105%
+      let newCash = Math.round((STARTING_INVESTMENT_CASH + growReturn + optimizeReturn - sustainCost) * marketFactor);
+      
+      // Clamp to reasonable range (800M to 1600M)
+      newCash = Math.max(800, Math.min(1600, newCash));
+      
       team.currentRoundDecisions = [];
       team.hasSubmitted = false;
-      // Replenish cash for new round (simplified model)
-      team.cashBalance = STARTING_INVESTMENT_CASH;
+      team.cashBalance = newCash;
     }
 
     // Start timer

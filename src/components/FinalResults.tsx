@@ -29,6 +29,7 @@ interface FinalResultsProps {
 
 export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   const teamId = useGameStore((s) => s.teamId);
+  const teamName = useGameStore((s) => s.teamName);
   const finalResults = useGameStore((s) => s.finalResults);
   
   // Find our team's results
@@ -130,7 +131,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                 #{ourResult.rank}
               </div>
               <div>
-                <div className="text-white font-bold text-lg">Team {teamId} (You)</div>
+                <div className="text-white font-bold text-lg">{teamName || `Team ${teamId}`} (You)</div>
                 <div className="text-magna-gray text-sm">
                   Final Position: {getRankSuffix(ourResult.rank)} of {finalResults.leaderboard.length}
                 </div>
