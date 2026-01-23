@@ -286,85 +286,74 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             </p>
           </div>
           
-          {/* Details Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <DetailItem 
-              label="Type" 
-              value={decision.type === 'organic' ? 'Organic Growth' : 'Inorganic (M&A)'} 
-            />
-            <DetailItem 
-              label="Duration" 
-              value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
-            />
-            <DetailItem 
-              label="Ramp-up Period" 
-              value={`${decision.rampUpYears} year${decision.rampUpYears > 1 ? 's' : ''}`} 
-            />
-            <DetailItem 
-              label="Impact Magnitude" 
-              value={`${decision.impactMagnitude}/5`} 
-            />
-          </div>
-          
-          {/* Impact Details */}
+          {/* Key Metrics Grid */}
           <div>
             <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-3">
-              Expected Impact
+              Key Metrics
             </h4>
-            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
-              {decision.revenueImpact && (
-                <ImpactRow 
-                  label="Revenue" 
-                  value={`${decision.revenueImpact > 0 ? '+' : ''}${(decision.revenueImpact * 100).toFixed(1)}%`}
-                  positive={decision.revenueImpact > 0}
-                />
-              )}
-              {decision.cogsImpact && (
-                <ImpactRow 
-                  label="Cost of Goods" 
-                  value={`${decision.cogsImpact > 0 ? '+' : ''}${(decision.cogsImpact * 100).toFixed(1)}%`}
-                  positive={decision.cogsImpact < 0}
-                />
-              )}
-              {decision.sgaImpact && (
-                <ImpactRow 
-                  label="SG&A" 
-                  value={`${decision.sgaImpact > 0 ? '+' : ''}${(decision.sgaImpact * 100).toFixed(1)}%`}
-                  positive={decision.sgaImpact < 0}
-                />
-              )}
-              {decision.recurringBenefit && !decision.isOneTimeBenefit && (
-                <ImpactRow 
-                  label="Recurring Benefit" 
-                  value={`$${decision.recurringBenefit}M/year`}
-                  positive={true}
-                />
-              )}
-              {decision.isOneTimeBenefit && decision.recurringBenefit && (
-                <ImpactRow 
-                  label="One-time Benefit" 
-                  value={`$${decision.recurringBenefit}M`}
-                  positive={true}
-                />
-              )}
-              {decision.riskPrevention && (
-                <ImpactRow 
-                  label="Risk Prevention" 
-                  value={decision.riskPrevention.replace(/_/g, ' ')}
-                  positive={true}
-                />
-              )}
+            <div className="grid grid-cols-2 gap-4">
+              {/* Revenue */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div className="text-sm text-slate-500 mb-1">Expected Revenue</div>
+                <div className="space-y-1">
+                  {decision.recurringBenefit && (
+                    <div className="text-slate-800 text-lg font-semibold">
+                      ${decision.recurringBenefit}M/year
+                    </div>
+                  )}
+                  {decision.revenueImpact && (
+                    <div className={cn(
+                      "text-base font-medium",
+                      decision.revenueImpact > 0 ? "text-emerald-600" : "text-red-600"
+                    )}>
+                      {decision.revenueImpact > 0 ? '+' : ''}{(decision.revenueImpact * 100).toFixed(1)}% growth
+                    </div>
+                  )}
+                  {!decision.recurringBenefit && !decision.revenueImpact && (
+                    <div className="text-slate-400 text-lg">—</div>
+                  )}
+                </div>
+              </div>
+              
+              {/* Margin */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+                <div className="text-sm text-slate-500 mb-1">Margin Impact</div>
+                {(decision.cogsImpact || decision.sgaImpact) ? (
+                  <div className="space-y-1">
+                    {decision.cogsImpact && (
+                      <div className={cn(
+                        "text-lg font-semibold",
+                        decision.cogsImpact < 0 ? "text-emerald-600" : "text-red-600"
+                      )}>
+                        COGS {decision.cogsImpact < 0 ? '' : '+'}{(decision.cogsImpact * 100).toFixed(1)}%
+                      </div>
+                    )}
+                    {decision.sgaImpact && (
+                      <div className={cn(
+                        "text-base font-medium",
+                        decision.sgaImpact < 0 ? "text-emerald-600" : "text-red-600"
+                      )}>
+                        SG&A {decision.sgaImpact < 0 ? '' : '+'}{(decision.sgaImpact * 100).toFixed(1)}%
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-slate-400 text-lg">—</div>
+                )}
+              </div>
+              
+              {/* Upfront CapEx */}
+              <DetailItem 
+                label="Upfront CapEx" 
+                value={`$${decision.cost}M`} 
+              />
+              
+              {/* Ramp-up Period */}
+              <DetailItem 
+                label="Ramp-up Period" 
+                value={`${decision.rampUpYears} year${decision.rampUpYears > 1 ? 's' : ''}`} 
+              />
             </div>
-          </div>
-          
-          {/* Guiding Principle */}
-          <div className="bg-slate-100 rounded-xl p-4 border border-slate-200">
-            <h4 className="text-base font-semibold text-slate-500 mb-1">
-              Guiding Principle
-            </h4>
-            <p className="text-slate-800 text-lg font-medium">
-              {decision.guidingPrinciple}
-            </p>
           </div>
         </div>
         
@@ -409,22 +398,6 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }
   <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
     <div className="text-sm text-slate-500 mb-1">{label}</div>
     <div className="text-slate-800 text-lg font-semibold">{value}</div>
-  </div>
-);
-
-const ImpactRow: React.FC<{ label: string; value: string; positive: boolean }> = ({ 
-  label, 
-  value, 
-  positive 
-}) => (
-  <div className="flex items-center justify-between">
-    <span className="text-slate-600 text-base">{label}</span>
-    <span className={cn(
-      "font-semibold text-lg",
-      positive ? "text-emerald-600" : "text-slate-700"
-    )}>
-      {value}
-    </span>
   </div>
 );
 
