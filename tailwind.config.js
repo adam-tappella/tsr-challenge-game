@@ -65,9 +65,15 @@ export default {
           // Legacy aliases (for backwards compatibility)
           red: '#DA291C',
           black: '#000000',
-          gray: '#8B8B8D',
-          dark: '#1a1a1a',
-          darker: '#121212',
+          gray: '#555555',                // Darker for contrast on light bg
+          dark: '#E8ECF0',                // NOW LIGHT GREY for readability
+          darker: '#DFE4E9',              // NOW LIGHT GREY for readability
+        },
+        // Large display text colors for accessibility
+        'display': {
+          'text': '#1a1a1a',              // High contrast text on light bg
+          'muted': '#4a4a4a',             // Muted but readable
+          'accent': '#DA291C',            // Brand red
         }
       },
       borderRadius: {

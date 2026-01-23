@@ -14,6 +14,7 @@ import type {
   Decision,
   RoundResults,
   FinalResults,
+  TeamRoundSnapshot,
 } from './types/game.js';
 
 import {
@@ -77,6 +78,10 @@ export class GameStateManager {
   // Results storage
   private lastRoundResults: RoundResults | null = null;
   private lastFinalResults: FinalResults | null = null;
+  
+  // Round-by-round history for Game Recap feature
+  // Maps teamId -> array of snapshots (one per completed round)
+  private roundHistories: Record<number, TeamRoundSnapshot[]> = {};
 
   constructor(events: GameStateManagerEvents) {
     this.events = events;
@@ -218,6 +223,13 @@ export class GameStateManager {
    */
   getFinalResults(): FinalResults | null {
     return this.lastFinalResults;
+  }
+
+  /**
+   * Returns round-by-round history for all teams (for Game Recap)
+   */
+  getRoundHistories(): Record<number, TeamRoundSnapshot[]> {
+    return { ...this.roundHistories };
   }
 
   // ===========================================================================
@@ -650,6 +662,9 @@ export class GameStateManager {
   resetGame(): { success: boolean } {
     this.stopTimer();
     this.state = this.createInitialState();
+    this.roundHistories = {}; // Clear round history on reset
+    this.lastRoundResults = null;
+    this.lastFinalResults = null;
     this.broadcastStateChange();
     return { success: true };
   }
@@ -715,6 +730,9 @@ export class GameStateManager {
       this.state.riskyEvents
     );
 
+    // Capture round snapshots for Game Recap feature
+    this.captureRoundSnapshots();
+
     // Move to results status
     this.state.status = 'results';
     this.state.roundTimeRemaining = 0;
@@ -732,6 +750,54 @@ export class GameStateManager {
   }
 
   /**
+   * Capture snapshot of each team's state at end of round (for Game Recap)
+   */
+  private captureRoundSnapshots(): void {
+    const currentRound = this.state.currentRound;
+    
+    for (const team of Object.values(this.state.teams)) {
+      // Only track claimed teams
+      if (!team.isClaimed) continue;
+      
+      // Initialize history array for team if needed
+      if (!this.roundHistories[team.teamId]) {
+        this.roundHistories[team.teamId] = [];
+      }
+      
+      // Calculate cash spent this round and gather decision summaries
+      let cashSpent = 0;
+      const decisions: Array<{ id: string; name: string; cost: number; category: 'grow' | 'optimize' | 'sustain' }> = [];
+      
+      for (const teamDecision of team.currentRoundDecisions) {
+        const decision = getDecisionById(teamDecision.decisionId);
+        if (decision) {
+          cashSpent += teamDecision.actualCost;
+          decisions.push({
+            id: decision.id,
+            name: decision.name,
+            cost: decision.cost,
+            category: decision.category,
+          });
+        }
+      }
+      
+      // Create snapshot
+      const snapshot: TeamRoundSnapshot = {
+        round: currentRound,
+        stockPrice: team.stockPrice,
+        roundTSR: team.roundTSR,
+        cumulativeTSR: team.cumulativeTSR,
+        cashSpent,
+        decisions,
+      };
+      
+      this.roundHistories[team.teamId].push(snapshot);
+    }
+    
+    console.log(`[GameState] Captured round ${currentRound} snapshots for ${Object.keys(this.roundHistories).length} teams`);
+  }
+
+  /**
    * Finalize the game after Round 5
    */
   private finalizeGame(): void {
@@ -744,9 +810,11 @@ export class GameStateManager {
     }
 
     // Generate final results with 5-year forward simulation (2031-2035)
+    // Include team histories for Game Recap feature
     this.lastFinalResults = generateFinalResults(
       this.state.teams,
-      this.state.riskyEvents
+      this.state.riskyEvents,
+      this.roundHistories
     );
 
     this.broadcastStateChange();

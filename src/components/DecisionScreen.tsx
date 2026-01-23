@@ -197,24 +197,24 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
   
   return (
     <div className={cn(
-      "min-h-screen bg-magna-darker flex flex-col",
+      "min-h-screen bg-slate-100 flex flex-col",
       className
     )}>
       {/* Header */}
-      <header className="bg-magna-dark border-b border-white/10 sticky top-0 z-40">
+      <header className="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             {/* Left: Magna Logo, Team & Round Info */}
             <div className="flex items-center gap-6">
               <div className="flex items-center gap-2">
-                <span className="text-lg font-black text-white tracking-tight">MAGNA</span>
-                <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
+                <span className="text-2xl font-black text-slate-800 tracking-tight">MAGNA</span>
+                <span className="w-2 h-2 bg-magna-red rounded-full" />
               </div>
-              <div className="bg-magna-red text-white px-4 py-1.5 rounded-full font-bold max-w-[200px] truncate">
+              <div className="bg-magna-red text-white px-5 py-2 rounded-full font-bold text-lg max-w-[220px] truncate">
                 {teamName || `Team ${team.teamId}`}
               </div>
-              <div className="text-magna-gray">
-                <span className="text-white font-medium">Round {gameState.currentRound}</span>
+              <div className="text-slate-600 text-lg">
+                <span className="text-slate-800 font-semibold">Round {gameState.currentRound}</span>
                 <span className="mx-2">•</span>
                 <span>FY {2025 + gameState.currentRound}</span>
               </div>
@@ -223,20 +223,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             {/* Center: Cash Balance */}
             <div className="flex items-center gap-8">
               <div className="text-center">
-                <div className="text-xs text-magna-gray uppercase tracking-wide">Starting Cash</div>
-                <div className="text-lg font-bold text-white">${team.cashBalance.toLocaleString()}M</div>
+                <div className="text-sm text-slate-500 uppercase tracking-wide">Starting Cash</div>
+                <div className="text-2xl font-bold text-slate-800">${team.cashBalance.toLocaleString()}M</div>
               </div>
-              <div className="w-px h-8 bg-white/10" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <div className="text-xs text-magna-gray uppercase tracking-wide">Selected</div>
-                <div className="text-lg font-bold text-amber-400">-${selectedCost.toLocaleString()}M</div>
+                <div className="text-sm text-slate-500 uppercase tracking-wide">Selected</div>
+                <div className="text-2xl font-bold text-amber-600">-${selectedCost.toLocaleString()}M</div>
               </div>
-              <div className="w-px h-8 bg-white/10" />
+              <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <div className="text-xs text-magna-gray uppercase tracking-wide">Remaining</div>
+                <div className="text-sm text-slate-500 uppercase tracking-wide">Remaining</div>
                 <div className={cn(
-                  "text-lg font-bold",
-                  remainingBudget >= 0 ? "text-emerald-400" : "text-magna-red"
+                  "text-2xl font-bold",
+                  remainingBudget >= 0 ? "text-emerald-600" : "text-magna-red"
                 )}>
                   ${remainingBudget.toLocaleString()}M
                 </div>
@@ -245,22 +245,22 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             
             {/* Right: Timer */}
             <div className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-xl font-mono text-xl font-bold",
-              isPaused && "bg-amber-500/20 text-amber-400",
-              !isPaused && isLowTime && "bg-magna-red/20 text-magna-red animate-pulse",
-              !isPaused && !isLowTime && "bg-white/10 text-white"
+              "flex items-center gap-2 px-5 py-3 rounded-xl font-mono text-2xl font-bold",
+              isPaused && "bg-amber-100 text-amber-700",
+              !isPaused && isLowTime && "bg-red-100 text-magna-red animate-pulse",
+              !isPaused && !isLowTime && "bg-slate-100 text-slate-800"
             )}>
-              <Timer className="w-5 h-5" />
+              <Timer className="w-6 h-6" />
               {isPaused ? 'PAUSED' : formattedTime}
             </div>
           </div>
         </div>
         
         {/* Scenario Banner */}
-        <div className="bg-black/30 border-t border-white/10 px-4 py-3">
+        <div className="bg-slate-50 border-t border-slate-200 px-4 py-3">
           <div className="max-w-7xl mx-auto">
-            <p className="text-magna-gray text-sm">
-              <span className="text-white font-medium">
+            <p className="text-slate-600 text-lg">
+              <span className="text-slate-800 font-semibold">
                 {gameState.scenario.type.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}:
               </span>{' '}
               {gameState.scenario.narrative.split('\n')[0]}
@@ -271,13 +271,13 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
       
       {/* 1-Minute Warning Banner - flashes for 5 seconds below header */}
       {showOneMinuteWarning && !hasSubmitted && (
-        <div className="sticky top-[88px] z-30 animate-in slide-in-from-top duration-300">
-          <div className="bg-amber-500 text-white py-2 px-4 flex items-center justify-center gap-3 shadow-lg">
-            <Timer className="w-5 h-5" />
-            <span className="font-bold text-lg">
+        <div className="sticky top-[96px] z-30 animate-in slide-in-from-top duration-300">
+          <div className="bg-amber-500 text-white py-3 px-4 flex items-center justify-center gap-3 shadow-lg">
+            <Timer className="w-6 h-6" />
+            <span className="font-bold text-xl">
               1 Minute Remaining
             </span>
-            <span className="text-white/90">
+            <span className="text-white/90 text-lg">
               — Don't forget to submit!
             </span>
           </div>
@@ -286,16 +286,16 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
       
       {/* Submission Confirmation Modal */}
       {showConfirmationModal && (
-        <div className="fixed inset-0 z-50 bg-magna-darker/95 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-magna-dark border border-white/10 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl p-8 max-w-lg w-full shadow-2xl">
             {/* Header */}
             <div className="flex items-center gap-4 mb-6">
-              <div className="w-14 h-14 bg-emerald-500/20 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+              <div className="w-16 h-16 bg-emerald-100 rounded-full flex items-center justify-center">
+                <CheckCircle2 className="w-8 h-8 text-emerald-600" />
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">Decisions Submitted</h2>
-                <p className="text-magna-gray text-sm mt-1">
+                <h2 className="text-2xl font-bold text-slate-800">Decisions Submitted</h2>
+                <p className="text-slate-500 text-lg mt-1">
                   FY{2025 + gameState.currentRound} capital allocation locked in
                 </p>
               </div>
@@ -304,48 +304,48 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             {/* Status Bar - Time & Capital */}
             <div className="grid grid-cols-2 gap-3 mb-4">
               <div className={cn(
-                "rounded-xl p-3 text-center",
-                timeRemaining <= 60 ? "bg-amber-500/20 border border-amber-500/30" : "bg-white/5"
+                "rounded-xl p-4 text-center",
+                timeRemaining <= 60 ? "bg-amber-50 border border-amber-200" : "bg-slate-50"
               )}>
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <Timer className={cn("w-4 h-4", timeRemaining <= 60 ? "text-amber-400" : "text-magna-gray")} />
-                  <span className={cn("text-xs uppercase tracking-wide", timeRemaining <= 60 ? "text-amber-400" : "text-magna-gray")}>
+                  <Timer className={cn("w-5 h-5", timeRemaining <= 60 ? "text-amber-600" : "text-slate-500")} />
+                  <span className={cn("text-sm uppercase tracking-wide", timeRemaining <= 60 ? "text-amber-600" : "text-slate-500")}>
                     Time Remaining
                   </span>
                 </div>
                 <div className={cn(
-                  "text-2xl font-bold font-mono",
-                  timeRemaining <= 60 ? "text-amber-400" : "text-white"
+                  "text-3xl font-bold font-mono",
+                  timeRemaining <= 60 ? "text-amber-600" : "text-slate-800"
                 )}>
                   {formattedTime}
                 </div>
               </div>
-              <div className="bg-white/5 rounded-xl p-3 text-center">
+              <div className="bg-slate-50 rounded-xl p-4 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <DollarSign className="w-4 h-4 text-magna-gray" />
-                  <span className="text-xs text-magna-gray uppercase tracking-wide">Capital Allocated</span>
+                  <DollarSign className="w-5 h-5 text-slate-500" />
+                  <span className="text-sm text-slate-500 uppercase tracking-wide">Capital Allocated</span>
                 </div>
-                <div className="text-2xl font-bold text-amber-400">
+                <div className="text-3xl font-bold text-amber-600">
                   ${selectedCost.toLocaleString()}M
                 </div>
-                <div className="text-xs text-magna-gray mt-0.5">
+                <div className="text-sm text-slate-500 mt-0.5">
                   of ${team.cashBalance.toLocaleString()}M ({Math.round((selectedCost / team.cashBalance) * 100)}%)
                 </div>
               </div>
             </div>
             
             {/* Decision Summary */}
-            <div className="bg-black/30 rounded-xl p-4 mb-4">
-              <div className="flex items-center justify-between mb-3 pb-2 border-b border-white/10">
-                <span className="text-sm font-semibold text-white">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-4">
+              <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200">
+                <span className="text-lg font-semibold text-slate-800">
                   {selectedDecisions.length} Decision{selectedDecisions.length !== 1 ? 's' : ''} Selected
                 </span>
-                <span className="text-sm font-bold text-amber-400">
+                <span className="text-lg font-bold text-amber-600">
                   ${selectedCost.toLocaleString()}M
                 </span>
               </div>
               {selectedDecisions.length === 0 ? (
-                <div className="text-center text-magna-gray py-4">
+                <div className="text-center text-slate-500 py-4 text-lg">
                   No decisions selected
                 </div>
               ) : (
@@ -356,20 +356,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                     return (
                       <div 
                         key={decision.id}
-                        className="flex items-center justify-between p-3 bg-white/5 rounded-lg border border-white/5"
+                        className="flex items-center justify-between p-3 bg-white rounded-lg border border-slate-200"
                       >
                         <div className="flex items-center gap-3 flex-1 min-w-0">
                           <CategoryIcon className={cn(
-                            "w-4 h-4 flex-shrink-0",
-                            decision.category === 'grow' && "text-emerald-400",
-                            decision.category === 'optimize' && "text-blue-400",
-                            decision.category === 'sustain' && "text-amber-400"
+                            "w-5 h-5 flex-shrink-0",
+                            decision.category === 'grow' && "text-emerald-600",
+                            decision.category === 'optimize' && "text-blue-600",
+                            decision.category === 'sustain' && "text-amber-600"
                           )} />
-                          <span className="text-white text-sm font-medium truncate">
+                          <span className="text-slate-800 text-base font-medium truncate">
                             {decision.name}
                           </span>
                         </div>
-                        <span className="text-magna-gray text-sm font-medium ml-3 flex-shrink-0">
+                        <span className="text-slate-600 text-base font-medium ml-3 flex-shrink-0">
                           ${decision.cost}M
                         </span>
                       </div>
@@ -384,20 +384,20 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
               <div className="flex items-center justify-center">
                 <button
                   onClick={handleEditDecisions}
-                  className="px-6 py-3 bg-white/10 text-white rounded-xl font-medium hover:bg-white/20 transition-colors flex items-center gap-2"
+                  className="px-8 py-4 bg-slate-100 text-slate-800 rounded-xl font-semibold text-lg hover:bg-slate-200 transition-colors flex items-center gap-2"
                 >
-                  <Pencil className="w-4 h-4" />
+                  <Pencil className="w-5 h-5" />
                   Edit Decisions
                 </button>
               </div>
             )}
             
             {/* Waiting indicator */}
-            <div className="flex items-center justify-center gap-2 text-magna-gray text-xs mt-4">
+            <div className="flex items-center justify-center gap-2 text-slate-500 text-base mt-4">
               <div className="flex items-center gap-1">
-                <div className="w-1.5 h-1.5 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <div className="w-1.5 h-1.5 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <div className="w-1.5 h-1.5 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
               <span>Waiting for other teams to submit...</span>
             </div>
@@ -422,31 +422,43 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
               <button
                 onClick={() => toggleCategory(category)}
                 className={cn(
-                  "w-full flex items-center justify-between p-4 rounded-xl transition-colors",
-                  `bg-gradient-to-r ${config.gradient}`,
-                  "border border-white/10 hover:border-white/20"
+                  "w-full flex items-center justify-between p-5 rounded-xl transition-colors",
+                  "bg-white shadow-sm",
+                  "border border-slate-200 hover:border-slate-300"
                 )}
               >
-                <div className="flex items-center gap-3">
-                  <Icon className="w-6 h-6 text-white" />
+                <div className="flex items-center gap-4">
+                  <div className={cn(
+                    "p-3 rounded-xl",
+                    category === 'grow' && "bg-emerald-100",
+                    category === 'optimize' && "bg-blue-100",
+                    category === 'sustain' && "bg-amber-100"
+                  )}>
+                    <Icon className={cn(
+                      "w-7 h-7",
+                      category === 'grow' && "text-emerald-600",
+                      category === 'optimize' && "text-blue-600",
+                      category === 'sustain' && "text-amber-600"
+                    )} />
+                  </div>
                   <div className="text-left">
-                    <h2 className="text-lg font-semibold text-white">
+                    <h2 className="text-xl font-semibold text-slate-800">
                       {config.label} Decisions
                       {selectedInCategory > 0 && (
-                        <span className="ml-2 px-2 py-0.5 bg-magna-red/20 text-magna-red rounded-full text-sm">
+                        <span className="ml-2 px-3 py-1 bg-magna-red/10 text-magna-red rounded-full text-base font-medium">
                           {selectedInCategory} selected
                         </span>
                       )}
                     </h2>
-                    <p className="text-sm text-magna-gray">{config.description}</p>
+                    <p className="text-base text-slate-500">{config.description}</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-magna-gray text-sm">{decisions.length} options</span>
+                <div className="flex items-center gap-3">
+                  <span className="text-slate-500 text-base">{decisions.length} options</span>
                   {isExpanded ? (
-                    <ChevronUp className="w-5 h-5 text-magna-gray" />
+                    <ChevronUp className="w-6 h-6 text-slate-400" />
                   ) : (
-                    <ChevronDown className="w-5 h-5 text-magna-gray" />
+                    <ChevronDown className="w-6 h-6 text-slate-400" />
                   )}
                 </div>
               </button>
@@ -476,15 +488,15 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
       </main>
       
       {/* Submit Footer */}
-      <footer className="sticky bottom-0 bg-magna-dark border-t border-white/10 p-4">
+      <footer className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {/* Selection Summary */}
           <div className="flex items-center gap-6">
-            <div className="text-magna-gray">
-              <span className="text-white font-bold">{selectedDecisionIds.size}</span> decisions selected
+            <div className="text-slate-600 text-lg">
+              <span className="text-slate-800 font-bold">{selectedDecisionIds.size}</span> decisions selected
             </div>
-            <div className="text-magna-gray">
-              Total: <span className="text-amber-400 font-bold">${selectedCost.toLocaleString()}M</span>
+            <div className="text-slate-600 text-lg">
+              Total: <span className="text-amber-600 font-bold">${selectedCost.toLocaleString()}M</span>
             </div>
           </div>
           
@@ -493,27 +505,27 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             onClick={handleSubmit}
             disabled={hasSubmitted || selectedDecisionIds.size === 0 || isSubmitting}
             className={cn(
-              "px-8 py-3 rounded-xl font-medium transition-colors flex items-center gap-2",
+              "px-10 py-4 rounded-xl font-semibold text-xl transition-colors flex items-center gap-2",
               hasSubmitted
-                ? "bg-emerald-500/20 text-emerald-400 cursor-not-allowed"
+                ? "bg-emerald-100 text-emerald-700 cursor-not-allowed"
                 : selectedDecisionIds.size === 0
-                  ? "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                   : "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
             )}
           >
             {isSubmitting ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-6 h-6 animate-spin" />
                 Submitting...
               </>
             ) : hasSubmitted ? (
               <>
-                <CheckCircle2 className="w-5 h-5" />
+                <CheckCircle2 className="w-6 h-6" />
                 Submitted
               </>
             ) : (
               <>
-                <Send className="w-5 h-5" />
+                <Send className="w-6 h-6" />
                 Submit Decisions
               </>
             )}

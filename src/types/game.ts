@@ -476,11 +476,46 @@ export interface RoundResults {
  */
 export interface FinalTeamResult {
   teamId: number;
+  teamName: string;
   finalStockPrice: number;
   totalTSR: number;
   rank: number;
   startingStockPrice: number;
   totalDividends: number;
+}
+
+/**
+ * DecisionSummary - Minimal decision info for display in Game Recap
+ */
+export interface DecisionSummary {
+  id: string;
+  name: string;
+  cost: number;
+  category: DecisionCategory;
+}
+
+/**
+ * TeamRoundSnapshot - Captures a team's state at the end of a round
+ * Used for Game Recap feature to show how the game played out
+ */
+export interface TeamRoundSnapshot {
+  /** Which round this snapshot is from */
+  round: RoundNumber;
+  
+  /** Stock price at end of round */
+  stockPrice: number;
+  
+  /** TSR for this round */
+  roundTSR: number;
+  
+  /** Cumulative TSR through this round */
+  cumulativeTSR: number;
+  
+  /** Total cash spent on decisions this round */
+  cashSpent: number;
+  
+  /** Decisions selected this round with summary info */
+  decisions: DecisionSummary[];
 }
 
 /**
@@ -495,4 +530,7 @@ export interface FinalResults {
   
   /** Summary of 2031-2035 simulation */
   simulationSummary: string;
+  
+  /** Round-by-round history for each team (for Game Recap) */
+  teamHistories: Record<number, TeamRoundSnapshot[]>;
 }

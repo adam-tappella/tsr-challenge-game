@@ -7,11 +7,11 @@
  * - Winner celebration
  * - Team's final stock price and total TSR
  * - Simulation summary
+ * - Game Recap button to view detailed game history
  */
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { 
-  Trophy, 
   Medal,
   Crown,
   TrendingUp,
@@ -19,9 +19,11 @@ import {
   Star,
   Award,
   Sparkles,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
+import { GameRecap } from './GameRecap';
 
 interface FinalResultsProps {
   className?: string;
@@ -31,6 +33,9 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   const teamId = useGameStore((s) => s.teamId);
   const teamName = useGameStore((s) => s.teamName);
   const finalResults = useGameStore((s) => s.finalResults);
+  
+  // State for Game Recap modal
+  const [showRecap, setShowRecap] = useState(false);
   
   // Find our team's results
   const ourResult = useMemo(() => {
@@ -43,8 +48,8 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   
   if (!finalResults) {
     return (
-      <div className="min-h-screen bg-magna-darker flex items-center justify-center">
-        <div className="text-magna-gray">Loading final results...</div>
+      <div className="min-h-screen bg-slate-100 flex items-center justify-center">
+        <div className="text-slate-500 text-xl">Loading final results...</div>
       </div>
     );
   }
@@ -53,69 +58,69 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
+      "min-h-screen bg-slate-100",
       "flex flex-col items-center py-12 px-8",
       className
     )}>
       {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-8">
-        <span className="text-3xl font-black text-white tracking-tight">MAGNA</span>
-        <span className="w-2.5 h-2.5 bg-magna-red rounded-full" />
+      <div className="flex items-center gap-3 mb-8">
+        <span className="text-5xl font-black text-slate-800 tracking-tight">MAGNA</span>
+        <span className="w-4 h-4 bg-magna-red rounded-full" />
       </div>
       
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 bg-amber-500/20 text-amber-400 px-4 py-2 rounded-full text-sm font-medium mb-4">
-          <Sparkles className="w-4 h-4" />
+        <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 px-5 py-3 rounded-full text-lg font-semibold mb-4">
+          <Sparkles className="w-5 h-5" />
           Game Complete
         </div>
-        <h1 className="text-5xl font-bold text-white mb-3">
+        <h1 className="text-6xl font-bold text-slate-800 mb-4">
           Final Results
         </h1>
-        <p className="text-magna-gray text-lg">
+        <p className="text-slate-600 text-2xl">
           2026-2035 Capital Allocation Challenge
         </p>
       </div>
       
       {/* Winner Celebration */}
-      <div className="relative bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 rounded-2xl p-8 mb-12 w-full max-w-2xl text-center">
+      <div className="relative bg-gradient-to-br from-amber-50 to-amber-100 border-2 border-amber-300 rounded-2xl p-10 mb-12 w-full max-w-2xl text-center shadow-lg">
         {/* Decorative elements */}
-        <div className="absolute -top-6 left-1/2 -translate-x-1/2">
-          <div className="bg-amber-500 rounded-full p-3">
-            <Crown className="w-8 h-8 text-white" />
+        <div className="absolute -top-7 left-1/2 -translate-x-1/2">
+          <div className="bg-amber-500 rounded-full p-4 shadow-lg">
+            <Crown className="w-10 h-10 text-white" />
           </div>
         </div>
         
-        <div className="mt-4">
-          <div className="text-amber-400 text-sm uppercase tracking-wide mb-2">
+        <div className="mt-6">
+          <div className="text-amber-600 text-lg uppercase tracking-wide font-semibold mb-3">
             🏆 Champion 🏆
           </div>
-          <h2 className="text-4xl font-bold text-white mb-4">
+          <h2 className="text-5xl font-bold text-slate-800 mb-6">
             Team {winner?.teamId}
             {isWinner && " (You!)"}
           </h2>
           
-          <div className="flex items-center justify-center gap-8 mb-4">
+          <div className="flex items-center justify-center gap-10 mb-6">
             <div>
-              <div className="text-amber-400 text-3xl font-bold">
+              <div className="text-amber-600 text-4xl font-bold">
                 ${winner?.finalStockPrice.toFixed(2)}
               </div>
-              <div className="text-magna-gray text-sm">Final Stock Price</div>
+              <div className="text-slate-500 text-lg">Final Stock Price</div>
             </div>
-            <div className="w-px h-12 bg-white/20" />
+            <div className="w-px h-16 bg-amber-300" />
             <div>
-              <div className="text-emerald-400 text-3xl font-bold">
+              <div className="text-emerald-600 text-4xl font-bold">
                 +{(winner?.totalTSR * 100).toFixed(1)}%
               </div>
-              <div className="text-magna-gray text-sm">Total Return</div>
+              <div className="text-slate-500 text-lg">Total Return</div>
             </div>
           </div>
         </div>
         
         {isWinner && (
           <div className="mt-6 animate-pulse">
-            <Star className="w-12 h-12 text-amber-400 mx-auto" />
-            <p className="text-amber-400 font-medium mt-2">
+            <Star className="w-14 h-14 text-amber-500 mx-auto" />
+            <p className="text-amber-600 font-semibold text-xl mt-2">
               Congratulations! Your team has won!
             </p>
           </div>
@@ -124,24 +129,24 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       
       {/* Your Team Result (if not winner) */}
       {!isWinner && ourResult && (
-        <div className="bg-magna-red/10 border border-magna-red/30 rounded-xl p-6 mb-8 w-full max-w-2xl">
+        <div className="bg-magna-red/10 border-2 border-magna-red/30 rounded-xl p-6 mb-8 w-full max-w-2xl">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="bg-magna-red text-white w-12 h-12 rounded-xl flex items-center justify-center font-bold text-lg">
+              <div className="bg-magna-red text-white w-14 h-14 rounded-xl flex items-center justify-center font-bold text-xl">
                 #{ourResult.rank}
               </div>
               <div>
-                <div className="text-white font-bold text-lg">{teamName || `Team ${teamId}`} (You)</div>
-                <div className="text-magna-gray text-sm">
+                <div className="text-slate-800 font-bold text-xl">{teamName || `Team ${teamId}`} (You)</div>
+                <div className="text-slate-500 text-base">
                   Final Position: {getRankSuffix(ourResult.rank)} of {finalResults.leaderboard.length}
                 </div>
               </div>
             </div>
             <div className="text-right">
-              <div className="text-white font-bold text-xl">${ourResult.finalStockPrice.toFixed(2)}</div>
+              <div className="text-slate-800 font-bold text-2xl">${ourResult.finalStockPrice.toFixed(2)}</div>
               <div className={cn(
-                "text-sm font-medium",
-                ourResult.totalTSR >= 0 ? "text-emerald-400" : "text-magna-red"
+                "text-lg font-semibold",
+                ourResult.totalTSR >= 0 ? "text-emerald-600" : "text-magna-red"
               )}>
                 {ourResult.totalTSR >= 0 ? '+' : ''}{(ourResult.totalTSR * 100).toFixed(1)}% TSR
               </div>
@@ -151,13 +156,13 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       )}
       
       {/* Full Leaderboard */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-4xl mb-8">
-        <h3 className="text-xl font-semibold text-white mb-6 flex items-center gap-2">
-          <Award className="w-6 h-6 text-magna-gray" />
+      <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mb-8">
+        <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+          <Award className="w-7 h-7 text-slate-500" />
           Full Leaderboard
         </h3>
         
-        <div className="space-y-2">
+        <div className="space-y-3">
           {finalResults.leaderboard.map((result, index) => {
             const isTop3 = result.rank <= 3;
             const isUs = result.teamId === teamId;
@@ -166,38 +171,38 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
               <div
                 key={result.teamId}
                 className={cn(
-                  "flex items-center justify-between p-4 rounded-xl transition-colors",
-                  isUs && "bg-magna-red/20 border border-magna-red/30",
-                  !isUs && isTop3 && "bg-amber-500/10 border border-amber-500/20",
-                  !isUs && !isTop3 && "bg-black/30 border border-white/10"
+                  "flex items-center justify-between p-5 rounded-xl transition-colors",
+                  isUs && "bg-magna-red/10 border-2 border-magna-red/30",
+                  !isUs && isTop3 && "bg-amber-50 border border-amber-300",
+                  !isUs && !isTop3 && "bg-slate-50 border border-slate-200"
                 )}
               >
                 <div className="flex items-center gap-4">
                   {/* Rank Badge */}
                   <div className={cn(
-                    "w-10 h-10 rounded-lg flex items-center justify-center",
+                    "w-12 h-12 rounded-lg flex items-center justify-center",
                     result.rank === 1 && "bg-amber-500 text-white",
-                    result.rank === 2 && "bg-magna-gray text-white",
+                    result.rank === 2 && "bg-slate-400 text-white",
                     result.rank === 3 && "bg-amber-700 text-white",
-                    result.rank > 3 && "bg-white/10 text-white"
+                    result.rank > 3 && "bg-slate-200 text-slate-600"
                   )}>
                     {result.rank <= 3 ? (
-                      <Medal className="w-5 h-5" />
+                      <Medal className="w-6 h-6" />
                     ) : (
-                      <span className="font-bold">{result.rank}</span>
+                      <span className="font-bold text-lg">{result.rank}</span>
                     )}
                   </div>
                   
                   {/* Team Name */}
                   <div>
                     <div className={cn(
-                      "font-semibold",
-                      isUs ? "text-magna-red" : "text-white"
+                      "font-semibold text-lg",
+                      isUs ? "text-magna-red" : "text-slate-800"
                     )}>
                       Team {result.teamId}
                       {isUs && " (You)"}
                     </div>
-                    <div className="text-xs text-magna-gray">
+                    <div className="text-sm text-slate-500">
                       Started at ${result.startingStockPrice.toFixed(2)}
                     </div>
                   </div>
@@ -207,31 +212,31 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                 <div className="flex items-center gap-8">
                   {/* Dividends */}
                   <div className="text-right hidden md:block">
-                    <div className="text-magna-gray text-sm">Dividends</div>
-                    <div className="text-white font-medium">
+                    <div className="text-slate-500 text-base">Dividends</div>
+                    <div className="text-slate-800 font-semibold text-lg">
                       ${result.totalDividends.toFixed(2)}
                     </div>
                   </div>
                   
                   {/* Stock Price */}
                   <div className="text-right">
-                    <div className="text-magna-gray text-sm">Stock Price</div>
-                    <div className="text-white font-bold">
+                    <div className="text-slate-500 text-base">Stock Price</div>
+                    <div className="text-slate-800 font-bold text-xl">
                       ${result.finalStockPrice.toFixed(2)}
                     </div>
                   </div>
                   
                   {/* TSR */}
-                  <div className="text-right min-w-[80px]">
-                    <div className="text-magna-gray text-sm">Total TSR</div>
+                  <div className="text-right min-w-[100px]">
+                    <div className="text-slate-500 text-base">Total TSR</div>
                     <div className={cn(
-                      "font-bold flex items-center justify-end gap-1",
-                      result.totalTSR >= 0 ? "text-emerald-400" : "text-magna-red"
+                      "font-bold text-xl flex items-center justify-end gap-1",
+                      result.totalTSR >= 0 ? "text-emerald-600" : "text-magna-red"
                     )}>
                       {result.totalTSR >= 0 ? (
-                        <TrendingUp className="w-4 h-4" />
+                        <TrendingUp className="w-5 h-5" />
                       ) : (
-                        <TrendingDown className="w-4 h-4" />
+                        <TrendingDown className="w-5 h-5" />
                       )}
                       {result.totalTSR >= 0 ? '+' : ''}{(result.totalTSR * 100).toFixed(1)}%
                     </div>
@@ -244,24 +249,44 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       </div>
       
       {/* Simulation Summary */}
-      <div className="bg-black/30 border border-white/10 rounded-xl p-6 w-full max-w-4xl">
-        <h3 className="text-sm font-medium text-magna-gray uppercase tracking-wide mb-4">
+      <div className="bg-white border border-slate-200 shadow-lg rounded-xl p-6 w-full max-w-4xl">
+        <h3 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-4">
           Simulation Summary (2031-2035)
         </h3>
-        <p className="text-white/80 leading-relaxed whitespace-pre-line">
+        <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
           {finalResults.simulationSummary}
         </p>
       </div>
       
+      {/* View Game Recap Button */}
+      <div className="mt-8">
+        <button
+          onClick={() => setShowRecap(true)}
+          className="px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold text-xl transition-colors flex items-center gap-3 shadow-lg"
+        >
+          <BarChart3 className="w-6 h-6" />
+          View Game Recap
+          <span className="text-base text-slate-300">(Round-by-Round Breakdown)</span>
+        </button>
+      </div>
+      
+      {/* Game Recap Modal */}
+      {showRecap && (
+        <GameRecap
+          finalResults={finalResults}
+          onClose={() => setShowRecap(false)}
+        />
+      )}
+      
       {/* Footer */}
       <div className="mt-12 text-center">
-        <p className="text-magna-gray mb-2">Thank you for participating in the</p>
-        <div className="flex items-center justify-center gap-2">
-          <span className="text-lg font-black text-white">MAGNA</span>
-          <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
-          <span className="text-lg font-semibold text-white">TSR Challenge</span>
+        <p className="text-slate-500 text-lg mb-3">Thank you for participating in the</p>
+        <div className="flex items-center justify-center gap-3">
+          <span className="text-2xl font-black text-slate-800">MAGNA</span>
+          <span className="w-2 h-2 bg-magna-red rounded-full" />
+          <span className="text-2xl font-semibold text-slate-800">TSR Challenge</span>
         </div>
-        <p className="text-magna-gray text-sm mt-2">2026</p>
+        <p className="text-slate-500 text-lg mt-3">2026</p>
       </div>
     </div>
   );

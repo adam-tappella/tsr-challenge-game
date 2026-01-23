@@ -45,25 +45,25 @@ export const RoundCountdown: React.FC<RoundCountdownProps> = ({
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
+      "min-h-screen bg-slate-100",
       "flex flex-col items-center justify-center",
       className
     )}>
       {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-12">
-        <span className="text-2xl font-black text-white tracking-tight">MAGNA</span>
-        <span className="w-2 h-2 bg-magna-red rounded-full" />
+      <div className="flex items-center gap-3 mb-12">
+        <span className="text-4xl font-black text-slate-800 tracking-tight">MAGNA</span>
+        <span className="w-3 h-3 bg-magna-red rounded-full" />
       </div>
       
       {/* Round Indicator */}
-      <div className="text-magna-gray text-lg font-medium tracking-wide uppercase mb-8">
+      <div className="text-slate-600 text-2xl font-semibold tracking-wide uppercase mb-8">
         Round {round} • FY{2025 + round}
       </div>
       
       {/* Countdown Number - Clean and elegant */}
       <div className="relative mb-12">
         {/* Subtle ring */}
-        <div className="absolute inset-0 w-40 h-40 rounded-full border-2 border-magna-red/20" 
+        <div className="absolute inset-0 w-48 h-48 rounded-full border-4 border-magna-red/20" 
           style={{ 
             left: '50%',
             top: '50%',
@@ -73,13 +73,13 @@ export const RoundCountdown: React.FC<RoundCountdownProps> = ({
         
         {/* Main countdown display */}
         <div className={cn(
-          "w-36 h-36 rounded-full flex items-center justify-center",
-          "bg-magna-dark border-2 border-magna-red/40",
+          "w-44 h-44 rounded-full flex items-center justify-center",
+          "bg-white border-4 border-magna-red/40 shadow-lg",
           "transition-all duration-200",
         )}>
           <span className={cn(
-            "font-bold text-white",
-            showGo ? "text-4xl" : "text-7xl"
+            "font-bold text-slate-800",
+            showGo ? "text-5xl" : "text-8xl"
           )}>
             {showGo ? "GO" : count}
           </span>
@@ -88,24 +88,24 @@ export const RoundCountdown: React.FC<RoundCountdownProps> = ({
       
       {/* Status Text */}
       <div className="text-center">
-        <h2 className="text-2xl font-semibold text-white mb-2">
+        <h2 className="text-4xl font-semibold text-slate-800 mb-3">
           {showGo ? "Begin" : "Get Ready"}
         </h2>
-        <p className="text-magna-gray text-base">
+        <p className="text-slate-600 text-xl">
           Capital allocation decisions
         </p>
       </div>
       
       {/* Progress indicator */}
-      <div className="flex items-center gap-2 mt-10">
+      <div className="flex items-center gap-3 mt-10">
         {[3, 2, 1].map((num) => (
           <div
             key={num}
             className={cn(
-              "w-2 h-2 rounded-full transition-all duration-300",
+              "w-4 h-4 rounded-full transition-all duration-300",
               count < num || showGo
                 ? "bg-magna-red"
-                : "bg-magna-gray/30"
+                : "bg-slate-300"
             )}
           />
         ))}

@@ -26,6 +26,7 @@ import type {
   RoundResults,
   FinalTeamResult,
   FinalResults,
+  TeamRoundSnapshot,
 } from './types/game.js';
 
 import {
@@ -538,7 +539,8 @@ export function generateRoundResults(
  */
 export function generateFinalResults(
   teams: Record<number, TeamState>,
-  riskyEvents: RiskyEventState
+  riskyEvents: RiskyEventState,
+  teamHistories: Record<number, TeamRoundSnapshot[]> = {}
 ): FinalResults {
   const claimedTeams = Object.values(teams).filter(t => t.isClaimed);
   
@@ -573,6 +575,7 @@ export function generateFinalResults(
     
     return {
       teamId: team.teamId,
+      teamName: team.teamName || `Team ${team.teamId}`,
       finalStockPrice: currentPrice,
       totalTSR,
       rank: 0,  // Will be assigned after sorting
@@ -610,6 +613,7 @@ The simulation projected team performance from 2031 to 2035, assuming:
     leaderboard: simulatedTeams,
     winnerId,
     simulationSummary,
+    teamHistories,
   };
 }
 

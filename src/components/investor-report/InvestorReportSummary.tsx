@@ -138,36 +138,36 @@ const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, priceTarget, currentP
   const upside = ((priceTarget - currentPrice) / currentPrice) * 100;
   
   return (
-    <div className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6">
+    <div className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-xs font-medium text-magna-cool-gray uppercase tracking-wider mb-2">
+          <div className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">
             Analyst Rating
           </div>
           <div className="flex items-center gap-3">
             <div className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-lg font-bold text-lg",
+              "flex items-center gap-2 px-5 py-3 rounded-lg font-bold text-2xl",
               rating === 'BUY' && "bg-emerald-100 text-emerald-700",
               rating === 'HOLD' && "bg-amber-100 text-amber-700",
               rating === 'SELL' && "bg-red-100 text-red-700"
             )}>
-              {rating === 'BUY' && <ArrowUpCircle className="w-5 h-5" />}
-              {rating === 'HOLD' && <MinusCircle className="w-5 h-5" />}
-              {rating === 'SELL' && <ArrowDownCircle className="w-5 h-5" />}
+              {rating === 'BUY' && <ArrowUpCircle className="w-7 h-7" />}
+              {rating === 'HOLD' && <MinusCircle className="w-7 h-7" />}
+              {rating === 'SELL' && <ArrowDownCircle className="w-7 h-7" />}
               {rating}
             </div>
           </div>
         </div>
         
         <div className="text-right">
-          <div className="text-xs font-medium text-magna-cool-gray uppercase tracking-wider mb-1">
+          <div className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wider mb-1">
             Price Target
           </div>
-          <div className="text-3xl font-bold text-magna-carbon-black">
+          <div className="text-4xl font-bold text-magna-carbon-black">
             ${priceTarget.toFixed(2)}
           </div>
           <div className={cn(
-            "text-sm font-medium",
+            "text-lg font-semibold",
             upside >= 0 ? "text-emerald-600" : "text-red-600"
           )}>
             {upside >= 0 ? '+' : ''}{upside.toFixed(1)}% upside
@@ -189,13 +189,13 @@ const MetricRow: React.FC<MetricRowProps> = ({ label, value, change, showChangeA
   const isPositive = change !== undefined ? change >= 0 : true;
   
   return (
-    <div className="flex items-center justify-between py-2 border-b border-magna-cool-gray/10 last:border-0">
-      <span className="text-sm text-magna-cool-gray">{label}</span>
+    <div className="flex items-center justify-between py-3 border-b border-magna-cool-gray/10 last:border-0">
+      <span className="text-base text-magna-cool-gray">{label}</span>
       <div className="flex items-center gap-2">
-        <span className="font-semibold text-magna-carbon-black">{value}</span>
+        <span className="font-semibold text-lg text-magna-carbon-black">{value}</span>
         {change !== undefined && showChangeArrow && (
           <span className={cn(
-            "text-xs font-medium",
+            "text-sm font-semibold",
             isPositive ? "text-emerald-600" : "text-red-600"
           )}>
             {isPositive ? '↑' : '↓'} {Math.abs(change * 100).toFixed(1)}%
@@ -233,24 +233,24 @@ interface AnalystQuoteCardProps {
 const AnalystQuoteCard: React.FC<AnalystQuoteCardProps> = ({ quote }) => {
   return (
     <div className={cn(
-      "bg-white rounded-xl border p-4",
+      "bg-white rounded-xl border p-5",
       quote.sentiment === 'positive' && "border-emerald-200 bg-emerald-50/30",
       quote.sentiment === 'negative' && "border-red-200 bg-red-50/30",
       quote.sentiment === 'neutral' && "border-magna-cool-gray/20"
     )}>
       <div className="flex items-start gap-3">
         <Quote className={cn(
-          "w-5 h-5 mt-0.5 flex-shrink-0",
+          "w-6 h-6 mt-0.5 flex-shrink-0",
           quote.sentiment === 'positive' && "text-emerald-500",
           quote.sentiment === 'negative' && "text-red-500",
           quote.sentiment === 'neutral' && "text-magna-cool-gray"
         )} />
         <div>
-          <p className="text-magna-carbon-black text-sm leading-relaxed mb-2">
+          <p className="text-magna-carbon-black text-base leading-relaxed mb-3">
             "{quote.quote}"
           </p>
-          <div className="flex items-center gap-2 text-xs text-magna-cool-gray">
-            <Building2 className="w-3 h-3" />
+          <div className="flex items-center gap-2 text-sm text-magna-cool-gray">
+            <Building2 className="w-4 h-4" />
             <span className="font-medium">{quote.analyst}</span>
             <span>•</span>
             <span>{quote.firm}</span>
@@ -346,38 +346,38 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
     )}>
       <div className="max-w-6xl mx-auto">
         {/* Report Header - JPMorgan Style */}
-        <header className="bg-magna-carbon-black text-white rounded-t-2xl p-6 mb-0">
+        <header className="bg-magna-carbon-black text-white rounded-t-2xl p-8 mb-0">
           <div className="flex items-start justify-between">
             <div>
-              <div className="flex items-center gap-2 mb-2">
-                <span className="text-2xl font-black tracking-tight">MAGNA</span>
-                <span className="w-2 h-2 bg-magna-ignition-red rounded-full" />
+              <div className="flex items-center gap-3 mb-2">
+                <span className="text-4xl font-black tracking-tight">MAGNA</span>
+                <span className="w-3 h-3 bg-magna-ignition-red rounded-full" />
               </div>
-              <div className="text-magna-cool-gray text-sm">
+              <div className="text-magna-cool-gray text-lg">
                 Automotive Technology & Manufacturing
               </div>
             </div>
             <div className="text-right">
-              <div className="text-sm text-magna-cool-gray">Equity Research</div>
-              <div className="text-lg font-semibold">Q4 FY{fiscalYear}</div>
+              <div className="text-lg text-magna-cool-gray">Equity Research</div>
+              <div className="text-2xl font-semibold">Q4 FY{fiscalYear}</div>
             </div>
           </div>
           
-          <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/20">
-            <span className="bg-magna-ignition-red px-3 py-1 rounded-full text-sm font-bold">
+          <div className="flex items-center gap-4 mt-6 pt-6 border-t border-white/20">
+            <span className="bg-magna-ignition-red px-5 py-2 rounded-full text-lg font-bold">
               {teamName || `Team ${teamId}`}
             </span>
             <div className={cn(
-              "flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium",
+              "flex items-center gap-2 px-4 py-2 rounded-full text-lg font-semibold",
               isTopThree ? "bg-amber-500/20 text-amber-300" : "bg-white/10 text-white/70"
             )}>
-              <Award className="w-4 h-4" />
+              <Award className="w-5 h-5" />
               <span>Rank #{teamRank} of {totalTeams}</span>
             </div>
-            <div className="ml-auto text-2xl font-bold">
+            <div className="ml-auto text-3xl font-bold">
               ${team.stockPrice.toFixed(2)}
               <span className={cn(
-                "text-sm ml-2",
+                "text-lg ml-3",
                 team.cumulativeTSR >= 0 ? "text-emerald-400" : "text-red-400"
               )}>
                 {formatPercent(team.cumulativeTSR)} TSR
@@ -392,12 +392,12 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         </div>
         
         {/* Executive Summary */}
-        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6 mb-6">
-          <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
-            <Target className="w-4 h-4 text-magna-ignition-red" />
+        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8 mb-6">
+          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+            <Target className="w-5 h-5 text-magna-ignition-red" />
             Investment Thesis
           </h2>
-          <p className="text-magna-carbon-black leading-relaxed">
+          <p className="text-magna-carbon-black text-lg leading-relaxed">
             In FY{fiscalYear}, the company achieved revenue of {formatCurrency(team.metrics.revenue)} with 
             an EBIT margin of {formatPercent(team.metrics.ebitMargin, false)}. 
             {derivedMetrics.growthOverMarket > 0 
@@ -410,29 +410,29 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         </section>
         
         {/* Consensus Estimates Table */}
-        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6 mb-6">
-          <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
-            <BarChart3 className="w-4 h-4 text-magna-ignition-red" />
+        <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8 mb-6">
+          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+            <BarChart3 className="w-5 h-5 text-magna-ignition-red" />
             Consensus Estimates
           </h2>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="border-b border-magna-cool-gray/20">
-                  <th className="text-left text-xs font-semibold text-magna-cool-gray uppercase py-2">Metric</th>
-                  <th className="text-right text-xs font-semibold text-magna-cool-gray uppercase py-2">FY{fiscalYear}</th>
-                  <th className="text-right text-xs font-semibold text-magna-cool-gray uppercase py-2">FY{fiscalYear - 1}</th>
-                  <th className="text-right text-xs font-semibold text-magna-cool-gray uppercase py-2">YoY Change</th>
+                  <th className="text-left text-sm font-semibold text-magna-cool-gray uppercase py-3">Metric</th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">FY{fiscalYear}</th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">FY{fiscalYear - 1}</th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">YoY Change</th>
                 </tr>
               </thead>
               <tbody>
                 {consensusEstimates.map((est) => (
                   <tr key={est.metric} className="border-b border-magna-cool-gray/10 last:border-0">
-                    <td className="py-3 text-sm font-medium text-magna-carbon-black">{est.metric}</td>
-                    <td className="py-3 text-sm text-right font-semibold text-magna-carbon-black">{est.current}</td>
-                    <td className="py-3 text-sm text-right text-magna-cool-gray">{est.prior}</td>
+                    <td className="py-4 text-lg font-medium text-magna-carbon-black">{est.metric}</td>
+                    <td className="py-4 text-lg text-right font-semibold text-magna-carbon-black">{est.current}</td>
+                    <td className="py-4 text-lg text-right text-magna-cool-gray">{est.prior}</td>
                     <td className={cn(
-                      "py-3 text-sm text-right font-medium",
+                      "py-4 text-lg text-right font-semibold",
                       est.change >= 0 ? "text-emerald-600" : "text-red-600"
                     )}>
                       {formatPercent(est.change)}
@@ -482,8 +482,8 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         {/* Analyst Commentary */}
         {analystQuotes.length > 0 && (
           <section className="mb-6">
-            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
-              <Quote className="w-4 h-4 text-magna-ignition-red" />
+            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+              <Quote className="w-5 h-5 text-magna-ignition-red" />
               Analyst Commentary
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -496,27 +496,27 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         
         {/* Market & Peer Comparison */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-          <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6">
-            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
-              <Activity className="w-4 h-4 text-magna-ignition-red" />
+          <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">
+            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+              <Activity className="w-5 h-5 text-magna-ignition-red" />
               Market Outlook
             </h2>
-            <p className="text-magna-carbon-black text-sm leading-relaxed">
+            <p className="text-magna-carbon-black text-lg leading-relaxed">
               {roundResults.scenarioNarrative}
             </p>
           </section>
           
-          <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6">
-            <h2 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide mb-3 flex items-center gap-2">
-              <Users className="w-4 h-4 text-magna-ignition-red" />
+          <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">
+            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+              <Users className="w-5 h-5 text-magna-ignition-red" />
               Peer Comparison
             </h2>
-            <div className="space-y-2">
+            <div className="space-y-3">
               {nearbyTeams.map((teamResult) => (
                 <div
                   key={teamResult.teamId}
                   className={cn(
-                    "flex items-center justify-between p-3 rounded-xl transition-colors",
+                    "flex items-center justify-between p-4 rounded-xl transition-colors",
                     teamResult.teamId === teamId
                       ? "bg-magna-ignition-red/10 border border-magna-ignition-red/30"
                       : "bg-slate-50"
@@ -524,13 +524,13 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
                 >
                   <div className="flex items-center gap-3">
                     <div className={cn(
-                      "w-7 h-7 rounded-lg flex items-center justify-center font-bold text-xs",
+                      "w-10 h-10 rounded-lg flex items-center justify-center font-bold text-base",
                       teamResult.rank <= 3 ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-magna-cool-gray"
                     )}>
                       {teamResult.rank}
                     </div>
                     <span className={cn(
-                      "text-sm font-medium",
+                      "text-lg font-medium",
                       teamResult.teamId === teamId ? "text-magna-ignition-red" : "text-magna-carbon-black"
                     )}>
                       {teamResult.teamId === teamId 
@@ -541,11 +541,11 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
                     </span>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-semibold text-magna-carbon-black">
+                    <div className="text-lg font-semibold text-magna-carbon-black">
                       ${teamResult.stockPrice.toFixed(2)}
                     </div>
                     <div className={cn(
-                      "text-xs font-medium",
+                      "text-base font-semibold",
                       teamResult.cumulativeTSR >= 0 ? "text-emerald-600" : "text-red-600"
                     )}>
                       {formatPercent(teamResult.cumulativeTSR)} TSR
@@ -559,17 +559,17 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         
         {/* Footer */}
         <footer className="text-center">
-          <div className="flex items-center justify-center gap-3 text-magna-cool-gray">
-            <Clock className="w-5 h-5" />
+          <div className="flex items-center justify-center gap-3 text-magna-cool-gray text-lg">
+            <Clock className="w-6 h-6" />
             <span>Waiting for facilitator to start next round...</span>
-            <div className="flex items-center gap-1">
-              <div className="w-2 h-2 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-              <div className="w-2 h-2 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-              <div className="w-2 h-2 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+              <div className="w-3 h-3 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+              <div className="w-3 h-3 bg-magna-ignition-red rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
             </div>
           </div>
           
-          <p className="text-xs text-magna-cool-gray/60 mt-4">
+          <p className="text-sm text-magna-cool-gray/60 mt-4">
             This report is for educational purposes only. Forward. For all.
           </p>
         </footer>

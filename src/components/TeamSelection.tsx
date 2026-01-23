@@ -40,53 +40,53 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
+      "min-h-screen bg-slate-100",
       "flex flex-col items-center justify-center p-8",
       className
     )}>
       {/* Header with Magna Logo */}
       <div className="text-center mb-12">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <span className="text-5xl font-black text-white tracking-tight">MAGNA</span>
-          <span className="w-3 h-3 bg-magna-red rounded-full" />
+          <span className="text-6xl font-black text-slate-800 tracking-tight">MAGNA</span>
+          <span className="w-4 h-4 bg-magna-red rounded-full" />
         </div>
-        <h1 className="text-3xl font-bold text-white mb-3 tracking-tight">
+        <h1 className="text-4xl font-bold text-slate-800 mb-3 tracking-tight">
           TSR Challenge
         </h1>
-        <p className="text-magna-gray text-lg">
+        <p className="text-slate-600 text-xl">
           Capital Allocation Simulation Game
         </p>
       </div>
       
       {/* Connection Status */}
       <div className={cn(
-        "flex items-center gap-2 px-4 py-2 rounded-full mb-8",
+        "flex items-center gap-2 px-5 py-3 rounded-full mb-8",
         isConnected 
-          ? "bg-emerald-500/20 text-emerald-400" 
-          : "bg-amber-500/20 text-amber-400"
+          ? "bg-emerald-100 text-emerald-700" 
+          : "bg-amber-100 text-amber-700"
       )}>
         <div className={cn(
-          "w-2 h-2 rounded-full",
-          isConnected ? "bg-emerald-400" : "bg-amber-400 animate-pulse"
+          "w-3 h-3 rounded-full",
+          isConnected ? "bg-emerald-500" : "bg-amber-500 animate-pulse"
         )} />
-        <span className="text-sm font-medium">
+        <span className="text-lg font-medium">
           {isConnected ? 'Connected to Server' : 'Connecting...'}
         </span>
       </div>
       
       {/* Team Name Entry Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-md">
+      <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-lg">
         <div className="flex items-center gap-3 mb-6">
-          <div className="p-2 bg-magna-red/20 rounded-xl">
-            <Users className="w-6 h-6 text-magna-red" />
+          <div className="p-3 bg-magna-red/10 rounded-xl">
+            <Users className="w-8 h-8 text-magna-red" />
           </div>
-          <h2 className="text-xl font-semibold text-white">Enter Your Team Name</h2>
+          <h2 className="text-2xl font-semibold text-slate-800">Enter Your Team Name</h2>
         </div>
         
         <form onSubmit={handleSubmit}>
           {/* Team Name Input */}
           <div className="mb-6">
-            <label htmlFor="teamName" className="block text-sm font-medium text-magna-gray mb-2">
+            <label htmlFor="teamName" className="block text-lg font-medium text-slate-600 mb-2">
               Team Name
             </label>
             <input
@@ -97,8 +97,8 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
               placeholder="e.g., Alpha Team, The Strategists"
               disabled={!isConnected || isJoining}
               className={cn(
-                "w-full px-4 py-3 rounded-xl text-lg font-medium",
-                "bg-white/10 border-2 border-white/20 text-white placeholder-magna-gray/50",
+                "w-full px-5 py-4 rounded-xl text-xl font-medium",
+                "bg-slate-50 border-2 border-slate-200 text-slate-800 placeholder-slate-400",
                 "focus:outline-none focus:border-magna-red focus:ring-2 focus:ring-magna-red/20",
                 "transition-all duration-200",
                 (!isConnected || isJoining) && "opacity-50 cursor-not-allowed"
@@ -106,15 +106,15 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
               autoFocus
               maxLength={30}
             />
-            <p className="text-xs text-magna-gray mt-2">
+            <p className="text-base text-slate-500 mt-2">
               Choose a memorable name for your team (max 30 characters)
             </p>
           </div>
           
           {/* Error Message */}
           {error && (
-            <div className="bg-red-500/20 border border-red-500/30 rounded-xl px-4 py-3 mb-6">
-              <p className="text-red-400 text-sm text-center">{error}</p>
+            <div className="bg-red-100 border border-red-300 rounded-xl px-4 py-3 mb-6">
+              <p className="text-red-600 text-lg text-center">{error}</p>
             </div>
           )}
           
@@ -123,16 +123,16 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
             type="submit"
             disabled={!teamName.trim() || !isConnected || isJoining}
             className={cn(
-              "w-full py-4 rounded-xl font-semibold text-lg transition-all duration-200",
+              "w-full py-5 rounded-xl font-semibold text-xl transition-all duration-200",
               "flex items-center justify-center gap-2",
               teamName.trim() && isConnected && !isJoining
                 ? "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg shadow-magna-red/30"
-                : "bg-magna-gray/20 text-magna-gray cursor-not-allowed"
+                : "bg-slate-200 text-slate-400 cursor-not-allowed"
             )}
           >
             {isJoining ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-6 h-6 animate-spin" />
                 Joining...
               </>
             ) : teamName.trim() ? (
@@ -145,7 +145,7 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
       </div>
       
       {/* Footer */}
-      <p className="text-magna-gray text-sm mt-8">
+      <p className="text-slate-500 text-lg mt-8">
         Magna International Leadership Meeting • 2026
       </p>
     </div>

@@ -34,25 +34,25 @@ const CATEGORY_CONFIG = {
   grow: {
     label: 'Grow',
     icon: TrendingUp,
-    bgColor: 'bg-emerald-500/20',
-    textColor: 'text-emerald-400',
-    borderColor: 'border-emerald-500/30',
+    bgColor: 'bg-emerald-100',
+    textColor: 'text-emerald-700',
+    borderColor: 'border-emerald-400',
     accentColor: 'emerald',
   },
   optimize: {
     label: 'Optimize',
     icon: Settings,
-    bgColor: 'bg-blue-500/20',
-    textColor: 'text-blue-400',
-    borderColor: 'border-blue-500/30',
+    bgColor: 'bg-blue-100',
+    textColor: 'text-blue-700',
+    borderColor: 'border-blue-400',
     accentColor: 'blue',
   },
   sustain: {
     label: 'Sustain',
     icon: Shield,
-    bgColor: 'bg-amber-500/20',
-    textColor: 'text-amber-400',
-    borderColor: 'border-amber-500/30',
+    bgColor: 'bg-amber-100',
+    textColor: 'text-amber-700',
+    borderColor: 'border-amber-400',
     accentColor: 'amber',
   },
 };
@@ -92,21 +92,21 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           "relative rounded-2xl p-5 cursor-pointer transition-all duration-200",
           "border-2 group",
           // Base styles
-          "bg-slate-800/50",
+          "bg-white shadow-sm",
           // Disabled state
           isDisabled && !isSelected && [
             "opacity-50 cursor-not-allowed",
-            "border-slate-700",
+            "border-slate-200",
           ],
           // Available state
           !isDisabled && !isSelected && [
-            "border-slate-700 hover:border-slate-600",
-            "hover:bg-slate-800",
+            "border-slate-200 hover:border-slate-300",
+            "hover:shadow-md",
           ],
           // Selected state
           isSelected && [
-            config.borderColor.replace('/30', ''),
-            `bg-${config.accentColor}-500/10`,
+            config.borderColor,
+            `bg-${config.accentColor}-50`,
             "shadow-lg",
           ],
           className
@@ -115,44 +115,44 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         {/* Selection Indicator */}
         {isSelected && (
           <div className={cn(
-            "absolute -top-2 -right-2 w-6 h-6 rounded-full flex items-center justify-center",
+            "absolute -top-2 -right-2 w-7 h-7 rounded-full flex items-center justify-center",
             `bg-${config.accentColor}-500`
           )}>
-            <Check className="w-4 h-4 text-white" />
+            <Check className="w-5 h-5 text-white" />
           </div>
         )}
         
         {/* Risky Badge */}
         {decision.isRisky && (
-          <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-red-500/20 rounded-full">
-            <AlertTriangle className="w-3 h-3 text-red-400" />
-            <span className="text-xs font-medium text-red-400">Risky</span>
+          <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 bg-red-100 rounded-full">
+            <AlertTriangle className="w-4 h-4 text-red-600" />
+            <span className="text-sm font-medium text-red-600">Risky</span>
           </div>
         )}
         
         {/* Category Badge */}
         <div className={cn(
-          "inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium mb-3",
+          "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold mb-3",
           config.bgColor,
           config.textColor
         )}>
-          <CategoryIcon className="w-3 h-3" />
+          <CategoryIcon className="w-4 h-4" />
           {config.label}
         </div>
         
         {/* Name */}
-        <h3 className="font-semibold text-white mb-2 leading-snug">
+        <h3 className="font-semibold text-slate-800 text-lg mb-2 leading-snug">
           {decision.name}
         </h3>
         
         {/* Cost */}
         <div className="flex items-center gap-1.5 mb-3">
-          <DollarSign className="w-4 h-4 text-slate-400" />
-          <span className="text-lg font-bold text-white">${decision.cost}M</span>
+          <DollarSign className="w-5 h-5 text-slate-500" />
+          <span className="text-xl font-bold text-slate-800">${decision.cost}M</span>
         </div>
         
         {/* Brief Description */}
-        <p className="text-sm text-slate-400 line-clamp-3 mb-4">
+        <p className="text-base text-slate-600 line-clamp-3 mb-4">
           {decision.narrative.split('.')[0]}.
         </p>
         
@@ -161,7 +161,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
           {impactSummary.map((impact, i) => (
             <span 
               key={i}
-              className="px-2 py-1 bg-slate-700/50 rounded text-xs text-slate-300"
+              className="px-2 py-1 bg-slate-100 rounded text-sm font-medium text-slate-700"
             >
               {impact}
             </span>
@@ -169,18 +169,18 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         </div>
         
         {/* Footer */}
-        <div className="flex items-center justify-between pt-3 border-t border-slate-700">
-          <div className="flex items-center gap-1 text-xs text-slate-500">
-            <Clock className="w-3 h-3" />
+        <div className="flex items-center justify-between pt-3 border-t border-slate-200">
+          <div className="flex items-center gap-1 text-sm text-slate-500">
+            <Clock className="w-4 h-4" />
             {decision.durationYears}yr • {decision.rampUpYears}yr ramp
           </div>
           
           <button
             onClick={handleExpandClick}
-            className="flex items-center gap-1 text-xs text-slate-400 hover:text-white transition-colors"
+            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
           >
             Details
-            <ChevronRight className="w-3 h-3" />
+            <ChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -225,51 +225,50 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
   
   return (
     <div 
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm"
       onClick={onClose}
     >
       <div 
-        className="bg-slate-900 border border-slate-700 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto"
+        className="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
         <div className={cn(
-          "p-6 border-b",
-          config.borderColor.replace('/30', '/20'),
-          `bg-${config.accentColor}-500/5`
+          "p-6 border-b border-slate-200",
+          `bg-${config.accentColor}-50`
         )}>
           <div className="flex items-start justify-between mb-4">
             <div className={cn(
-              "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-medium",
+              "inline-flex items-center gap-2 px-4 py-2 rounded-full text-base font-semibold",
               config.bgColor,
               config.textColor
             )}>
-              <CategoryIcon className="w-4 h-4" />
+              <CategoryIcon className="w-5 h-5" />
               {config.label}
             </div>
             
             <button
               onClick={onClose}
-              className="p-2 hover:bg-slate-800 rounded-xl transition-colors"
+              className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
             >
-              <X className="w-5 h-5 text-slate-400" />
+              <X className="w-6 h-6 text-slate-500" />
             </button>
           </div>
           
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-3xl font-bold text-slate-800 mb-2">
             {decision.name}
           </h2>
           
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <DollarSign className="w-5 h-5 text-slate-400" />
-              <span className="text-2xl font-bold text-white">${decision.cost}M</span>
+              <DollarSign className="w-6 h-6 text-slate-500" />
+              <span className="text-3xl font-bold text-slate-800">${decision.cost}M</span>
             </div>
             
             {decision.isRisky && (
-              <div className="flex items-center gap-1.5 px-3 py-1 bg-red-500/20 rounded-full">
-                <AlertTriangle className="w-4 h-4 text-red-400" />
-                <span className="text-sm font-medium text-red-400">Risky Investment</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 bg-red-100 rounded-full">
+                <AlertTriangle className="w-5 h-5 text-red-600" />
+                <span className="text-base font-semibold text-red-600">Risky Investment</span>
               </div>
             )}
           </div>
@@ -279,10 +278,10 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
         <div className="p-6 space-y-6">
           {/* Narrative */}
           <div>
-            <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-2">
+            <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-2">
               Investment Overview
             </h4>
-            <p className="text-slate-300 leading-relaxed">
+            <p className="text-slate-700 text-lg leading-relaxed">
               {decision.narrative}
             </p>
           </div>
@@ -309,10 +308,10 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           
           {/* Impact Details */}
           <div>
-            <h4 className="text-sm font-medium text-slate-400 uppercase tracking-wide mb-3">
+            <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-3">
               Expected Impact
             </h4>
-            <div className="bg-slate-800/50 rounded-xl p-4 space-y-2">
+            <div className="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
               {decision.revenueImpact && (
                 <ImpactRow 
                   label="Revenue" 
@@ -359,21 +358,21 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           </div>
           
           {/* Guiding Principle */}
-          <div className="bg-slate-800/30 rounded-xl p-4 border border-slate-700">
-            <h4 className="text-sm font-medium text-slate-400 mb-1">
+          <div className="bg-slate-100 rounded-xl p-4 border border-slate-200">
+            <h4 className="text-base font-semibold text-slate-500 mb-1">
               Guiding Principle
             </h4>
-            <p className="text-white font-medium">
+            <p className="text-slate-800 text-lg font-medium">
               {decision.guidingPrinciple}
             </p>
           </div>
         </div>
         
         {/* Footer */}
-        <div className="p-6 border-t border-slate-700 flex gap-3">
+        <div className="p-6 border-t border-slate-200 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 px-4 bg-slate-800 text-slate-300 rounded-xl font-medium hover:bg-slate-700 transition-colors"
+            className="flex-1 py-4 px-4 bg-slate-100 text-slate-700 rounded-xl font-semibold text-lg hover:bg-slate-200 transition-colors"
           >
             Close
           </button>
@@ -386,11 +385,11 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             }}
             disabled={isDisabled && !isSelected}
             className={cn(
-              "flex-1 py-3 px-4 rounded-xl font-medium transition-colors",
+              "flex-1 py-4 px-4 rounded-xl font-semibold text-lg transition-colors",
               isSelected
                 ? "bg-red-600 text-white hover:bg-red-500"
                 : isDisabled
-                  ? "bg-slate-700 text-slate-500 cursor-not-allowed"
+                  ? "bg-slate-200 text-slate-400 cursor-not-allowed"
                   : `bg-${config.accentColor}-600 text-white hover:bg-${config.accentColor}-500`
             )}
           >
@@ -407,9 +406,9 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
 // =============================================================================
 
 const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
-  <div className="bg-slate-800/50 rounded-xl p-3">
-    <div className="text-xs text-slate-500 mb-1">{label}</div>
-    <div className="text-white font-medium">{value}</div>
+  <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
+    <div className="text-sm text-slate-500 mb-1">{label}</div>
+    <div className="text-slate-800 text-lg font-semibold">{value}</div>
   </div>
 );
 
@@ -419,10 +418,10 @@ const ImpactRow: React.FC<{ label: string; value: string; positive: boolean }> =
   positive 
 }) => (
   <div className="flex items-center justify-between">
-    <span className="text-slate-400">{label}</span>
+    <span className="text-slate-600 text-base">{label}</span>
     <span className={cn(
-      "font-medium",
-      positive ? "text-emerald-400" : "text-slate-300"
+      "font-semibold text-lg",
+      positive ? "text-emerald-600" : "text-slate-700"
     )}>
       {value}
     </span>
