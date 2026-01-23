@@ -299,10 +299,15 @@ export class GameStateManager {
       }
     }
 
-    // Check if team name is already taken
+    // Check if team name is already taken - allow reconnection by updating socket ID
     for (const team of Object.values(this.state.teams)) {
       if (team.isClaimed && team.teamName.toLowerCase() === trimmedName.toLowerCase()) {
-        return { success: false, error: `Team name "${trimmedName}" is already taken` };
+        // Team exists with this name - update socket ID (handles reconnection)
+        const oldSocketId = team.socketId;
+        team.socketId = socketId;
+        console.log(`[GameState] Team "${trimmedName}" reconnected: ${oldSocketId} -> ${socketId}`);
+        this.broadcastStateChange();
+        return { success: true, teamId: team.teamId };
       }
     }
 

@@ -8,7 +8,7 @@
  * - Event triggers
  */
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
   Settings, 
   Play, 
@@ -86,7 +86,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
   // Initialize socket connection for real-time updates
   useSocket();
   
-  // Fetch status periodically (faster during active rounds)
+  // Fetch status periodically for initial load and fallback
   const fetchStatus = useCallback(async () => {
     const status = await getStatus();
     if (status) {
@@ -95,13 +95,36 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
     }
   }, [getStatus]);
   
+  // Derive real-time team data from gameState (updates via WebSocket instantly)
+  // Use useMemo with JSON.stringify to detect deep changes in teams object
+  const realTimeTeams = useMemo(() => {
+    if (!gameState?.teams) return null;
+    return Object.values(gameState.teams).map((team) => ({
+      teamId: team.teamId,
+      teamName: team.teamName || '',
+      isClaimed: team.isClaimed,
+      hasSubmitted: team.hasSubmitted,
+      decisionsCount: team.currentRoundDecisions?.length || 0,
+    }));
+  }, [JSON.stringify(gameState?.teams)]);
+  
+  // Update local state when real-time data changes
+  useEffect(() => {
+    if (realTimeTeams) {
+      setTeams(realTimeTeams);
+      if (gameState?.teamCount) {
+        setTeamCount(gameState.teamCount);
+      }
+    }
+  }, [realTimeTeams, gameState?.teamCount]);
+  
+  // Initial fetch and periodic refresh as fallback
   useEffect(() => {
     fetchStatus();
-    // Poll every 1 second during active rounds, 3 seconds otherwise
-    const pollInterval = (gameState?.status === 'active' || gameState?.status === 'paused') ? 1000 : 3000;
-    const interval = setInterval(fetchStatus, pollInterval);
+    // Poll every 3 seconds as fallback (real-time updates come via WebSocket)
+    const interval = setInterval(fetchStatus, 3000);
     return () => clearInterval(interval);
-  }, [fetchStatus, gameState?.status]);
+  }, [fetchStatus]);
   
   // Show action message
   const showMessage = (type: 'success' | 'error', text: string) => {

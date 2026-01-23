@@ -32,6 +32,7 @@ interface AdminStatus {
   };
   teams: Array<{
     teamId: number;
+    teamName: string;
     isClaimed: boolean;
     hasSubmitted: boolean;
     decisionsCount: number;

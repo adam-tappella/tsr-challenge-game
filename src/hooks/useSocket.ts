@@ -86,6 +86,19 @@ export function useSocket(): UseSocketReturn {
     socket.on('connect', () => {
       console.log('[Socket] Connected to server');
       setConnected(true);
+      
+      // Re-join game if previously joined (handles reconnection with new socket ID)
+      const state = useGameStore.getState();
+      if (state.hasJoinedGame && state.teamName) {
+        console.log('[Socket] Reconnecting team:', state.teamName);
+        socket.emit('join-game', state.teamName, (success: boolean, error?: string, teamId?: number) => {
+          if (success) {
+            console.log('[Socket] Reconnected as team:', teamId);
+          } else {
+            console.error('[Socket] Reconnection failed:', error);
+          }
+        });
+      }
     });
     
     socket.on('disconnect', (reason) => {
