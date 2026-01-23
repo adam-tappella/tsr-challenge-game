@@ -201,12 +201,25 @@ Add escalating warnings as round timer runs low:
 
 ## 📱 Future Features (Post-MVP)
 
-### Facilitator Projector View
-Large-screen display for the room showing:
-- Live leaderboard
-- Round timer
-- Current scenario narrative
+### Facilitator Projector/Output Screen
+**Effort:** Large | **Type:** Feature
+
+Large-screen display for the room with dynamic and static elements:
+
+**Dynamic Center Content:**
+- Countdown clock (prominent, real-time)
+- Moving stock prices (animated ticker or live updating)
+- Live leaderboard (team rankings, updates as results come in)
 - Aggregate submission status
+
+**Static Side Panels:**
+- **Left side:** Static PPT slide for current round context
+- **Right side:** Static PPT slide for current round context
+- Different slides loaded per round (Round 1-5)
+
+**Layout:** PPT (left) | Live Game Data (center) | PPT (right)
+
+**Note:** Designed for projection in conference room alongside facilitator's admin view
 
 ---
 
