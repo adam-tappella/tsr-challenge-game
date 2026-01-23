@@ -201,7 +201,7 @@ export const useGameStore = create<GameStore>()(
         hasSubmitted: submitted,
         isSubmitting: false,
         submitError: error || null,
-        selectedDecisionIds: submitted ? new Set() : get().selectedDecisionIds,
+        // Keep selections so confirmation modal can display them
       }),
       
       // Timer
