@@ -7,6 +7,7 @@
  * Routes:
  * - / (or /game) - Team interface
  * - /admin - Facilitator control panel
+ * - /demo - Demo mode (no backend required)
  * 
  * Team Interface States:
  * - Team Selection (not joined)
@@ -27,13 +28,14 @@ import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
 import { RoundCountdown } from '@/components/RoundCountdown';
+import { DemoApp } from '@/demo';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'team' | 'admin';
+type Route = 'team' | 'admin' | 'demo';
 
 function App() {
   const [route, setRoute] = useState<Route>('team');
@@ -44,7 +46,10 @@ function App() {
       const path = window.location.pathname;
       const hash = window.location.hash;
       
-      if (path === '/admin' || hash === '#admin') {
+      // Check for demo mode
+      if (path === '/demo' || hash === '#demo') {
+        setRoute('demo');
+      } else if (path === '/admin' || hash === '#admin') {
         setRoute('admin');
       } else {
         setRoute('team');
@@ -60,6 +65,11 @@ function App() {
       window.removeEventListener('hashchange', handleRouteChange);
     };
   }, []);
+  
+  // Demo mode doesn't need access gate or backend
+  if (route === 'demo') {
+    return <DemoApp />;
+  }
   
   // Wrap everything in AccessGate
   return (
