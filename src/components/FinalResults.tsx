@@ -22,6 +22,12 @@ import {
   BarChart3,
   Activity,
   Table,
+  ThumbsUp,
+  ThumbsDown,
+  BookOpen,
+  AlertTriangle,
+  CheckCircle2,
+  Lightbulb,
 } from 'lucide-react';
 import {
   LineChart,
@@ -36,6 +42,99 @@ import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
 import { GameRecap } from './GameRecap';
 import type { TeamRoundSnapshot } from '@/types/game';
+
+// =============================================================================
+// Round-by-Round Lessons
+// =============================================================================
+
+const ROUND_LESSONS = [
+  {
+    round: 1,
+    title: 'FY2026 – Business as Usual',
+    theme: 'Foundation Building',
+    color: 'emerald',
+    lesson: 'Standard market conditions allow for balanced investment across growth, optimization, and sustainability. The key is building a strong foundation while being mindful of future uncertainty.',
+    keyInsight: 'Decisions made now set the stage for how you weather future storms.',
+  },
+  {
+    round: 2,
+    title: 'FY2027 – The Diversification Test',
+    theme: 'Concentration vs. Diversification',
+    color: 'emerald',
+    lesson: 'Two similar capacity investments were available: one concentrated on a single OEM\'s flagship program (higher returns promised), and one diversified across multiple customers (lower per-unit returns). The concentrated bet looked more attractive on paper, but lacked resilience.',
+    keyInsight: 'The "Concentrated OEM Capacity Investment" offered better projected returns but was vulnerable to the Round 3 OEM program cancellation. Those who chose "Diversified OEM Capacity Investment" were protected.',
+  },
+  {
+    round: 3,
+    title: 'FY2028 – Cost Pressures',
+    theme: 'Cash Preservation',
+    color: 'amber',
+    lesson: 'Rising input costs and margin pressure made this round challenging. Many growth investments offered lower NPV due to the difficult environment. The wisest strategy was often to preserve cash for better opportunities ahead rather than deploying capital in an unfavorable environment.',
+    keyInsight: 'Teams that preserved cash in Round 3 had more firepower to capitalize on Round 4\'s recession-driven opportunities.',
+  },
+  {
+    round: 4,
+    title: 'FY2029 – Recession Opportunities',
+    theme: 'Counter-Cyclical Investing',
+    color: 'red',
+    lesson: 'The recession created distressed valuations and exceptional acquisition opportunities. "Opportunistic Acquisition - Premium Supplier" and "Underutilized Capacity Purchase" offered assets at significant discounts. Teams with strong balance sheets (those who preserved cash in R3) could capitalize.',
+    keyInsight: 'Balance sheet flexibility enables opportunism. Those who spent heavily in Round 3 couldn\'t afford Round 4\'s best opportunities.',
+  },
+  {
+    round: 5,
+    title: 'FY2030 – Recovery',
+    theme: 'Positioning for Growth',
+    color: 'blue',
+    lesson: 'The recovery phase rewarded teams that maintained capabilities through the downturn and made smart counter-cyclical investments in Round 4. Growth investments now had favorable conditions and teams could deploy capital confidently.',
+    keyInsight: 'Companies that invested wisely during the recession emerged as market leaders in the recovery.',
+  },
+];
+
+// =============================================================================
+// Best & Worst Decisions
+// =============================================================================
+
+const BEST_DECISIONS = [
+  {
+    name: 'Diversified OEM Capacity Investment',
+    round: 2,
+    category: 'Grow',
+    reason: 'While offering slightly lower projected returns, this investment spread risk across multiple OEM customers. When the OEM Program Cancellation hit in Round 3, diversified teams were protected while concentrated bets lost their entire investment value.',
+  },
+  {
+    name: 'Opportunistic Acquisition - Premium Supplier',
+    round: 4,
+    category: 'Grow',
+    reason: 'Recession-driven valuations created a rare chance to acquire a premium supplier at a significant discount. Teams with cash reserves could make this counter-cyclical move that generated exceptional returns during the recovery.',
+  },
+  {
+    name: 'Battery Technology JV',
+    round: 1,
+    category: 'Grow',
+    reason: 'This joint venture secured supply chain positioning and technology access early, before EV competition intensified. The strategic value compounded over multiple rounds as electrification accelerated.',
+  },
+];
+
+const WORST_DECISIONS = [
+  {
+    name: 'Concentrated OEM Capacity Investment',
+    round: 2,
+    category: 'Grow',
+    reason: 'Despite attractive projected returns, betting everything on one OEM\'s flagship program was a trap. When that OEM cancelled the program in Round 3 (cost pressures scenario), the entire investment value evaporated. Diversification would have prevented this.',
+  },
+  {
+    name: 'Distressed Competitor Acquisition',
+    round: 3,
+    category: 'Grow',
+    reason: 'Spending $600M during the cost pressure round depleted cash reserves right before the recession hit. Teams that made this acquisition couldn\'t afford Round 4\'s better opportunities at even more distressed valuations.',
+  },
+  {
+    name: 'Vehicle-to-Grid Services Business',
+    round: 3,
+    category: 'Grow',
+    reason: 'A speculative bet on an emerging market with uncertain payoff timing, launched during the worst possible round. Capital would have been better preserved for Round 4 opportunities or invested in defensive positions.',
+  },
+];
 
 interface FinalResultsProps {
   className?: string;
@@ -283,19 +382,9 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         </div>
       </div>
       
-      {/* Simulation Summary */}
-      <div className="bg-white border border-slate-200 shadow-lg rounded-xl p-6 w-full max-w-4xl">
-        <h3 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-4">
-          Simulation Summary (2031-2035)
-        </h3>
-        <p className="text-slate-700 text-lg leading-relaxed whitespace-pre-line">
-          {finalResults.simulationSummary}
-        </p>
-      </div>
-      
       {/* Your Performance Over Time */}
       {teamHistory.length > 0 && (
-        <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mt-8">
+        <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mb-8">
           <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
             <Activity className="w-7 h-7 text-magna-red" />
             Your Performance Over 5 Rounds
@@ -320,7 +409,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                     tickFormatter={(value) => `$${value}`}
                   />
                   <Tooltip 
-                    formatter={(value: number) => [`$${value.toFixed(2)}`, 'Stock Price']}
+                    formatter={(value) => [`$${(value as number).toFixed(2)}`, 'Stock Price']}
                     contentStyle={{
                       backgroundColor: 'white',
                       border: '1px solid #e2e8f0',
@@ -405,8 +494,152 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         </div>
       )}
       
+      {/* Decision Recap - Best & Worst */}
+      <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mb-8">
+        <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+          <Lightbulb className="w-7 h-7 text-amber-500" />
+          Key Decision Insights
+        </h3>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Best Decisions */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <ThumbsUp className="w-6 h-6 text-emerald-600" />
+              <h4 className="text-lg font-semibold text-emerald-700">Strongest Decisions</h4>
+            </div>
+            <div className="space-y-3">
+              {BEST_DECISIONS.map((decision, index) => (
+                <div 
+                  key={decision.name}
+                  className="bg-emerald-50 border border-emerald-200 rounded-xl p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 bg-emerald-200 text-emerald-700 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
+                      {index + 1}
+                    </div>
+                    <div>
+                      <div className="font-semibold text-emerald-800">{decision.name}</div>
+                      <div className="text-xs text-emerald-600 mb-1">Round {decision.round} • {decision.category}</div>
+                      <p className="text-sm text-slate-600">{decision.reason}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Worst Decisions */}
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <ThumbsDown className="w-6 h-6 text-red-600" />
+              <h4 className="text-lg font-semibold text-red-700">Riskiest Decisions</h4>
+            </div>
+            <div className="space-y-3">
+              {WORST_DECISIONS.map((decision, index) => (
+                <div 
+                  key={decision.name}
+                  className="bg-red-50 border border-red-200 rounded-xl p-4"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className="w-7 h-7 bg-red-200 text-red-700 rounded-full flex items-center justify-center flex-shrink-0">
+                      <AlertTriangle className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-red-800">{decision.name}</div>
+                      <div className="text-xs text-red-600 mb-1">Round {decision.round} • {decision.category}</div>
+                      <p className="text-sm text-slate-600">{decision.reason}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Key Takeaway */}
+        <div className="mt-6 bg-slate-100 border border-slate-200 rounded-xl p-5">
+          <div className="flex items-start gap-3">
+            <CheckCircle2 className="w-6 h-6 text-magna-red flex-shrink-0 mt-0.5" />
+            <div>
+              <div className="font-semibold text-slate-800 mb-1">Key Takeaway</div>
+              <p className="text-slate-600">
+                Successful capital allocation requires balancing growth ambitions with financial prudence. 
+                <strong> Diversification protects against concentration risk</strong>, 
+                <strong> preserving cash during uncertain times creates optionality</strong>, and 
+                <strong> counter-cyclical investing during downturns can yield exceptional returns</strong>.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      {/* Round-by-Round Lessons */}
+      <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mb-8">
+        <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+          <BookOpen className="w-7 h-7 text-magna-red" />
+          Round-by-Round Lessons
+        </h3>
+        
+        <div className="space-y-4">
+          {ROUND_LESSONS.map((lesson) => (
+            <div
+              key={lesson.round}
+              className={cn(
+                "rounded-xl p-5 border-2",
+                lesson.color === 'emerald' && "bg-emerald-50 border-emerald-200",
+                lesson.color === 'amber' && "bg-amber-50 border-amber-200",
+                lesson.color === 'red' && "bg-red-50 border-red-200",
+                lesson.color === 'blue' && "bg-blue-50 border-blue-200"
+              )}
+            >
+              <div className="flex items-start gap-4">
+                <div className={cn(
+                  "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0 font-bold text-lg",
+                  lesson.color === 'emerald' && "bg-emerald-200 text-emerald-800",
+                  lesson.color === 'amber' && "bg-amber-200 text-amber-800",
+                  lesson.color === 'red' && "bg-red-200 text-red-800",
+                  lesson.color === 'blue' && "bg-blue-200 text-blue-800"
+                )}>
+                  R{lesson.round}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <h4 className={cn(
+                      "font-bold text-lg",
+                      lesson.color === 'emerald' && "text-emerald-800",
+                      lesson.color === 'amber' && "text-amber-800",
+                      lesson.color === 'red' && "text-red-800",
+                      lesson.color === 'blue' && "text-blue-800"
+                    )}>
+                      {lesson.title}
+                    </h4>
+                    <span className={cn(
+                      "px-2 py-0.5 rounded-full text-xs font-medium",
+                      lesson.color === 'emerald' && "bg-emerald-200 text-emerald-700",
+                      lesson.color === 'amber' && "bg-amber-200 text-amber-700",
+                      lesson.color === 'red' && "bg-red-200 text-red-700",
+                      lesson.color === 'blue' && "bg-blue-200 text-blue-700"
+                    )}>
+                      {lesson.theme}
+                    </span>
+                  </div>
+                  <p className="text-slate-700 leading-relaxed">{lesson.lesson}</p>
+                  {lesson.keyInsight && (
+                    <div className="flex items-start gap-2 mt-3 text-slate-600">
+                      <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+                      <span className="text-sm italic">{lesson.keyInsight}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      
       {/* View Game Recap Button */}
-      <div className="mt-8">
+      <div className="mb-8">
         <button
           onClick={() => setShowRecap(true)}
           className="px-10 py-5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-semibold text-xl transition-colors flex items-center gap-3 shadow-lg"

@@ -46,24 +46,29 @@ const MOCK_DERIVED = {
   marketGrowth: 0.03,
 };
 
-const MOCK_QUOTES = [
+const MOCK_QUOTES: Array<{
+  analyst: string;
+  firm: string;
+  quote: string;
+  sentiment: 'positive' | 'neutral' | 'negative';
+}> = [
   {
     analyst: 'Sarah Chen',
     firm: 'Goldman Sachs',
     quote: 'Management is making bold early moves. With EBIT margin at +5.3%, the strategic direction looks promising.',
-    sentiment: 'positive' as const,
+    sentiment: 'positive',
   },
   {
     analyst: 'Michael Torres',
     firm: 'Morgan Stanley',
     quote: 'We see solid fundamentals with ROIC of +9.2%. Watching capital allocation decisions closely.',
-    sentiment: 'neutral' as const,
+    sentiment: 'neutral',
   },
   {
     analyst: 'Jennifer Walsh',
     firm: 'JP Morgan',
     quote: 'Early investments in growth could pay dividends. FCF conversion of +42.0% is encouraging.',
-    sentiment: 'positive' as const,
+    sentiment: 'positive',
   },
 ];
 

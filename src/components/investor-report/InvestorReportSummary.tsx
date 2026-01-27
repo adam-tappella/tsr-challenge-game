@@ -44,10 +44,52 @@ type Rating = 'BUY' | 'HOLD' | 'SELL';
 
 interface ConsensusEstimate {
   metric: string;
-  current: string;
-  prior: string;
-  change: number;
+  consensus: string;
+  actual: string;
+  consensusValue: number;
+  actualValue: number;
+  difference: number;
 }
+
+// Wall Street consensus estimates by round (what analysts expected)
+// Based on market conditions each year
+const WALL_STREET_CONSENSUS: Record<RoundNumber, {
+  revenueGrowth: number;  // Expected revenue growth from baseline
+  ebitMargin: number;     // Expected EBIT margin
+  epsGrowth: number;      // Expected EPS growth from baseline
+  fcfGrowth: number;      // Expected FCF growth from baseline
+}> = {
+  1: { // FY2026 - Business as Usual - Modest growth expected
+    revenueGrowth: 0.02,
+    ebitMargin: 0.049,
+    epsGrowth: 0.02,
+    fcfGrowth: 0.015,
+  },
+  2: { // FY2027 - Business as Usual - Continued growth expected
+    revenueGrowth: 0.035,
+    ebitMargin: 0.050,
+    epsGrowth: 0.04,
+    fcfGrowth: 0.03,
+  },
+  3: { // FY2028 - Cost Pressures - Analysts expect margin compression
+    revenueGrowth: 0.01,
+    ebitMargin: 0.045,
+    epsGrowth: -0.05,
+    fcfGrowth: -0.08,
+  },
+  4: { // FY2029 - Recession - Analysts expect decline
+    revenueGrowth: -0.10,
+    ebitMargin: 0.035,
+    epsGrowth: -0.25,
+    fcfGrowth: -0.30,
+  },
+  5: { // FY2030 - Recovery - Analysts expect rebound
+    revenueGrowth: 0.08,
+    ebitMargin: 0.052,
+    epsGrowth: 0.15,
+    fcfGrowth: 0.12,
+  },
+};
 
 // =============================================================================
 // Constants
@@ -351,16 +393,60 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
     return { rating: r, priceTarget: pt };
   }, [team, derivedMetrics, teamRank, gameState]);
   
-  // Consensus estimates table
+  // Consensus estimates table - Actual vs. Wall Street Expectations
   const consensusEstimates: ConsensusEstimate[] = useMemo(() => {
-    if (!team || !derivedMetrics) return [];
+    if (!team || !derivedMetrics || !roundResults) return [];
+    
+    const round = roundResults.round;
+    const consensus = WALL_STREET_CONSENSUS[round];
+    
+    // Calculate what Wall Street expected
+    const expectedRevenue = BASELINE_REVENUE * (1 + consensus.revenueGrowth);
+    const expectedEbit = expectedRevenue * consensus.ebitMargin;
+    const expectedEps = expectedEbit * 0.75 / SHARES_OUTSTANDING;
+    const expectedFcf = BASELINE_FCF * (1 + consensus.fcfGrowth);
+    
+    // Actual values
+    const actualRevenue = team.metrics.revenue;
+    const actualEbit = team.metrics.ebit;
+    const actualEps = derivedMetrics.eps;
+    const actualFcf = team.metrics.operatingFCF;
+    
     return [
-      { metric: 'Revenue', current: formatCurrency(team.metrics.revenue), prior: formatCurrency(BASELINE_REVENUE), change: derivedMetrics.revenueGrowth },
-      { metric: 'EBIT', current: formatCurrency(team.metrics.ebit), prior: formatCurrency(BASELINE_EBIT), change: derivedMetrics.ebitGrowth },
-      { metric: 'EPS', current: `$${derivedMetrics.eps.toFixed(2)}`, prior: `$${(BASELINE_EBIT * 0.75 / SHARES_OUTSTANDING).toFixed(2)}`, change: derivedMetrics.epsGrowth },
-      { metric: 'FCF', current: formatCurrency(team.metrics.operatingFCF), prior: formatCurrency(BASELINE_FCF), change: derivedMetrics.fcfGrowth },
+      { 
+        metric: 'Revenue', 
+        consensus: formatCurrency(expectedRevenue), 
+        actual: formatCurrency(actualRevenue),
+        consensusValue: expectedRevenue,
+        actualValue: actualRevenue,
+        difference: (actualRevenue - expectedRevenue) / expectedRevenue,
+      },
+      { 
+        metric: 'EBIT', 
+        consensus: formatCurrency(expectedEbit), 
+        actual: formatCurrency(actualEbit),
+        consensusValue: expectedEbit,
+        actualValue: actualEbit,
+        difference: (actualEbit - expectedEbit) / expectedEbit,
+      },
+      { 
+        metric: 'EPS', 
+        consensus: `$${expectedEps.toFixed(2)}`, 
+        actual: `$${actualEps.toFixed(2)}`,
+        consensusValue: expectedEps,
+        actualValue: actualEps,
+        difference: (actualEps - expectedEps) / expectedEps,
+      },
+      { 
+        metric: 'FCF', 
+        consensus: formatCurrency(expectedFcf), 
+        actual: formatCurrency(actualFcf),
+        consensusValue: expectedFcf,
+        actualValue: actualFcf,
+        difference: (actualFcf - expectedFcf) / Math.abs(expectedFcf),
+      },
     ];
-  }, [team, derivedMetrics]);
+  }, [team, derivedMetrics, roundResults]);
   
   if (!team || !gameState || !roundResults || !derivedMetrics) {
     return (
@@ -446,39 +532,123 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           </p>
         </section>
         
-        {/* Consensus Estimates Table */}
+        {/* Performance vs. Wall Street Expectations */}
         <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8 mb-6">
-          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+          <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-2 flex items-center gap-2">
             <BarChart3 className="w-5 h-5 text-magna-ignition-red" />
-            Consensus Estimates
+            Performance vs. Wall Street Expectations
           </h2>
+          <p className="text-magna-cool-gray text-sm mb-4">
+            How your FY{fiscalYear} results compare to analyst consensus estimates
+          </p>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-magna-cool-gray/20">
+                <tr className="border-b-2 border-magna-cool-gray/30">
                   <th className="text-left text-sm font-semibold text-magna-cool-gray uppercase py-3">Metric</th>
-                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">FY{fiscalYear}</th>
-                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">FY{fiscalYear - 1}</th>
-                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">YoY Change</th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">
+                    <span className="flex items-center justify-end gap-1">
+                      Wall Street Expected
+                    </span>
+                  </th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">
+                    <span className="flex items-center justify-end gap-1">
+                      Your Result
+                    </span>
+                  </th>
+                  <th className="text-right text-sm font-semibold text-magna-cool-gray uppercase py-3">vs. Consensus</th>
                 </tr>
               </thead>
               <tbody>
-                {consensusEstimates.map((est) => (
-                  <tr key={est.metric} className="border-b border-magna-cool-gray/10 last:border-0">
-                    <td className="py-4 text-lg font-medium text-magna-carbon-black">{est.metric}</td>
-                    <td className="py-4 text-lg text-right font-semibold text-magna-carbon-black">{est.current}</td>
-                    <td className="py-4 text-lg text-right text-magna-cool-gray">{est.prior}</td>
-                    <td className={cn(
-                      "py-4 text-lg text-right font-semibold",
-                      est.change >= 0 ? "text-emerald-600" : "text-red-600"
-                    )}>
-                      {formatPercent(est.change)}
-                    </td>
-                  </tr>
-                ))}
+                {consensusEstimates.map((est) => {
+                  const isBeat = est.difference > 0.001;
+                  const isMiss = est.difference < -0.001;
+                  const isInline = !isBeat && !isMiss;
+                  
+                  return (
+                    <tr key={est.metric} className="border-b border-magna-cool-gray/10 last:border-0">
+                      <td className="py-4 text-lg font-medium text-magna-carbon-black">{est.metric}</td>
+                      <td className="py-4 text-lg text-right text-magna-cool-gray">{est.consensus}</td>
+                      <td className="py-4 text-lg text-right font-bold text-magna-carbon-black">{est.actual}</td>
+                      <td className={cn(
+                        "py-4 text-right font-bold",
+                        isBeat && "text-emerald-600",
+                        isMiss && "text-red-600",
+                        isInline && "text-magna-cool-gray"
+                      )}>
+                        <div className="flex items-center justify-end gap-2">
+                          {isBeat && <TrendingUp className="w-5 h-5" />}
+                          {isMiss && <TrendingDown className="w-5 h-5" />}
+                          <span className="text-lg">
+                            {isInline ? 'In Line' : formatPercent(est.difference)}
+                          </span>
+                          {isBeat && <span className="text-sm font-semibold bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded">BEAT</span>}
+                          {isMiss && <span className="text-sm font-semibold bg-red-100 text-red-700 px-2 py-0.5 rounded">MISS</span>}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>
+          
+          {/* Summary Badge */}
+          {(() => {
+            const beats = consensusEstimates.filter(e => e.difference > 0.001).length;
+            const misses = consensusEstimates.filter(e => e.difference < -0.001).length;
+            const total = consensusEstimates.length;
+            
+            if (beats >= 3) {
+              return (
+                <div className="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
+                  <div className="bg-emerald-200 p-2 rounded-full">
+                    <TrendingUp className="w-5 h-5 text-emerald-700" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-emerald-800">Strong Beat!</div>
+                    <div className="text-emerald-700 text-sm">You beat {beats} of {total} Wall Street estimates this quarter</div>
+                  </div>
+                </div>
+              );
+            } else if (misses >= 3) {
+              return (
+                <div className="mt-4 bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3">
+                  <div className="bg-red-200 p-2 rounded-full">
+                    <TrendingDown className="w-5 h-5 text-red-700" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-red-800">Below Expectations</div>
+                    <div className="text-red-700 text-sm">You missed {misses} of {total} Wall Street estimates this quarter</div>
+                  </div>
+                </div>
+              );
+            } else if (beats > misses) {
+              return (
+                <div className="mt-4 bg-emerald-50 border border-emerald-200 rounded-xl p-4 flex items-center gap-3">
+                  <div className="bg-emerald-200 p-2 rounded-full">
+                    <TrendingUp className="w-5 h-5 text-emerald-700" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-emerald-800">Beat Expectations</div>
+                    <div className="text-emerald-700 text-sm">You beat {beats} of {total} Wall Street estimates</div>
+                  </div>
+                </div>
+              );
+            } else {
+              return (
+                <div className="mt-4 bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-center gap-3">
+                  <div className="bg-amber-200 p-2 rounded-full">
+                    <MinusCircle className="w-5 h-5 text-amber-700" />
+                  </div>
+                  <div>
+                    <div className="font-bold text-amber-800">Mixed Results</div>
+                    <div className="text-amber-700 text-sm">Performance was in line with Wall Street expectations</div>
+                  </div>
+                </div>
+              );
+            }
+          })()}
         </section>
         
         {/* Key Metrics - Sectioned */}

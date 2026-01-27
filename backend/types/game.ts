@@ -140,6 +140,9 @@ export interface TeamState {
   /** Socket ID for the team's connection (for reconnection handling) */
   socketId?: string;
   
+  /** Secret token for reconnection verification (prevents name hijacking) */
+  reconnectToken?: string;
+  
   /** Current available cash balance in USD millions */
   cashBalance: number;
   

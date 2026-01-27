@@ -24,6 +24,10 @@ import type {
 // Types
 // =============================================================================
 
+// LocalStorage keys for persistence
+const STORAGE_KEY_TEAM_NAME = 'tsr-challenge-team-name';
+const STORAGE_KEY_RECONNECT_TOKEN = 'tsr-challenge-reconnect-token';
+
 interface GameStoreState {
   // Connection state
   isConnected: boolean;
@@ -33,6 +37,7 @@ interface GameStoreState {
   // Team identity
   teamId: number | null;
   teamName: string | null;
+  reconnectToken: string | null; // Token for reconnection after refresh
   hasJoinedGame: boolean;
   joinError: string | null;
   
@@ -63,8 +68,13 @@ interface GameStoreActions {
   // Team
   setTeamId: (teamId: number) => void;
   setTeamName: (teamName: string) => void;
+  setReconnectToken: (token: string) => void;
   setJoinedGame: (joined: boolean, error?: string) => void;
   leaveGame: () => void;
+  
+  // Persistence helpers
+  getStoredCredentials: () => { teamName: string | null; reconnectToken: string | null };
+  clearStoredCredentials: () => void;
   
   // Game state
   updateGameState: (state: GameState) => void;
@@ -100,6 +110,7 @@ const initialState: GameStoreState = {
   
   teamId: null,
   teamName: null,
+  reconnectToken: null,
   hasJoinedGame: false,
   joinError: null,
   
@@ -144,21 +155,71 @@ export const useGameStore = create<GameStore>()(
       // Team actions
       setTeamId: (teamId) => set({ teamId }),
       
-      setTeamName: (teamName) => set({ teamName }),
+      setTeamName: (teamName) => {
+        // Persist to localStorage
+        try {
+          localStorage.setItem(STORAGE_KEY_TEAM_NAME, teamName);
+        } catch (e) {
+          console.warn('[Store] Failed to save team name to localStorage:', e);
+        }
+        set({ teamName });
+      },
+      
+      setReconnectToken: (token) => {
+        // Persist to localStorage
+        try {
+          localStorage.setItem(STORAGE_KEY_RECONNECT_TOKEN, token);
+        } catch (e) {
+          console.warn('[Store] Failed to save reconnect token to localStorage:', e);
+        }
+        set({ reconnectToken: token });
+      },
       
       setJoinedGame: (joined, error) => set({
         hasJoinedGame: joined,
         joinError: error || null,
       }),
       
-      leaveGame: () => set({
-        teamId: null,
-        teamName: null,
-        hasJoinedGame: false,
-        joinError: null,
-        selectedDecisionIds: new Set(),
-        hasSubmitted: false,
-      }),
+      leaveGame: () => {
+        // Clear localStorage
+        try {
+          localStorage.removeItem(STORAGE_KEY_TEAM_NAME);
+          localStorage.removeItem(STORAGE_KEY_RECONNECT_TOKEN);
+        } catch (e) {
+          console.warn('[Store] Failed to clear localStorage:', e);
+        }
+        set({
+          teamId: null,
+          teamName: null,
+          reconnectToken: null,
+          hasJoinedGame: false,
+          joinError: null,
+          selectedDecisionIds: new Set(),
+          hasSubmitted: false,
+        });
+      },
+      
+      // Persistence helpers
+      getStoredCredentials: () => {
+        try {
+          const teamName = localStorage.getItem(STORAGE_KEY_TEAM_NAME);
+          const reconnectToken = localStorage.getItem(STORAGE_KEY_RECONNECT_TOKEN);
+          return { teamName, reconnectToken };
+        } catch (e) {
+          console.warn('[Store] Failed to read from localStorage:', e);
+          return { teamName: null, reconnectToken: null };
+        }
+      },
+      
+      clearStoredCredentials: () => {
+        try {
+          localStorage.removeItem(STORAGE_KEY_TEAM_NAME);
+          localStorage.removeItem(STORAGE_KEY_RECONNECT_TOKEN);
+        } catch (e) {
+          console.warn('[Store] Failed to clear localStorage:', e);
+        }
+        set({ reconnectToken: null });
+      },
       
       // Game state actions
       updateGameState: (state) => {

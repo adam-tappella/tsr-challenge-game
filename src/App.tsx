@@ -108,7 +108,7 @@ function TeamInterface() {
       // Only show if we haven't already shown for this round
       if (hasShownCountdownForRound.current !== currentRound) {
         setShowCountdownOverlay(true);
-        hasShownCountdownForRound.current = currentRound;
+        hasShownCountdownForRound.current = currentRound ?? null;
       }
     }
     

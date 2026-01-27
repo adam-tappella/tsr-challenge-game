@@ -135,6 +135,7 @@ export class GameStateManager {
       teamName: '', // Will be set when team joins
       isClaimed: false,
       socketId: undefined,
+      reconnectToken: undefined, // Token for reconnection verification
       cashBalance: STARTING_INVESTMENT_CASH,
       currentRoundDecisions: [],
       allDecisions: [],
@@ -145,6 +146,13 @@ export class GameStateManager {
       hasSubmitted: false,
       draftDecisionIds: [],
     };
+  }
+  
+  /**
+   * Generate a random reconnection token
+   */
+  private generateReconnectToken(): string {
+    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
   }
 
   /**
@@ -297,8 +305,10 @@ export class GameStateManager {
 
   /**
    * Team joins with a team name (auto-assigns team ID)
+   * Enforces unique team names - no duplicates allowed
+   * Once a name is claimed, it's locked for that game session (no takeover allowed)
    */
-  joinGame(teamName: string, socketId: string): { success: boolean; error?: string; teamId?: number } {
+  joinGame(teamName: string, socketId: string, reconnectToken?: string): { success: boolean; error?: string; teamId?: number; reconnectToken?: string } {
     // Validate game state
     if (this.state.status === 'finished') {
       return { success: false, error: 'Game has ended' };
@@ -310,27 +320,61 @@ export class GameStateManager {
     }
 
     const trimmedName = teamName.trim();
+    const normalizedName = trimmedName.toLowerCase();
+    
+    console.log(`[GameState] Join attempt: "${trimmedName}" from socket ${socketId}${reconnectToken ? ' (with reconnect token)' : ''}`);
 
     // Check if this socket is already connected to a team
-    for (const team of Object.values(this.state.teams)) {
-      if (team.socketId === socketId) {
-        // Already connected, just update the name if needed
-        team.teamName = trimmedName;
-        this.broadcastStateChange();
-        return { success: true, teamId: team.teamId };
+    const existingTeamForSocket = Object.values(this.state.teams).find(t => t.socketId === socketId);
+    if (existingTeamForSocket) {
+      // Already connected with this socket - allow them to keep their current name
+      // but don't allow changing to a name taken by another team
+      if (existingTeamForSocket.teamName.toLowerCase() === normalizedName) {
+        // Same name, just refresh - allow
+        console.log(`[GameState] Socket ${socketId} already owns team "${trimmedName}" (Team ${existingTeamForSocket.teamId})`);
+        return { success: true, teamId: existingTeamForSocket.teamId, reconnectToken: existingTeamForSocket.reconnectToken };
       }
+      
+      // Trying to change to a different name - check if it's available
+      const nameConflict = Object.values(this.state.teams).find(
+        t => t.teamId !== existingTeamForSocket.teamId && 
+             t.isClaimed && 
+             t.teamName.toLowerCase() === normalizedName
+      );
+      if (nameConflict) {
+        console.log(`[GameState] REJECTED: "${trimmedName}" already taken by Team ${nameConflict.teamId}`);
+        return { 
+          success: false, 
+          error: `"${trimmedName}" is already taken by another team. Please choose a different name.` 
+        };
+      }
+      // Update the name
+      existingTeamForSocket.teamName = trimmedName;
+      this.broadcastStateChange();
+      return { success: true, teamId: existingTeamForSocket.teamId, reconnectToken: existingTeamForSocket.reconnectToken };
     }
 
-    // Check if team name is already taken - allow reconnection by updating socket ID
-    for (const team of Object.values(this.state.teams)) {
-      if (team.isClaimed && team.teamName.toLowerCase() === trimmedName.toLowerCase()) {
-        // Team exists with this name - update socket ID (handles reconnection)
-        const oldSocketId = team.socketId;
-        team.socketId = socketId;
-        console.log(`[GameState] Team "${trimmedName}" reconnected: ${oldSocketId} -> ${socketId}`);
+    // Check if team name is already taken by another claimed team
+    const existingTeamWithName = Object.values(this.state.teams).find(
+      t => t.isClaimed && t.teamName.toLowerCase() === normalizedName
+    );
+    
+    if (existingTeamWithName) {
+      // Name is claimed - check if this is a valid reconnection with the correct token
+      if (reconnectToken && existingTeamWithName.reconnectToken === reconnectToken) {
+        // Valid reconnection - same player returning after refresh/disconnect
+        console.log(`[GameState] RECONNECTION (token verified): "${trimmedName}" reconnecting to Team ${existingTeamWithName.teamId}`);
+        existingTeamWithName.socketId = socketId;
         this.broadcastStateChange();
-        return { success: true, teamId: team.teamId };
+        return { success: true, teamId: existingTeamWithName.teamId, reconnectToken: existingTeamWithName.reconnectToken };
       }
+      
+      // No token or wrong token - REJECT (prevents other players from stealing the name)
+      console.log(`[GameState] REJECTED: "${trimmedName}" is claimed by Team ${existingTeamWithName.teamId} (token mismatch or missing)`);
+      return { 
+        success: false, 
+        error: `"${trimmedName}" is already taken. Please choose a different name.` 
+      };
     }
 
     // Find first available team slot
@@ -346,13 +390,16 @@ export class GameStateManager {
       return { success: false, error: 'All team slots are full' };
     }
 
-    // Claim the team slot
+    // Claim the team slot and generate a new reconnection token
+    const newReconnectToken = this.generateReconnectToken();
     availableTeam.isClaimed = true;
     availableTeam.socketId = socketId;
     availableTeam.teamName = trimmedName;
+    availableTeam.reconnectToken = newReconnectToken;
     
+    console.log(`[GameState] SUCCESS: New team "${trimmedName}" joined as Team ${availableTeam.teamId}`);
     this.broadcastStateChange();
-    return { success: true, teamId: availableTeam.teamId };
+    return { success: true, teamId: availableTeam.teamId, reconnectToken: newReconnectToken };
   }
 
   /**

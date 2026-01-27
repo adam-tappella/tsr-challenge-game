@@ -379,16 +379,31 @@ io.on('connection', (socket: Socket<ClientToServerEvents & AdminToServerEvents, 
 
   // ===== Team Events =====
   
-  socket.on('join-game', (teamName: string, callback: (success: boolean, error?: string, teamId?: number) => void) => {
-    console.log(`[Socket] Team "${teamName}" attempting to join from ${socket.id}`);
-    const result = gameManager.joinGame(teamName, socket.id);
+  socket.on('join-game', (teamName: string, reconnectToken: string | undefined, callback: (success: boolean, error?: string, teamId?: number, reconnectToken?: string) => void) => {
+    // Handle old clients that don't send reconnectToken (callback is in second position)
+    if (typeof reconnectToken === 'function') {
+      const oldCallback = reconnectToken as (success: boolean, error?: string, teamId?: number, reconnectToken?: string) => void;
+      console.log(`[Socket] Team "${teamName}" attempting to join from ${socket.id} (no token)`);
+      const result = gameManager.joinGame(teamName, socket.id, undefined);
+      
+      if (result.success && result.teamId) {
+        socket.join(`team-${result.teamId}`);
+        io.emit('team-joined', result.teamId);
+        console.log(`[Socket] Team "${teamName}" (ID: ${result.teamId}) joined successfully`);
+      }
+      oldCallback(result.success, result.error, result.teamId, result.reconnectToken);
+      return;
+    }
+    
+    console.log(`[Socket] Team "${teamName}" attempting to join from ${socket.id}${reconnectToken ? ' (with token)' : ''}`);
+    const result = gameManager.joinGame(teamName, socket.id, reconnectToken);
     
     if (result.success && result.teamId) {
       socket.join(`team-${result.teamId}`);
       io.emit('team-joined', result.teamId);
       console.log(`[Socket] Team "${teamName}" (ID: ${result.teamId}) joined successfully`);
     }
-    callback(result.success, result.error, result.teamId);
+    callback(result.success, result.error, result.teamId, result.reconnectToken);
   });
 
   socket.on('submit-decisions', (decisions: string[], callback: (success: boolean, error?: string) => void) => {

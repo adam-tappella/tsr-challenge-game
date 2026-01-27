@@ -313,7 +313,7 @@ export const GameRecap: React.FC<GameRecapProps> = ({
                       fontSize: '14px',
                     }}
                     labelStyle={{ color: '#1e293b' }}
-                    formatter={(value: number) => [`$${value.toFixed(2)}`, '']}
+                    formatter={(value) => [`$${(value as number).toFixed(2)}`, '']}
                   />
                   <Legend wrapperStyle={{ fontSize: '14px' }} />
                   {leaderboard.map((team, index) => (

@@ -20,11 +20,8 @@ import {
   RefreshCw,
   AlertTriangle,
   CheckCircle2,
-  XCircle,
-  Zap,
   RotateCcw,
   LogOut,
-  Loader2,
   BookOpen,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -47,14 +44,75 @@ interface TeamInfo {
   decisionsCount: number;
 }
 
-const SCENARIO_EVENTS = [
-  { id: 'oem_program_cancellation', name: 'OEM Program Cancellation', description: 'Major OEM cancels flagship program (R3 - hits concentrated investments)' },
-  { id: 'supply_chain_disruption', name: 'Supply Chain Disruption', description: 'Major supply chain issue' },
-  { id: 'key_customer_loss', name: 'Key Customer Loss', description: 'OEM in-sourcing announcement' },
-  { id: 'technology_shift', name: 'Technology Shift', description: 'Powertrain technology breakthrough' },
-  { id: 'regulatory_change', name: 'Regulatory Change', description: 'New environmental regulations' },
-  { id: 'competitor_acquisition', name: 'Competitor Acquired', description: 'Major competitor acquired' },
-];
+// Year/Round scenario descriptions for facilitator reference
+const YEAR_SCENARIOS: Record<number, { 
+  title: string; 
+  theme: string; 
+  description: string;
+  keyDynamics: string[];
+  color: string;
+}> = {
+  1: {
+    title: 'FY2026 – Business as Usual',
+    theme: 'Stable Growth',
+    description: 'The automotive market remains stable with moderate growth expectations. OEMs are investing in next-generation platforms while maintaining current production volumes.',
+    keyDynamics: [
+      'Steady demand across traditional and EV segments',
+      'Normal competitive dynamics',
+      'Standard capital allocation decisions',
+    ],
+    color: 'emerald',
+  },
+  2: {
+    title: 'FY2027 – Business as Usual',
+    theme: 'Continued Stability',
+    description: 'Market conditions remain favorable with continued investment in electrification and advanced technologies. Supply chains have stabilized post-pandemic.',
+    keyDynamics: [
+      'EV transition accelerating as planned',
+      'Healthy OEM order books',
+      'Focus on operational excellence',
+    ],
+    color: 'emerald',
+  },
+  3: {
+    title: 'FY2028 – Cost Pressures',
+    theme: 'Margin Squeeze',
+    description: 'Rising input costs and supply chain volatility are putting pressure on margins. Raw material prices have increased significantly, and labor costs are rising across key manufacturing regions.',
+    keyDynamics: [
+      'Commodity prices up 15-20%',
+      'OEMs demanding price reductions',
+      'Wage inflation in key markets',
+      'Energy costs impacting operations',
+    ],
+    color: 'amber',
+  },
+  4: {
+    title: 'FY2029 – Recession',
+    theme: 'Market Downturn',
+    description: 'A global economic recession has significantly reduced vehicle demand. OEMs are cutting production volumes and delaying new program launches. Consumer confidence is at multi-year lows.',
+    keyDynamics: [
+      'Vehicle sales down 20-25%',
+      'OEM program cancellations',
+      'Customers in-sourcing to fill capacity',
+      'Credit markets tightening',
+      'Restructuring announcements across the industry',
+    ],
+    color: 'red',
+  },
+  5: {
+    title: 'FY2030 – Recovery',
+    theme: 'Market Rebound',
+    description: 'The economy is recovering and automotive demand is rebounding. OEMs are ramping up production and launching delayed programs. Companies with strong balance sheets are well-positioned to capture growth.',
+    keyDynamics: [
+      'Pent-up demand driving sales recovery',
+      'New program launches resuming',
+      'M&A opportunities emerging',
+      'Technology investments paying off',
+      'Strong performers gaining market share',
+    ],
+    color: 'blue',
+  },
+};
 
 export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework }) => {
   // Local state
@@ -79,7 +137,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
     resumeRound, 
     endRound, 
     nextRound, 
-    triggerEvent,
     resetGame,
   } = useAdmin();
   
@@ -203,14 +260,6 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
     }
   };
   
-  const handleTriggerEvent = async (eventId: string) => {
-    const result = await triggerEvent(eventId);
-    if (result.success) {
-      showMessage('success', `Event triggered: ${eventId.replace(/_/g, ' ')}`);
-    } else {
-      showMessage('error', result.error || 'Failed to trigger event');
-    }
-  };
   
   const handleReset = async () => {
     if (!confirm('Are you sure you want to reset the game? All progress will be lost.')) return;
@@ -479,29 +528,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
               </div>
             )}
             
-            {/* Event Triggers (only during active game) */}
-            {(status === 'active' || status === 'paused') && (
+            {/* Year Overview (during active game) */}
+            {(status === 'active' || status === 'paused' || status === 'results') && (
               <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
-                <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-6">
-                  <Zap className="w-5 h-5 text-amber-500" />
-                  Scenario Events
-                </h2>
-                
-                <div className="grid grid-cols-2 gap-3">
-                  {SCENARIO_EVENTS.map((event) => (
-                    <button
-                      key={event.id}
-                      onClick={() => handleTriggerEvent(event.id)}
-                      className="flex items-start gap-3 p-4 bg-slate-50 border border-slate-200 rounded-xl hover:border-amber-400 hover:bg-amber-50 transition-colors text-left"
-                    >
-                      <Zap className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
-                      <div>
-                        <div className="font-medium text-slate-800">{event.name}</div>
-                        <div className="text-xs text-slate-500">{event.description}</div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
+                <YearOverview round={currentRound} />
               </div>
             )}
           </div>
@@ -627,6 +657,88 @@ const StatusBadge: React.FC<{ status: GameStatus }> = ({ status }) => {
     )}>
       <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
       {label}
+    </div>
+  );
+};
+
+/**
+ * YearOverview Component
+ * Displays the current year's scenario context for the facilitator
+ */
+const YearOverview: React.FC<{ round: number }> = ({ round }) => {
+  const scenario = YEAR_SCENARIOS[round] || YEAR_SCENARIOS[1];
+  
+  const colorClasses: Record<string, { bg: string; border: string; text: string; badge: string }> = {
+    emerald: {
+      bg: 'bg-emerald-50',
+      border: 'border-emerald-200',
+      text: 'text-emerald-700',
+      badge: 'bg-emerald-100 text-emerald-800',
+    },
+    amber: {
+      bg: 'bg-amber-50',
+      border: 'border-amber-200',
+      text: 'text-amber-700',
+      badge: 'bg-amber-100 text-amber-800',
+    },
+    red: {
+      bg: 'bg-red-50',
+      border: 'border-red-200',
+      text: 'text-red-700',
+      badge: 'bg-red-100 text-red-800',
+    },
+    blue: {
+      bg: 'bg-blue-50',
+      border: 'border-blue-200',
+      text: 'text-blue-700',
+      badge: 'bg-blue-100 text-blue-800',
+    },
+  };
+  
+  const colors = colorClasses[scenario.color] || colorClasses.emerald;
+  
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
+          <BookOpen className="w-5 h-5 text-slate-500" />
+          Year Overview
+        </h2>
+        <span className={cn(
+          "px-3 py-1 rounded-full text-sm font-medium",
+          colors.badge
+        )}>
+          {scenario.theme}
+        </span>
+      </div>
+      
+      <div className={cn(
+        "rounded-xl p-5 border-2",
+        colors.bg,
+        colors.border
+      )}>
+        <h3 className={cn("text-xl font-bold mb-3", colors.text)}>
+          {scenario.title}
+        </h3>
+        
+        <p className="text-slate-700 mb-4 leading-relaxed">
+          {scenario.description}
+        </p>
+        
+        <div className="space-y-2">
+          <div className="text-sm font-medium text-slate-600 uppercase tracking-wide">
+            Key Market Dynamics
+          </div>
+          <ul className="space-y-1.5">
+            {scenario.keyDynamics.map((dynamic, index) => (
+              <li key={index} className="flex items-start gap-2 text-slate-700">
+                <span className={cn("mt-1.5 w-1.5 h-1.5 rounded-full flex-shrink-0", colors.text.replace('text-', 'bg-'))} />
+                {dynamic}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
     </div>
   );
 };

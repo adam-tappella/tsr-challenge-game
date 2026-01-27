@@ -5,7 +5,7 @@
  */
 
 import React, { useState } from 'react';
-import { Users, Loader2 } from 'lucide-react';
+import { Users, Loader2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSocket } from '@/hooks/useSocket';
 
@@ -93,28 +93,47 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
               type="text"
               id="teamName"
               value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
+              onChange={(e) => {
+                setTeamName(e.target.value);
+                // Clear error when user starts typing a new name
+                if (error) setError(null);
+              }}
               placeholder="e.g., Alpha Team, The Strategists"
               disabled={!isConnected || isJoining}
               className={cn(
                 "w-full px-5 py-4 rounded-xl text-xl font-medium",
-                "bg-slate-50 border-2 border-slate-200 text-slate-800 placeholder-slate-400",
-                "focus:outline-none focus:border-magna-red focus:ring-2 focus:ring-magna-red/20",
+                "bg-slate-50 border-2 text-slate-800 placeholder-slate-400",
+                "focus:outline-none focus:ring-2",
                 "transition-all duration-200",
+                error 
+                  ? "border-red-400 focus:border-red-500 focus:ring-red-200"
+                  : "border-slate-200 focus:border-magna-red focus:ring-magna-red/20",
                 (!isConnected || isJoining) && "opacity-50 cursor-not-allowed"
               )}
               autoFocus
               maxLength={30}
             />
             <p className="text-base text-slate-500 mt-2">
-              Choose a memorable name for your team (max 30 characters)
+              Choose a <span className="font-semibold text-slate-600">unique</span> name for your team (max 30 characters)
             </p>
           </div>
           
           {/* Error Message */}
           {error && (
-            <div className="bg-red-100 border border-red-300 rounded-xl px-4 py-3 mb-6">
-              <p className="text-red-600 text-lg text-center">{error}</p>
+            <div className="bg-red-50 border-2 border-red-400 rounded-xl px-5 py-5 mb-6 animate-pulse">
+              <div className="flex items-start gap-3">
+                <div className="bg-red-100 p-2 rounded-full flex-shrink-0">
+                  <AlertTriangle className="w-6 h-6 text-red-600" />
+                </div>
+                <div>
+                  <p className="text-red-700 text-lg font-bold">{error}</p>
+                  {error.toLowerCase().includes('already taken') && (
+                    <p className="text-red-600 text-base mt-2">
+                      💡 Try adding your table number, initials, or something unique!
+                    </p>
+                  )}
+                </div>
+              </div>
             </div>
           )}
           

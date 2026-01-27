@@ -22,6 +22,13 @@ import {
   ChevronDown,
   ChevronUp,
   Pencil,
+  HelpCircle,
+  X,
+  Target,
+  Coins,
+  Clock,
+  AlertTriangle,
+  Award,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost } from '@/stores/gameStore';
@@ -66,6 +73,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
   );
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [showOneMinuteWarning, setShowOneMinuteWarning] = useState(false);
+  const [showHelpModal, setShowHelpModal] = useState(false);
   const oneMinuteTriggeredRef = useRef(false);
   
   const team = useCurrentTeam();
@@ -292,6 +300,175 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
         </div>
       )}
       
+      {/* Help Modal */}
+      {showHelpModal && (
+        <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-2xl max-w-2xl w-full shadow-2xl max-h-[90vh] flex flex-col">
+            {/* Header */}
+            <div className="flex items-center justify-between p-6 border-b border-slate-200">
+              <div className="flex items-center gap-3">
+                <div className="w-12 h-12 bg-magna-red/10 rounded-full flex items-center justify-center">
+                  <HelpCircle className="w-6 h-6 text-magna-red" />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-slate-800">How to Play</h2>
+                  <p className="text-slate-500">TSR Challenge Rules & Mechanics</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+              >
+                <X className="w-6 h-6 text-slate-500" />
+              </button>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              {/* Objective */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Target className="w-6 h-6 text-magna-red" />
+                  <h3 className="text-lg font-semibold text-slate-800">Objective</h3>
+                </div>
+                <p className="text-slate-700 leading-relaxed">
+                  Maximize your company's <strong>Total Shareholder Return (TSR)</strong> over 5 rounds 
+                  by making strategic capital allocation decisions. TSR is calculated based on your 
+                  stock price growth and dividends. The team with the highest cumulative TSR wins!
+                </p>
+              </div>
+              
+              {/* Game Flow */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Clock className="w-6 h-6 text-blue-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">Game Flow</h3>
+                </div>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-magna-red">1.</span>
+                    Each round represents one fiscal year (FY2026-FY2030)
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-magna-red">2.</span>
+                    You receive a capital budget each year to allocate across investment options
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-magna-red">3.</span>
+                    Select decisions within your budget and submit before time runs out
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-magna-red">4.</span>
+                    After each round, see your results and how you compare to other teams
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="font-bold text-magna-red">5.</span>
+                    Market conditions change each year — adapt your strategy!
+                  </li>
+                </ul>
+              </div>
+              
+              {/* Decision Categories */}
+              <div className="bg-slate-50 border border-slate-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Coins className="w-6 h-6 text-amber-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">Decision Categories</h3>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-emerald-100 rounded-lg">
+                      <TrendingUp className="w-5 h-5 text-emerald-600" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-800">Grow</div>
+                      <p className="text-slate-600 text-sm">
+                        Strategic investments to expand capacity, enter new markets, or acquire companies. 
+                        Higher risk but higher potential returns.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-blue-100 rounded-lg">
+                      <Settings className="w-5 h-5 text-blue-600" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-800">Optimize</div>
+                      <p className="text-slate-600 text-sm">
+                        ROI-driven projects for efficiency and margin improvement. 
+                        Moderate risk with steady returns through cost savings.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-amber-100 rounded-lg">
+                      <Shield className="w-5 h-5 text-amber-600" />
+                    </div>
+                    <div>
+                      <div className="font-semibold text-slate-800">Sustain</div>
+                      <p className="text-slate-600 text-sm">
+                        Non-discretionary investments to maintain operations and prevent risks. 
+                        Lower returns but protects against negative events.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Risky Decisions */}
+              <div className="bg-amber-50 border border-amber-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <AlertTriangle className="w-6 h-6 text-amber-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">Risky Decisions</h3>
+                </div>
+                <p className="text-slate-700 leading-relaxed">
+                  Some decisions are marked with a <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-amber-100 text-amber-700 rounded text-sm font-medium">
+                    <AlertTriangle className="w-3 h-3" /> Risky
+                  </span> tag. 
+                  These offer higher potential returns but come with a chance of negative outcomes. 
+                  One risky event will trigger during the game — but you won't know which one!
+                </p>
+              </div>
+              
+              {/* Winning */}
+              <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-5">
+                <div className="flex items-center gap-3 mb-3">
+                  <Award className="w-6 h-6 text-emerald-600" />
+                  <h3 className="text-lg font-semibold text-slate-800">How to Win</h3>
+                </div>
+                <ul className="space-y-2 text-slate-700">
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>Balance growth investments with risk management</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>Adapt your strategy to changing market conditions</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>Don't over-allocate — unused cash reduces risk exposure</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-600 flex-shrink-0 mt-0.5" />
+                    <span>Consider long-term impacts, not just short-term gains</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            
+            {/* Footer */}
+            <div className="p-6 border-t border-slate-200">
+              <button
+                onClick={() => setShowHelpModal(false)}
+                className="w-full py-4 bg-magna-red text-white rounded-xl font-semibold text-lg hover:bg-magna-red-dark transition-colors"
+              >
+                Got It!
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* Submission Confirmation Modal */}
       {showConfirmationModal && (
         <div className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-sm flex items-center justify-center p-4">
@@ -498,8 +675,19 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
       {/* Submit Footer */}
       <footer className="sticky bottom-0 bg-white border-t border-slate-200 shadow-lg p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          {/* Selection Summary */}
+          {/* Left: Help Button & Selection Summary */}
           <div className="flex items-center gap-6">
+            {/* Help Button */}
+            <button
+              onClick={() => setShowHelpModal(true)}
+              className="flex items-center gap-2 px-4 py-3 bg-slate-100 text-slate-600 rounded-xl font-medium hover:bg-slate-200 hover:text-slate-800 transition-colors"
+            >
+              <HelpCircle className="w-5 h-5" />
+              Need Help?
+            </button>
+            
+            <div className="w-px h-8 bg-slate-200" />
+            
             <div className="text-slate-600 text-lg">
               <span className="text-slate-800 font-bold">{selectedDecisionIds.size}</span> decisions selected
             </div>
