@@ -82,7 +82,15 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
   const remainingBudget = useRemainingBudget();
   const selectedCost = useSelectedCost();
   
-  const { submitDecisions, unsubmitDecisions } = useSocket();
+  const { submitDecisions, unsubmitDecisions, syncDraftSelections } = useSocket();
+  
+  // Sync draft selections to backend whenever they change (for auto-submit on timeout)
+  useEffect(() => {
+    // Only sync if we have a connection and haven't submitted
+    if (!hasSubmitted && selectedDecisionIds.size >= 0) {
+      syncDraftSelections(Array.from(selectedDecisionIds));
+    }
+  }, [selectedDecisionIds, hasSubmitted, syncDraftSelections]);
   
   // Trigger 1-minute warning - show for 5 seconds then hide
   useEffect(() => {

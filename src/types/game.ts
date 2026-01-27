@@ -160,6 +160,9 @@ export interface TeamState {
   
   /** Whether the team has submitted decisions for the current round */
   hasSubmitted: boolean;
+  
+  /** Draft decision IDs (selected but not yet submitted) - used for auto-submit on timeout */
+  draftDecisionIds: string[];
 }
 
 // =============================================================================
@@ -379,6 +382,9 @@ export interface ClientToServerEvents {
   
   /** Team selects/deselects a decision (for real-time tracking) */
   'toggle-decision': (decisionId: string, selected: boolean) => void;
+  
+  /** Sync all draft selections at once (for reconnection or bulk updates) */
+  'sync-draft-selections': (decisionIds: string[]) => void;
 }
 
 /** Events sent from server to client */
@@ -469,6 +475,8 @@ export interface RoundResults {
     triggered: boolean;
     impact: string;
   }>;
+  /** Dynamic market outlook with backward/forward looking statements */
+  marketOutlook: MarketOutlook;
 }
 
 /**
@@ -495,6 +503,44 @@ export interface DecisionSummary {
 }
 
 /**
+ * SnapshotMetrics - Key financial metrics captured at end of each round
+ * Used for historical tracking and display in final results
+ */
+export interface SnapshotMetrics {
+  /** Stock price at end of round */
+  stockPrice: number;
+  
+  /** Return on Invested Capital */
+  roic: number;
+  
+  /** Revenue growth vs previous round (or vs baseline for round 1) */
+  revenueGrowth: number;
+  
+  /** EBITDA / Revenue */
+  ebitdaMargin: number;
+  
+  /** EBIT / Revenue */
+  ebitMargin: number;
+  
+  /** COGS / Revenue (absolute value) */
+  cogsToRevenue: number;
+  
+  /** SG&A / Revenue (absolute value) */
+  sgaToRevenue: number;
+}
+
+/**
+ * MarketOutlook - Dynamic market outlook with backward and forward looking statements
+ */
+export interface MarketOutlook {
+  /** Backward-looking statements about what happened this round */
+  backwardStatements: string[];
+  
+  /** Forward-looking statements about what's coming next */
+  forwardStatements: string[];
+}
+
+/**
  * TeamRoundSnapshot - Captures a team's state at the end of a round
  * Used for Game Recap feature to show how the game played out
  */
@@ -516,6 +562,9 @@ export interface TeamRoundSnapshot {
   
   /** Decisions selected this round with summary info */
   decisions: DecisionSummary[];
+  
+  /** Historical metrics captured at end of round */
+  metrics: SnapshotMetrics;
 }
 
 /**

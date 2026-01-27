@@ -37,3 +37,8 @@ export {
   getRiskyDecisions,
   validateDecisionConfiguration,
 } from './decisions.js';
+
+// Market outlook generator
+export {
+  generateMarketOutlook,
+} from './market-outlook.js';

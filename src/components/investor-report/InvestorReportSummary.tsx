@@ -26,6 +26,10 @@ import {
   Clock,
   Building2,
   Users,
+  History,
+  ArrowRight,
+  HelpCircle,
+  LineChart,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useTeamRank } from '@/stores/gameStore';
@@ -231,29 +235,62 @@ interface AnalystQuoteCardProps {
 }
 
 const AnalystQuoteCard: React.FC<AnalystQuoteCardProps> = ({ quote }) => {
+  const isQuestion = quote.type === 'question';
+  
+  // Determine icon and styling based on type
+  const IconComponent = isQuestion ? HelpCircle : LineChart;
+  
   return (
     <div className={cn(
-      "bg-white rounded-xl border p-5",
-      quote.sentiment === 'positive' && "border-emerald-200 bg-emerald-50/30",
-      quote.sentiment === 'negative' && "border-red-200 bg-red-50/30",
-      quote.sentiment === 'neutral' && "border-magna-cool-gray/20"
+      "rounded-2xl border-2 p-6 transition-all",
+      // Question styling - amber/orange accent
+      isQuestion && "border-amber-300 bg-gradient-to-br from-amber-50 to-orange-50 shadow-md",
+      // Observation styling - based on sentiment
+      !isQuestion && quote.sentiment === 'positive' && "border-emerald-300 bg-gradient-to-br from-emerald-50 to-green-50 shadow-sm",
+      !isQuestion && quote.sentiment === 'negative' && "border-red-300 bg-gradient-to-br from-red-50 to-rose-50 shadow-sm",
+      !isQuestion && quote.sentiment === 'neutral' && "border-slate-300 bg-gradient-to-br from-slate-50 to-gray-50 shadow-sm"
     )}>
-      <div className="flex items-start gap-3">
-        <Quote className={cn(
-          "w-6 h-6 mt-0.5 flex-shrink-0",
-          quote.sentiment === 'positive' && "text-emerald-500",
-          quote.sentiment === 'negative' && "text-red-500",
-          quote.sentiment === 'neutral' && "text-magna-cool-gray"
-        )} />
-        <div>
-          <p className="text-magna-carbon-black text-base leading-relaxed mb-3">
+      {/* Type Badge */}
+      <div className={cn(
+        "inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide mb-4",
+        isQuestion && "bg-amber-200 text-amber-800",
+        !isQuestion && quote.sentiment === 'positive' && "bg-emerald-200 text-emerald-800",
+        !isQuestion && quote.sentiment === 'negative' && "bg-red-200 text-red-800",
+        !isQuestion && quote.sentiment === 'neutral' && "bg-slate-200 text-slate-700"
+      )}>
+        <IconComponent className="w-3.5 h-3.5" />
+        {isQuestion ? 'Analyst Question' : 'Price Observation'}
+      </div>
+      
+      {/* Quote Content */}
+      <div className="flex items-start gap-4">
+        <div className={cn(
+          "w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0",
+          isQuestion && "bg-amber-200",
+          !isQuestion && quote.sentiment === 'positive' && "bg-emerald-200",
+          !isQuestion && quote.sentiment === 'negative' && "bg-red-200",
+          !isQuestion && quote.sentiment === 'neutral' && "bg-slate-200"
+        )}>
+          <IconComponent className={cn(
+            "w-6 h-6",
+            isQuestion && "text-amber-700",
+            !isQuestion && quote.sentiment === 'positive' && "text-emerald-700",
+            !isQuestion && quote.sentiment === 'negative' && "text-red-700",
+            !isQuestion && quote.sentiment === 'neutral' && "text-slate-600"
+          )} />
+        </div>
+        <div className="flex-1">
+          <p className={cn(
+            "text-lg leading-relaxed mb-4 font-medium",
+            isQuestion ? "text-amber-900" : "text-magna-carbon-black"
+          )}>
             "{quote.quote}"
           </p>
-          <div className="flex items-center gap-2 text-sm text-magna-cool-gray">
-            <Building2 className="w-4 h-4" />
-            <span className="font-medium">{quote.analyst}</span>
-            <span>•</span>
-            <span>{quote.firm}</span>
+          <div className="flex items-center gap-2 text-sm">
+            <Building2 className="w-4 h-4 text-magna-cool-gray" />
+            <span className="font-semibold text-magna-carbon-black">{quote.analyst}</span>
+            <span className="text-magna-cool-gray">•</span>
+            <span className="text-magna-cool-gray">{quote.firm}</span>
           </div>
         </div>
       </div>
@@ -479,16 +516,25 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           </MetricSection>
         </div>
         
-        {/* Analyst Commentary */}
+        {/* Analyst Commentary - More Prominent */}
         {analystQuotes.length > 0 && (
-          <section className="mb-6">
-            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
-              <Quote className="w-5 h-5 text-magna-ignition-red" />
-              Analyst Commentary
+          <section className="mb-8">
+            <h2 className="text-xl font-bold text-magna-carbon-black uppercase tracking-wide mb-6 flex items-center gap-3">
+              <Quote className="w-6 h-6 text-magna-ignition-red" />
+              What Analysts Are Saying
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {analystQuotes.map((quote, index) => (
-                <AnalystQuoteCard key={index} quote={quote} />
+            
+            {/* Question - Full Width, Prominent */}
+            {analystQuotes.filter(q => q.type === 'question').map((quote, index) => (
+              <div key={`q-${index}`} className="mb-6">
+                <AnalystQuoteCard quote={quote} />
+              </div>
+            ))}
+            
+            {/* Observations - Side by Side */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              {analystQuotes.filter(q => q.type === 'observation').map((quote, index) => (
+                <AnalystQuoteCard key={`o-${index}`} quote={quote} />
               ))}
             </div>
           </section>
@@ -497,13 +543,53 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
         {/* Market & Peer Comparison */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">
-            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-4 flex items-center gap-2">
+            <h2 className="text-base font-semibold text-magna-carbon-black uppercase tracking-wide mb-6 flex items-center gap-2">
               <Activity className="w-5 h-5 text-magna-ignition-red" />
               Market Outlook
             </h2>
-            <p className="text-magna-carbon-black text-lg leading-relaxed">
-              {roundResults.scenarioNarrative}
-            </p>
+            
+            {/* Backward-Looking Statements */}
+            {roundResults.marketOutlook?.backwardStatements?.length > 0 && (
+              <div className="mb-6">
+                <h3 className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wide mb-3 flex items-center gap-2">
+                  <History className="w-4 h-4" />
+                  This Fiscal Year
+                </h3>
+                <ul className="space-y-3">
+                  {roundResults.marketOutlook.backwardStatements.map((statement, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-magna-ignition-red rounded-full mt-2 flex-shrink-0" />
+                      <span className="text-magna-carbon-black text-base leading-relaxed">{statement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {/* Forward-Looking Statements */}
+            {roundResults.marketOutlook?.forwardStatements?.length > 0 && (
+              <div>
+                <h3 className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wide mb-3 flex items-center gap-2">
+                  <ArrowRight className="w-4 h-4" />
+                  Looking Ahead
+                </h3>
+                <ul className="space-y-3">
+                  {roundResults.marketOutlook.forwardStatements.map((statement, i) => (
+                    <li key={i} className="flex items-start gap-3">
+                      <span className="w-2 h-2 bg-magna-electric-blue rounded-full mt-2 flex-shrink-0" />
+                      <span className="text-magna-carbon-black text-base leading-relaxed">{statement}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {/* Fallback to scenario narrative if no market outlook */}
+            {(!roundResults.marketOutlook?.backwardStatements?.length && !roundResults.marketOutlook?.forwardStatements?.length) && (
+              <p className="text-magna-carbon-black text-lg leading-relaxed">
+                {roundResults.scenarioNarrative}
+              </p>
+            )}
           </section>
           
           <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">

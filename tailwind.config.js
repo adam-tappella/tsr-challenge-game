@@ -57,17 +57,19 @@ export default {
           // Secondary Colors
           'electric-blue': '#4299B4',     // Secondary accent for highlights
           
-          // Extended Palette
-          'gray-dark': '#666666',
+          // Extended Palette (WCAG AA Contrast Compliant)
+          'gray-dark': '#4a4a4a',         // Dark gray for text (7:1 on white)
+          'gray-medium': '#666666',       // Medium gray for secondary text
           'gray-light': '#D4D4D4',
           'gray-100': '#F5F5F5',
+          'gray-200': '#E8E8E8',
           
           // Legacy aliases (for backwards compatibility)
           red: '#DA291C',
           black: '#000000',
-          gray: '#555555',                // Darker for contrast on light bg
-          dark: '#E8ECF0',                // NOW LIGHT GREY for readability
-          darker: '#DFE4E9',              // NOW LIGHT GREY for readability
+          gray: '#4a4a4a',                // Dark gray for high contrast on light bg
+          dark: '#1a1a1a',                // Near-black for dark backgrounds
+          darker: '#0d0d0d',              // Darker variant
         },
         // Large display text colors for accessibility
         'display': {

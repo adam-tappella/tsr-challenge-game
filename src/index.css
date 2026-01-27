@@ -76,30 +76,30 @@
     /* Legacy aliases */
     --magna-red: #DA291C;
     --magna-black: #000000;
-    --magna-gray: #8B8B8D;
+    --magna-gray: #4a4a4a;
     --magna-dark: #1a1a1a;
   }
 
   .dark {
-    /* Dark mode - NOW LIGHT GREY for readability (accessibility-focused) */
-    --background: 210 20% 92%;
-    --foreground: 0 0% 10%;
+    /* Dark mode - True dark theme with high contrast */
+    --background: 0 0% 7%;
+    --foreground: 0 0% 98%;
     
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 10%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 98%;
     
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover: 0 0% 10%;
+    --popover-foreground: 0 0% 98%;
     
     /* Ignition Red as primary accent */
     --primary: 4 83% 48%;
     --primary-foreground: 0 0% 100%;
     
-    --secondary: 210 20% 96%;
-    --secondary-foreground: 0 0% 10%;
+    --secondary: 0 0% 15%;
+    --secondary-foreground: 0 0% 98%;
     
-    --muted: 0 0% 45%;
-    --muted-foreground: 0 0% 35%;
+    --muted: 0 0% 25%;
+    --muted-foreground: 0 0% 65%;
     
     /* Ignition Red for accent */
     --accent: 4 83% 48%;
@@ -108,8 +108,8 @@
     --destructive: 4 83% 48%;
     --destructive-foreground: 0 0% 100%;
     
-    --border: 0 0% 80%;
-    --input: 0 0% 80%;
+    --border: 0 0% 20%;
+    --input: 0 0% 20%;
     --ring: 4 83% 48%;
   }
 }

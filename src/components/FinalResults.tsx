@@ -20,10 +20,22 @@ import {
   Award,
   Sparkles,
   BarChart3,
+  Activity,
+  Table,
 } from 'lucide-react';
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from 'recharts';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
 import { GameRecap } from './GameRecap';
+import type { TeamRoundSnapshot } from '@/types/game';
 
 interface FinalResultsProps {
   className?: string;
@@ -42,6 +54,29 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
     if (!finalResults || !teamId) return null;
     return finalResults.leaderboard.find((r) => r.teamId === teamId);
   }, [finalResults, teamId]);
+  
+  // Get our team's round history
+  const teamHistory = useMemo(() => {
+    if (!finalResults || !teamId) return [];
+    return finalResults.teamHistories[teamId] || [];
+  }, [finalResults, teamId]);
+  
+  // Prepare chart data for stock price over rounds
+  const stockPriceChartData = useMemo(() => {
+    if (!teamHistory.length) return [];
+    
+    const startingPrice = ourResult?.startingStockPrice || 49.29;
+    const data = [{ round: 'Start', stockPrice: startingPrice }];
+    
+    for (const snapshot of teamHistory) {
+      data.push({
+        round: `R${snapshot.round}`,
+        stockPrice: snapshot.stockPrice,
+      });
+    }
+    
+    return data;
+  }, [teamHistory, ourResult]);
   
   // Is our team the winner?
   const isWinner = teamId === finalResults?.winnerId;
@@ -258,6 +293,118 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         </p>
       </div>
       
+      {/* Your Performance Over Time */}
+      {teamHistory.length > 0 && (
+        <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mt-8">
+          <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
+            <Activity className="w-7 h-7 text-magna-red" />
+            Your Performance Over 5 Rounds
+          </h3>
+          
+          {/* Stock Price Chart */}
+          <div className="mb-8">
+            <h4 className="text-lg font-semibold text-slate-700 mb-4">Stock Price Progression</h4>
+            <div className="h-64 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={stockPriceChartData} margin={{ top: 10, right: 30, left: 10, bottom: 10 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" />
+                  <XAxis 
+                    dataKey="round" 
+                    tick={{ fill: '#64748b', fontSize: 14 }}
+                    axisLine={{ stroke: '#cbd5e1' }}
+                  />
+                  <YAxis 
+                    domain={['dataMin - 5', 'dataMax + 5']}
+                    tick={{ fill: '#64748b', fontSize: 14 }}
+                    axisLine={{ stroke: '#cbd5e1' }}
+                    tickFormatter={(value) => `$${value}`}
+                  />
+                  <Tooltip 
+                    formatter={(value: number) => [`$${value.toFixed(2)}`, 'Stock Price']}
+                    contentStyle={{
+                      backgroundColor: 'white',
+                      border: '1px solid #e2e8f0',
+                      borderRadius: '8px',
+                      boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                    }}
+                  />
+                  <Line 
+                    type="monotone" 
+                    dataKey="stockPrice" 
+                    stroke="#DA291C" 
+                    strokeWidth={3}
+                    dot={{ fill: '#DA291C', strokeWidth: 2, r: 6 }}
+                    activeDot={{ r: 8, fill: '#DA291C' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+          
+          {/* Historical Metrics Table */}
+          <div>
+            <h4 className="text-lg font-semibold text-slate-700 mb-4 flex items-center gap-2">
+              <Table className="w-5 h-5" />
+              Key Metrics by Round
+            </h4>
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="bg-slate-100">
+                    <th className="text-left py-3 px-4 font-semibold text-slate-700 border-b border-slate-200">Metric</th>
+                    {teamHistory.map((snapshot) => (
+                      <th 
+                        key={snapshot.round} 
+                        className="text-center py-3 px-4 font-semibold text-slate-700 border-b border-slate-200"
+                      >
+                        Round {snapshot.round}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  <MetricRow 
+                    label="Stock Price" 
+                    values={teamHistory.map(s => s.metrics?.stockPrice)} 
+                    format="currency" 
+                  />
+                  <MetricRow 
+                    label="ROIC" 
+                    values={teamHistory.map(s => s.metrics?.roic)} 
+                    format="percent" 
+                  />
+                  <MetricRow 
+                    label="Revenue Growth" 
+                    values={teamHistory.map(s => s.metrics?.revenueGrowth)} 
+                    format="percentChange" 
+                  />
+                  <MetricRow 
+                    label="EBITDA Margin" 
+                    values={teamHistory.map(s => s.metrics?.ebitdaMargin)} 
+                    format="percent" 
+                  />
+                  <MetricRow 
+                    label="EBIT Margin" 
+                    values={teamHistory.map(s => s.metrics?.ebitMargin)} 
+                    format="percent" 
+                  />
+                  <MetricRow 
+                    label="COGS / Revenue" 
+                    values={teamHistory.map(s => s.metrics?.cogsToRevenue)} 
+                    format="percent" 
+                  />
+                  <MetricRow 
+                    label="SG&A / Revenue" 
+                    values={teamHistory.map(s => s.metrics?.sgaToRevenue)} 
+                    format="percent" 
+                  />
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      )}
+      
       {/* View Game Recap Button */}
       <div className="mt-8">
         <button
@@ -289,6 +436,56 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
         <p className="text-slate-500 text-lg mt-3">2026</p>
       </div>
     </div>
+  );
+};
+
+// =============================================================================
+// Helper Components
+// =============================================================================
+
+interface MetricRowProps {
+  label: string;
+  values: (number | undefined)[];
+  format: 'currency' | 'percent' | 'percentChange';
+}
+
+const MetricRow: React.FC<MetricRowProps> = ({ label, values, format }) => {
+  const formatValue = (value: number | undefined): string => {
+    if (value === undefined || isNaN(value)) return '—';
+    
+    switch (format) {
+      case 'currency':
+        return `$${value.toFixed(2)}`;
+      case 'percent':
+        return `${(value * 100).toFixed(1)}%`;
+      case 'percentChange':
+        const formatted = (value * 100).toFixed(1);
+        return value >= 0 ? `+${formatted}%` : `${formatted}%`;
+      default:
+        return value.toFixed(2);
+    }
+  };
+  
+  const getChangeColor = (value: number | undefined): string => {
+    if (value === undefined || format !== 'percentChange') return 'text-slate-800';
+    return value >= 0 ? 'text-emerald-600' : 'text-red-600';
+  };
+  
+  return (
+    <tr className="border-b border-slate-100 hover:bg-slate-50">
+      <td className="py-3 px-4 font-medium text-slate-700">{label}</td>
+      {values.map((value, i) => (
+        <td 
+          key={i} 
+          className={cn(
+            "text-center py-3 px-4 font-semibold",
+            getChangeColor(value)
+          )}
+        >
+          {formatValue(value)}
+        </td>
+      ))}
+    </tr>
   );
 };
 

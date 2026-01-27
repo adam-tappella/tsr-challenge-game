@@ -27,6 +27,7 @@ import type {
   FinalTeamResult,
   FinalResults,
   TeamRoundSnapshot,
+  MarketOutlook,
 } from './types/game.js';
 
 import {
@@ -480,7 +481,8 @@ export function generateRoundResults(
   teams: Record<number, TeamState>,
   round: RoundNumber,
   scenarioNarrative: string,
-  riskyEvents: RiskyEventState
+  riskyEvents: RiskyEventState,
+  marketOutlook: MarketOutlook
 ): RoundResults {
   const claimedTeams = Object.values(teams).filter(t => t.isClaimed);
   const sorted = rankTeamsByTSR(claimedTeams);
@@ -527,6 +529,7 @@ export function generateRoundResults(
     scenarioNarrative,
     teamResults,
     riskyOutcomes,
+    marketOutlook,
   };
 }
 

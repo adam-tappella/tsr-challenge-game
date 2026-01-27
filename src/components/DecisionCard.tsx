@@ -172,7 +172,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         <div className="flex items-center justify-between pt-3 border-t border-slate-200">
           <div className="flex items-center gap-1 text-sm text-slate-500">
             <Clock className="w-4 h-4" />
-            {decision.durationYears}yr • {decision.rampUpYears}yr ramp
+            {decision.durationYears} year{decision.durationYears > 1 ? 's' : ''} investment
           </div>
           
           <button
@@ -286,74 +286,81 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             </p>
           </div>
           
-          {/* Key Metrics Grid */}
+          {/* Key Metrics Grid - Category Specific */}
           <div>
             <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-3">
               Key Metrics
             </h4>
-            <div className="grid grid-cols-2 gap-4">
-              {/* Revenue */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <div className="text-sm text-slate-500 mb-1">Expected Revenue</div>
-                <div className="space-y-1">
-                  {decision.recurringBenefit && (
-                    <div className="text-slate-800 text-lg font-semibold">
-                      ${decision.recurringBenefit}M/year
-                    </div>
-                  )}
-                  {decision.revenueImpact && (
-                    <div className={cn(
-                      "text-base font-medium",
-                      decision.revenueImpact > 0 ? "text-emerald-600" : "text-red-600"
-                    )}>
-                      {decision.revenueImpact > 0 ? '+' : ''}{(decision.revenueImpact * 100).toFixed(1)}% growth
-                    </div>
-                  )}
-                  {!decision.recurringBenefit && !decision.revenueImpact && (
-                    <div className="text-slate-400 text-lg">—</div>
-                  )}
+            {decision.category === 'grow' && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Investment (total)" 
+                  value={`$${decision.cost}M`} 
+                />
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="Revenue Year 1" 
+                  value={decision.recurringBenefit ? `$${decision.recurringBenefit}M` : '—'} 
+                />
+                <DetailItem 
+                  label="5-Year Growth" 
+                  value={decision.revenueImpact ? `${(decision.revenueImpact * 100).toFixed(1)}% y-o-y` : '—'} 
+                />
+                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <div className="text-sm text-slate-500 mb-1">EBITDA Margin</div>
+                  <div className="text-slate-800 text-lg font-semibold">
+                    {decision.revenueImpact ? `${(9 + decision.revenueImpact * 20).toFixed(0)}%` : '9%'}
+                  </div>
                 </div>
               </div>
-              
-              {/* Margin */}
-              <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-                <div className="text-sm text-slate-500 mb-1">Margin Impact</div>
-                {(decision.cogsImpact || decision.sgaImpact) ? (
-                  <div className="space-y-1">
-                    {decision.cogsImpact && (
-                      <div className={cn(
-                        "text-lg font-semibold",
-                        decision.cogsImpact < 0 ? "text-emerald-600" : "text-red-600"
-                      )}>
-                        COGS {decision.cogsImpact < 0 ? '' : '+'}{(decision.cogsImpact * 100).toFixed(1)}%
-                      </div>
-                    )}
-                    {decision.sgaImpact && (
-                      <div className={cn(
-                        "text-base font-medium",
-                        decision.sgaImpact < 0 ? "text-emerald-600" : "text-red-600"
-                      )}>
-                        SG&A {decision.sgaImpact < 0 ? '' : '+'}{(decision.sgaImpact * 100).toFixed(1)}%
-                      </div>
-                    )}
-                  </div>
-                ) : (
-                  <div className="text-slate-400 text-lg">—</div>
-                )}
+            )}
+            {decision.category === 'optimize' && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="SG&A Savings" 
+                  value={decision.sgaImpact ? `${Math.abs(decision.sgaImpact * 100).toFixed(0)}%` : (decision.cogsImpact ? `${Math.abs(decision.cogsImpact * 100).toFixed(0)}%` : '—')} 
+                />
+                <DetailItem 
+                  label="Implementation Cost" 
+                  value={decision.recurringBenefit ? `${(decision.cost / decision.recurringBenefit).toFixed(1)}x annual savings` : `$${decision.cost}M`} 
+                />
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
+                />
+                <DetailItem 
+                  label="Annual Cost Savings" 
+                  value={decision.recurringBenefit ? `$${decision.recurringBenefit}M` : '—'} 
+                />
               </div>
-              
-              {/* Upfront CapEx */}
-              <DetailItem 
-                label="Upfront CapEx" 
-                value={`$${decision.cost}M`} 
-              />
-              
-              {/* Ramp-up Period */}
-              <DetailItem 
-                label="Ramp-up Period" 
-                value={`${decision.rampUpYears} year${decision.rampUpYears > 1 ? 's' : ''}`} 
-              />
-            </div>
+            )}
+            {decision.category === 'sustain' && (
+              <div className="grid grid-cols-2 gap-4">
+                <DetailItem 
+                  label="Investment (total)" 
+                  value={`$${decision.cost}M`} 
+                />
+                <DetailItem 
+                  label="Investment Period" 
+                  value={`${decision.durationYears} year${decision.durationYears > 1 ? 's' : ''}`} 
+                />
+                <div className="col-span-2 bg-amber-50 border border-amber-200 rounded-xl p-4">
+                  <div className="text-sm text-amber-700 mb-1">No incremental cash flow created</div>
+                  <div className="text-amber-800 text-base font-medium">
+                    Protects against losing business-as-usual revenue
+                  </div>
+                </div>
+                <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
+                  <div className="text-sm text-slate-500 mb-1">Revenue Protection</div>
+                  <div className="text-slate-800 text-lg font-semibold">
+                    Avoids {decision.revenueImpact ? `${Math.abs(decision.revenueImpact * 100).toFixed(1)}%` : '0.1%'} revenue loss
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
         
@@ -408,20 +415,33 @@ const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }
 function getImpactSummary(decision: Decision): string[] {
   const impacts: string[] = [];
   
-  if (decision.revenueImpact) {
-    const sign = decision.revenueImpact > 0 ? '+' : '';
-    impacts.push(`Rev ${sign}${(decision.revenueImpact * 100).toFixed(0)}%`);
-  }
-  if (decision.cogsImpact) {
-    const sign = decision.cogsImpact < 0 ? '' : '+';
-    impacts.push(`COGS ${sign}${(decision.cogsImpact * 100).toFixed(0)}%`);
-  }
-  if (decision.sgaImpact) {
-    const sign = decision.sgaImpact < 0 ? '' : '+';
-    impacts.push(`SG&A ${sign}${(decision.sgaImpact * 100).toFixed(0)}%`);
-  }
-  if (decision.riskPrevention) {
-    impacts.push('Risk Shield');
+  if (decision.category === 'grow') {
+    // Growth-specific metrics
+    impacts.push(`$${decision.cost}M invest`);
+    if (decision.revenueImpact) {
+      impacts.push(`${(decision.revenueImpact * 100).toFixed(1)}% growth`);
+    }
+    if (decision.recurringBenefit) {
+      impacts.push(`$${decision.recurringBenefit}M rev`);
+    }
+  } else if (decision.category === 'optimize') {
+    // Optimize-specific metrics
+    if (decision.sgaImpact) {
+      impacts.push(`SG&A -${Math.abs(decision.sgaImpact * 100).toFixed(0)}%`);
+    }
+    if (decision.cogsImpact) {
+      impacts.push(`COGS -${Math.abs(decision.cogsImpact * 100).toFixed(0)}%`);
+    }
+    if (decision.recurringBenefit) {
+      impacts.push(`$${decision.recurringBenefit}M savings`);
+    }
+  } else if (decision.category === 'sustain') {
+    // Sustain-specific metrics
+    impacts.push(`$${decision.cost}M invest`);
+    impacts.push('Protects revenue');
+    if (decision.riskPrevention) {
+      impacts.push('Risk Shield');
+    }
   }
   
   return impacts.slice(0, 3);

@@ -15,6 +15,7 @@ import type {
   RoundResults,
   FinalResults,
   TeamRoundSnapshot,
+  SnapshotMetrics,
 } from './types/game.js';
 
 import {
@@ -26,6 +27,7 @@ import {
   BASELINE_FINANCIALS,
   getDecisionsForRound,
   getDecisionById,
+  generateMarketOutlook,
 } from './config/index.js';
 
 import {
@@ -141,6 +143,7 @@ export class GameStateManager {
       cumulativeTSR: 0,
       roundTSR: 0,
       hasSubmitted: false,
+      draftDecisionIds: [],
     };
   }
 
@@ -230,6 +233,13 @@ export class GameStateManager {
    */
   getRoundHistories(): Record<number, TeamRoundSnapshot[]> {
     return { ...this.roundHistories };
+  }
+
+  /**
+   * Find a team by their socket ID
+   */
+  private findTeamBySocket(socketId: string): TeamState | undefined {
+    return Object.values(this.state.teams).find(t => t.socketId === socketId);
   }
 
   // ===========================================================================
@@ -477,7 +487,7 @@ export class GameStateManager {
     }
 
     // Restore cash and clear submission
-    const totalCost = team.currentRoundDecisions.reduce((sum, d) => sum + d.cost, 0);
+    const totalCost = team.currentRoundDecisions.reduce((sum, d) => sum + d.actualCost, 0);
     team.cashBalance += totalCost;
     team.hasSubmitted = false;
     // Keep currentRoundDecisions so their selections are preserved
@@ -487,12 +497,51 @@ export class GameStateManager {
   }
 
   /**
-   * Track decision toggle (for real-time preview, not final submission)
+   * Track decision toggle for auto-submit on timeout
+   * Stores draft selections so they can be used if team doesn't explicitly submit
    */
   toggleDecision(socketId: string, decisionId: string, selected: boolean): void {
-    // This is for real-time tracking only, doesn't affect state
-    // Could be used for spectator/admin view
-    console.log(`[GameState] Team socket ${socketId} toggled ${decisionId}: ${selected}`);
+    const team = this.findTeamBySocket(socketId);
+    if (!team) {
+      console.log(`[GameState] Toggle decision failed: no team for socket ${socketId}`);
+      return;
+    }
+    
+    // Don't track drafts if team has already submitted
+    if (team.hasSubmitted) {
+      return;
+    }
+    
+    if (selected) {
+      // Add to draft if not already present
+      if (!team.draftDecisionIds.includes(decisionId)) {
+        team.draftDecisionIds.push(decisionId);
+      }
+    } else {
+      // Remove from draft
+      team.draftDecisionIds = team.draftDecisionIds.filter(id => id !== decisionId);
+    }
+    
+    console.log(`[GameState] Team ${team.teamId} draft updated: ${team.draftDecisionIds.length} decisions selected`);
+  }
+  
+  /**
+   * Sync all draft selections at once (for reconnection or bulk update)
+   */
+  syncDraftSelections(socketId: string, decisionIds: string[]): void {
+    const team = this.findTeamBySocket(socketId);
+    if (!team) {
+      console.log(`[GameState] Sync drafts failed: no team for socket ${socketId}`);
+      return;
+    }
+    
+    // Don't update drafts if team has already submitted
+    if (team.hasSubmitted) {
+      return;
+    }
+    
+    team.draftDecisionIds = [...decisionIds];
+    console.log(`[GameState] Team ${team.teamId} drafts synced: ${decisionIds.length} decisions`);
   }
 
   // ===========================================================================
@@ -610,9 +659,20 @@ export class GameStateManager {
       // Simulate: spending on "grow" investments generates more future cash
       // spending on "sustain" maintains cash, "optimize" is neutral
       const priorDecisions = team.currentRoundDecisions;
-      const growSpend = priorDecisions.filter(d => d.category === 'grow').reduce((sum, d) => sum + d.cost, 0);
-      const optimizeSpend = priorDecisions.filter(d => d.category === 'optimize').reduce((sum, d) => sum + d.cost, 0);
-      const sustainSpend = priorDecisions.filter(d => d.category === 'sustain').reduce((sum, d) => sum + d.cost, 0);
+      
+      // Look up full decision info to get category
+      let growSpend = 0;
+      let optimizeSpend = 0;
+      let sustainSpend = 0;
+      
+      for (const td of priorDecisions) {
+        const decision = getDecisionById(td.decisionId);
+        if (decision) {
+          if (decision.category === 'grow') growSpend += td.actualCost;
+          else if (decision.category === 'optimize') optimizeSpend += td.actualCost;
+          else if (decision.category === 'sustain') sustainSpend += td.actualCost;
+        }
+      }
       
       // Base cash + growth return + efficiency savings - sustain costs
       // Grow investments return 15-25% in future cash generation
@@ -632,6 +692,7 @@ export class GameStateManager {
       team.currentRoundDecisions = [];
       team.hasSubmitted = false;
       team.cashBalance = newCash;
+      team.draftDecisionIds = []; // Clear draft selections for new round
     }
 
     // Start timer
@@ -709,16 +770,64 @@ export class GameStateManager {
   // ===========================================================================
 
   /**
+   * Auto-submit a team's draft decisions when time runs out
+   * Converts draft decision IDs into TeamDecision objects
+   */
+  private autoSubmitDraftDecisions(team: TeamState): void {
+    const availableDecisions = this.getAvailableDecisions();
+    const availableIds = new Set(availableDecisions.map(d => d.id));
+    
+    let totalCost = 0;
+    const validDecisions: TeamDecision[] = [];
+    
+    // Process each draft decision ID
+    for (const decisionId of team.draftDecisionIds) {
+      // Skip if not available this round
+      if (!availableIds.has(decisionId)) {
+        continue;
+      }
+      
+      const decision = getDecisionById(decisionId);
+      if (!decision) {
+        continue;
+      }
+      
+      // Check if adding this would exceed budget
+      if (totalCost + decision.cost > team.cashBalance) {
+        // Skip decisions that don't fit in budget
+        console.log(`[AutoSubmit] Team ${team.teamId}: Skipping ${decisionId} - would exceed budget`);
+        continue;
+      }
+      
+      totalCost += decision.cost;
+      
+      validDecisions.push({
+        decisionId,
+        round: this.state.currentRound,
+        submittedAt: new Date().toISOString(),
+        actualCost: decision.cost,
+      });
+    }
+    
+    // Apply the decisions
+    team.currentRoundDecisions = validDecisions;
+    team.cashBalance -= totalCost;
+    team.hasSubmitted = true;
+    
+    console.log(`[AutoSubmit] Team ${team.teamId} auto-submitted ${validDecisions.length} decisions (from ${team.draftDecisionIds.length} drafts), cost: $${totalCost}M`);
+  }
+
+  /**
    * Process the end of a round
    */
   private processRoundEnd(): void {
     this.stopTimer();
     
-    // Auto-submit for teams that haven't submitted
+    // Auto-submit draft selections for teams that haven't explicitly submitted
     for (const team of Object.values(this.state.teams)) {
       if (team.isClaimed && !team.hasSubmitted) {
-        // Submit with whatever they had selected (empty if nothing)
-        team.hasSubmitted = true;
+        // Use their draft selections (whatever they had selected on screen)
+        this.autoSubmitDraftDecisions(team);
       }
     }
 
@@ -737,16 +846,61 @@ export class GameStateManager {
     this.state.status = 'results';
     this.state.roundTimeRemaining = 0;
 
+    // Generate market outlook based on first claimed team's metrics
+    const marketOutlook = this.generateMarketOutlookForRound();
+
     // Store the round results for retrieval
     this.lastRoundResults = generateRoundResults(
       this.state.teams,
       this.state.currentRound,
       this.state.scenario.narrative,
-      this.state.riskyEvents
+      this.state.riskyEvents,
+      marketOutlook
     );
 
     this.broadcastStateChange();
     this.events.onRoundEnd();
+  }
+
+  /**
+   * Generate market outlook for the current round
+   */
+  private generateMarketOutlookForRound(): { backwardStatements: string[]; forwardStatements: string[] } {
+    const currentRound = this.state.currentRound;
+    const claimedTeams = Object.values(this.state.teams).filter(t => t.isClaimed);
+    
+    if (claimedTeams.length === 0) {
+      return {
+        backwardStatements: ['Market conditions remain stable.', 'Strategic execution continues.'],
+        forwardStatements: ['Analysts remain cautiously optimistic.', 'Industry trends continue to evolve.'],
+      };
+    }
+    
+    // Use the first claimed team's metrics for generating the outlook
+    const team = claimedTeams[0];
+    const currentMetrics = team.metrics;
+    
+    // Get previous metrics (from previous round or baseline)
+    let previousMetrics = null;
+    let previousStockPrice = BASELINE_FINANCIALS.sharePrice;
+    
+    if (currentRound > 1) {
+      const history = this.roundHistories[team.teamId];
+      const prevSnapshot = history?.find(s => s.round === (currentRound - 1) as RoundNumber);
+      if (prevSnapshot?.metrics) {
+        // Reconstruct previous metrics from snapshot (simplified)
+        previousStockPrice = prevSnapshot.stockPrice;
+      }
+    }
+    
+    return generateMarketOutlook(
+      currentRound,
+      currentMetrics,
+      previousMetrics,
+      team.stockPrice,
+      previousStockPrice,
+      this.state.scenario.type
+    );
   }
 
   /**
@@ -781,6 +935,9 @@ export class GameStateManager {
         }
       }
       
+      // Calculate historical metrics for this round
+      const metrics = this.calculateSnapshotMetrics(team, currentRound);
+      
       // Create snapshot
       const snapshot: TeamRoundSnapshot = {
         round: currentRound,
@@ -789,12 +946,56 @@ export class GameStateManager {
         cumulativeTSR: team.cumulativeTSR,
         cashSpent,
         decisions,
+        metrics,
       };
       
       this.roundHistories[team.teamId].push(snapshot);
     }
     
     console.log(`[GameState] Captured round ${currentRound} snapshots for ${Object.keys(this.roundHistories).length} teams`);
+  }
+
+  /**
+   * Calculate snapshot metrics for historical tracking
+   */
+  private calculateSnapshotMetrics(team: TeamState, currentRound: RoundNumber): SnapshotMetrics {
+    const m = team.metrics;
+    
+    // Get previous round revenue for growth calculation (or baseline for round 1)
+    let previousRevenue: number;
+    if (currentRound === 1) {
+      previousRevenue = BASELINE_FINANCIALS.revenue;
+    } else {
+      // Look up previous round from history
+      const history = this.roundHistories[team.teamId];
+      const prevSnapshot = history?.find(s => s.round === (currentRound - 1) as RoundNumber);
+      // If we have previous metrics, use that revenue - otherwise calculate from baseline + growth
+      if (prevSnapshot?.metrics) {
+        // We stored revenue growth, so we need to back-calculate revenue
+        // Actually, we should store the revenue value for easier lookups
+        // For now, use baseline as fallback
+        previousRevenue = BASELINE_FINANCIALS.revenue * (1 + (prevSnapshot.metrics.revenueGrowth || 0));
+      } else {
+        previousRevenue = BASELINE_FINANCIALS.revenue;
+      }
+    }
+    
+    // Calculate all metrics
+    const revenueGrowth = (m.revenue - previousRevenue) / previousRevenue;
+    const ebitdaMargin = m.ebitda / m.revenue;
+    const ebitMargin = m.ebit / m.revenue;
+    const cogsToRevenue = Math.abs(m.cogs) / m.revenue;
+    const sgaToRevenue = Math.abs(m.sga) / m.revenue;
+    
+    return {
+      stockPrice: team.stockPrice,
+      roic: m.roic,
+      revenueGrowth,
+      ebitdaMargin,
+      ebitMargin,
+      cogsToRevenue,
+      sgaToRevenue,
+    };
   }
 
   /**

@@ -35,6 +35,7 @@ interface UseSocketReturn {
   submitDecisions: (decisionIds: string[]) => Promise<{ success: boolean; error?: string }>;
   unsubmitDecisions: () => Promise<{ success: boolean; error?: string }>;
   toggleDecision: (decisionId: string, selected: boolean) => void;
+  syncDraftSelections: (decisionIds: string[]) => void;
   disconnect: () => void;
 }
 
@@ -240,6 +241,14 @@ export function useSocket(): UseSocketReturn {
     }
   }, []);
   
+  // Sync all draft selections at once
+  const syncDraftSelections = useCallback((decisionIds: string[]) => {
+    const socket = socketRef.current;
+    if (socket?.connected) {
+      socket.emit('sync-draft-selections', decisionIds);
+    }
+  }, []);
+  
   // Disconnect
   const disconnect = useCallback(() => {
     socketRef.current?.disconnect();
@@ -254,6 +263,7 @@ export function useSocket(): UseSocketReturn {
     submitDecisions,
     unsubmitDecisions,
     toggleDecision,
+    syncDraftSelections,
     disconnect,
   };
 }

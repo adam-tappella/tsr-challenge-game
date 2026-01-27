@@ -92,35 +92,35 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
   
   return (
     <div className={cn(
-      "min-h-screen bg-gradient-to-br from-magna-darker via-magna-dark to-magna-darker",
+      "min-h-screen bg-slate-100",
       "flex flex-col items-center justify-center p-8",
       className
     )}>
       {/* Magna Header */}
       <div className="flex items-center gap-2 mb-8">
-        <span className="text-2xl font-black text-white tracking-tight">MAGNA</span>
-        <span className="w-2 h-2 bg-magna-red rounded-full" />
+        <span className="text-2xl font-black text-magna-carbon-black tracking-tight">MAGNA</span>
+        <span className="w-2.5 h-2.5 bg-magna-ignition-red rounded-full" />
       </div>
       
       {/* Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-white mb-2">
+      <div className="text-center mb-10">
+        <h1 className="text-4xl font-bold text-magna-carbon-black mb-3">
           Facilitator Access
         </h1>
-        <p className="text-magna-gray">
+        <p className="text-lg text-slate-600">
           Enter the admin PIN to access game controls
         </p>
       </div>
       
       {/* Login Card */}
-      <div className="bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl p-8 w-full max-w-md">
+      <div className="bg-white border border-slate-200 rounded-2xl p-8 w-full max-w-md shadow-lg">
         {/* Lock Icon */}
-        <div className="w-16 h-16 bg-magna-red/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-          <Lock className="w-8 h-8 text-magna-red" />
+        <div className="w-20 h-20 bg-magna-ignition-red rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-md">
+          <Lock className="w-10 h-10 text-white" />
         </div>
         
         {/* PIN Input */}
-        <div className="flex justify-center gap-3 mb-6">
+        <div className="flex justify-center gap-4 mb-6">
           {pin.map((digit, index) => (
             <input
               key={index}
@@ -134,11 +134,11 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
               onPaste={index === 0 ? handlePaste : undefined}
               disabled={isAuthenticating}
               className={cn(
-                "w-14 h-16 text-center text-2xl font-bold rounded-xl",
-                "bg-magna-dark border-2 text-white",
-                "focus:outline-none focus:ring-2 focus:ring-magna-red",
-                "transition-colors",
-                authError ? "border-magna-red" : "border-white/20",
+                "w-16 h-20 text-center text-3xl font-bold rounded-xl",
+                "bg-slate-50 border-2 text-magna-carbon-black",
+                "focus:outline-none focus:ring-2 focus:ring-magna-ignition-red focus:border-magna-ignition-red",
+                "transition-all",
+                authError ? "border-magna-ignition-red bg-red-50" : "border-slate-300",
                 isAuthenticating && "opacity-50"
               )}
             />
@@ -147,23 +147,23 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
         
         {/* Error Message */}
         {authError && (
-          <div className="flex items-center justify-center gap-2 text-magna-red mb-6">
-            <AlertCircle className="w-4 h-4" />
-            <span className="text-sm">{authError}</span>
+          <div className="flex items-center justify-center gap-2 text-magna-ignition-red mb-6 bg-red-50 py-3 px-4 rounded-xl">
+            <AlertCircle className="w-5 h-5" />
+            <span className="font-medium">{authError}</span>
           </div>
         )}
         
         {/* Loading Indicator */}
         {isAuthenticating && (
-          <div className="flex items-center justify-center gap-2 text-magna-red">
+          <div className="flex items-center justify-center gap-2 text-magna-ignition-red py-3">
             <Loader2 className="w-5 h-5 animate-spin" />
-            <span>Verifying...</span>
+            <span className="font-medium">Verifying...</span>
           </div>
         )}
         
         {/* Hint */}
         {!isAuthenticating && !authError && (
-          <p className="text-center text-magna-gray text-sm">
+          <p className="text-center text-slate-500 text-base">
             Enter the 4-digit PIN provided by the event organizer
           </p>
         )}
@@ -172,7 +172,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
       {/* Back Link */}
       <a
         href="/"
-        className="mt-8 text-magna-gray hover:text-white text-sm transition-colors"
+        className="mt-8 text-slate-500 hover:text-magna-ignition-red font-medium transition-colors"
       >
         ← Back to Team View
       </a>

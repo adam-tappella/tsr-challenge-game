@@ -49,7 +49,7 @@ export const AccessGate: React.FC<AccessGateProps> = ({ accessCode, children }) 
   if (isChecking) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <Loader2 className="w-8 h-8 text-slate-400 animate-spin" />
+        <Loader2 className="w-8 h-8 text-magna-ignition-red animate-spin" />
       </div>
     );
   }
@@ -61,25 +61,31 @@ export const AccessGate: React.FC<AccessGateProps> = ({ accessCode, children }) 
 
   // Show access gate
   return (
-    <div className="min-h-screen bg-slate-100 flex items-center justify-center p-8">
+    <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-8">
+      {/* Magna Header */}
+      <div className="flex items-center gap-2 mb-8">
+        <span className="text-2xl font-black text-magna-carbon-black tracking-tight">MAGNA</span>
+        <span className="w-2.5 h-2.5 bg-magna-ignition-red rounded-full" />
+      </div>
+      
       <div className="w-full max-w-md">
         {/* Lock Icon */}
         <div className="flex justify-center mb-8">
-          <div className="w-20 h-20 bg-white border border-slate-200 shadow-lg rounded-2xl flex items-center justify-center">
-            <Lock className="w-9 h-9 text-slate-500" />
+          <div className="w-20 h-20 bg-magna-ignition-red shadow-lg rounded-2xl flex items-center justify-center">
+            <Lock className="w-10 h-10 text-white" />
           </div>
         </div>
 
         {/* Title */}
-        <h1 className="text-3xl font-semibold text-slate-800 text-center mb-3">
+        <h1 className="text-3xl font-bold text-magna-carbon-black text-center mb-3">
           Access Required
         </h1>
-        <p className="text-slate-500 text-center text-xl mb-8">
+        <p className="text-slate-600 text-center text-lg mb-8">
           Enter the access code to continue
         </p>
 
         {/* Form */}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-2xl p-8 shadow-lg">
           <input
             type="password"
             value={inputCode}
@@ -90,27 +96,27 @@ export const AccessGate: React.FC<AccessGateProps> = ({ accessCode, children }) 
             placeholder="Access code"
             autoFocus
             className={cn(
-              "w-full px-5 py-4 bg-white border-2 rounded-xl text-slate-800 text-center text-xl",
+              "w-full px-5 py-4 bg-slate-50 border-2 rounded-xl text-magna-carbon-black text-center text-xl font-medium",
               "placeholder:text-slate-400",
-              "focus:outline-none focus:ring-2 focus:ring-magna-red/20 focus:border-magna-red",
-              "transition-colors shadow-sm",
-              error ? "border-red-400" : "border-slate-200"
+              "focus:outline-none focus:ring-2 focus:ring-magna-ignition-red focus:border-magna-ignition-red",
+              "transition-all",
+              error ? "border-magna-ignition-red bg-red-50" : "border-slate-300"
             )}
           />
           
           {error && (
-            <p className="text-red-500 text-lg text-center mt-3">
-              Invalid access code
-            </p>
+            <div className="flex items-center justify-center gap-2 text-magna-ignition-red mt-4 bg-red-50 py-3 px-4 rounded-xl">
+              <span className="font-medium">Invalid access code</span>
+            </div>
           )}
 
           <button
             type="submit"
             disabled={!inputCode}
             className={cn(
-              "w-full mt-6 py-4 rounded-xl font-semibold text-xl transition-colors",
+              "w-full mt-6 py-4 rounded-xl font-semibold text-xl transition-all",
               inputCode
-                ? "bg-magna-red text-white hover:bg-magna-red-dark shadow-lg"
+                ? "bg-magna-ignition-red text-white hover:bg-magna-red-dark shadow-md hover:shadow-lg"
                 : "bg-slate-200 text-slate-400 cursor-not-allowed"
             )}
           >

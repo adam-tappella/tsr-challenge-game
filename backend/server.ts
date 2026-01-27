@@ -416,6 +416,10 @@ io.on('connection', (socket: Socket<ClientToServerEvents & AdminToServerEvents, 
   socket.on('toggle-decision', (decisionId: string, selected: boolean) => {
     gameManager.toggleDecision(socket.id, decisionId, selected);
   });
+  
+  socket.on('sync-draft-selections', (decisionIds: string[]) => {
+    gameManager.syncDraftSelections(socket.id, decisionIds);
+  });
 
   // ===== Admin Events =====
   
