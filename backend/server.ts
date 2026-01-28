@@ -537,13 +537,17 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
 // Server Startup
 // =============================================================================
 
-httpServer.listen(PORT, () => {
+// Bind to 0.0.0.0 for cloud deployment (Render, Railway, etc.)
+const HOST = process.env.HOST || '0.0.0.0';
+
+httpServer.listen(Number(PORT), HOST, () => {
   console.log(`\n🎮 Magna TSR Challenge Server`);
   console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
-  console.log(`🌐 HTTP:      http://localhost:${PORT}`);
-  console.log(`🔌 WebSocket: ws://localhost:${PORT}`);
-  console.log(`📊 Health:    http://localhost:${PORT}/api/health`);
+  console.log(`🌐 HTTP:      http://${HOST}:${PORT}`);
+  console.log(`🔌 WebSocket: ws://${HOST}:${PORT}`);
+  console.log(`📊 Health:    http://${HOST}:${PORT}/api/health`);
   console.log(`⚙️  Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔗 Port bound successfully - ready for connections`);
   
   const configValidation = validateDecisionConfiguration();
   if (configValidation.valid) {
