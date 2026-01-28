@@ -5,7 +5,7 @@
  * Provides navigation between player and admin views with mock data.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DemoModeProvider, DemoControlBar, DemoLanding, useDemoMode } from './DemoMode';
 import { TeamSelection } from '@/components/TeamSelection';
 import { Lobby } from '@/components/Lobby';
@@ -13,6 +13,9 @@ import { DecisionScreen } from '@/components/DecisionScreen';
 import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
+import { useAdminStore } from '@/stores/adminStore';
+import { useGameStore } from '@/stores/gameStore';
+import { createDemoGameState } from './demoData';
 
 // =============================================================================
 // Demo Player View
@@ -148,6 +151,18 @@ function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
 // =============================================================================
 
 function DemoAdminView() {
+  const setAuthenticated = useAdminStore((s) => s.setAuthenticated);
+  const updateGameState = useGameStore((s) => s.updateGameState);
+  
+  // Auto-authenticate and set up demo game state for admin
+  useEffect(() => {
+    // Auto-authenticate admin in demo mode
+    setAuthenticated(true);
+    
+    // Set up demo game state so admin can see teams
+    updateGameState(createDemoGameState(1, 'lobby'));
+  }, [setAuthenticated, updateGameState]);
+  
   return (
     <div>
       <AdminPanel />
