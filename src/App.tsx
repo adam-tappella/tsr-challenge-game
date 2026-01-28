@@ -136,24 +136,47 @@ function TeamInterface() {
     setShowCountdownOverlay(false);
   };
   
-  // Handle connection error
+  // Handle connection error - offer demo mode as fallback
   if (error && !isConnected && !isConnecting) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-8">
-        <div className="bg-magna-red/10 border border-magna-red/30 rounded-2xl p-8 max-w-md text-center">
-          <div className="w-16 h-16 bg-magna-red/20 rounded-full flex items-center justify-center mx-auto mb-6">
-            <svg className="w-8 h-8 text-magna-red" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+        <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 max-w-lg text-center">
+          {/* Magna Header */}
+          <div className="flex items-center justify-center gap-2 mb-6">
+            <span className="text-2xl font-black text-slate-800 tracking-tight">MAGNA</span>
+            <span className="w-2.5 h-2.5 bg-magna-red rounded-full" />
+          </div>
+          
+          <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <svg className="w-8 h-8 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-slate-800 mb-2">Connection Error</h2>
-          <p className="text-magna-red text-lg mb-6">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-magna-red text-white rounded-xl font-medium text-lg hover:bg-magna-red-dark transition-colors"
-          >
-            Retry Connection
-          </button>
+          
+          <h2 className="text-2xl font-bold text-slate-800 mb-2">Game Server Unavailable</h2>
+          <p className="text-slate-600 text-lg mb-6">
+            The live game server is not currently running. You can try the demo mode to explore the game experience.
+          </p>
+          
+          <div className="space-y-3">
+            <a
+              href="/demo"
+              className="block w-full px-6 py-4 bg-magna-red text-white rounded-xl font-semibold text-lg hover:bg-magna-red-dark transition-colors shadow-lg shadow-magna-red/20"
+            >
+              Try Demo Mode
+            </a>
+            
+            <button
+              onClick={() => window.location.reload()}
+              className="block w-full px-6 py-3 bg-slate-100 text-slate-700 rounded-xl font-medium text-lg hover:bg-slate-200 transition-colors"
+            >
+              Retry Connection
+            </button>
+          </div>
+          
+          <p className="text-slate-500 text-sm mt-6">
+            If you're a facilitator, make sure the backend server is running.
+          </p>
         </div>
       </div>
     );
