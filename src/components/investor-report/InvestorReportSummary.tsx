@@ -127,6 +127,14 @@ function calculateDerivedMetrics(
   const priorEps = baseEbit * 0.75 / SHARES_OUTSTANDING;
   const epsGrowth = (eps - priorEps) / priorEps;
   
+  // EV multiples (Enterprise Value = NPV)
+  const evToEbitda = metrics.npv / metrics.ebitda;
+  const evToEbit = metrics.npv / metrics.ebit;
+  
+  // Debt calculation: Net Debt = EV - Equity Value
+  const netDebt = metrics.npv - metrics.equityValue;
+  const debtToEbitda = netDebt / metrics.ebitda;
+  
   return {
     revenueGrowth,
     ebitGrowth,
@@ -137,6 +145,10 @@ function calculateDerivedMetrics(
     marketGrowth,
     eps,
     epsGrowth,
+    evToEbitda,
+    evToEbit,
+    netDebt,
+    debtToEbitda,
   };
 }
 
@@ -459,7 +471,6 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
   const totalTeams = gameState.teamCount;
   const isTopThree = teamRank && teamRank <= 3;
   const fiscalYear = 2025 + roundResults.round;
-  const peRatio = team.stockPrice / derivedMetrics.eps;
   
   return (
     <div className={cn(
@@ -651,16 +662,8 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           })()}
         </section>
         
-        {/* Key Metrics - Sectioned */}
+        {/* Key Metrics - Sectioned (Growth > Profitability > Cash Flow > Valuation) */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          {/* Valuation */}
-          <MetricSection title="Valuation" icon={<DollarSign className="w-4 h-4" />}>
-            <MetricRow label="Share Price" value={`$${team.stockPrice.toFixed(2)}`} change={ourResult?.stockPriceChange ? ourResult.stockPriceChange / BASELINE_STOCK_PRICE : undefined} />
-            <MetricRow label="EPS (TTM)" value={`$${derivedMetrics.eps.toFixed(2)}`} change={derivedMetrics.epsGrowth} />
-            <MetricRow label="P/E Ratio" value={`${peRatio.toFixed(1)}x`} />
-            <MetricRow label="Price Target" value={`$${priceTarget.toFixed(2)}`} />
-          </MetricSection>
-          
           {/* Growth */}
           <MetricSection title="Growth" icon={<TrendingUp className="w-4 h-4" />}>
             <MetricRow label="Revenue Growth" value={formatPercent(derivedMetrics.revenueGrowth)} change={derivedMetrics.revenueGrowth} showChangeArrow={false} />
@@ -671,18 +674,26 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           
           {/* Profitability */}
           <MetricSection title="Profitability" icon={<BarChart3 className="w-4 h-4" />}>
+            <MetricRow label="Operating Profit" value={formatCurrency(team.metrics.ebit)} change={derivedMetrics.ebitGrowth} />
             <MetricRow label="EBIT Margin" value={formatPercent(team.metrics.ebitMargin, false)} />
             <MetricRow label="ROIC" value={formatPercent(team.metrics.roic, false)} />
             <MetricRow label="EBITDA" value={formatCurrency(team.metrics.ebitda)} />
-            <MetricRow label="Net Income" value={formatCurrency(team.metrics.ebit * 0.75)} />
           </MetricSection>
           
           {/* Cash Flow */}
           <MetricSection title="Cash Flow" icon={<Activity className="w-4 h-4" />}>
             <MetricRow label="Operating FCF" value={formatCurrency(team.metrics.operatingFCF)} change={derivedMetrics.fcfGrowth} />
+            <MetricRow label="Cash for Next Rd" value={formatCurrency(team.metrics.endingCash)} />
+            <MetricRow label="Debt/EBITDA" value={`${derivedMetrics.debtToEbitda.toFixed(1)}x`} />
             <MetricRow label="FCF Conversion" value={formatPercent(derivedMetrics.fcfConversion, false)} />
-            <MetricRow label="Capex/Sales" value={formatPercent(derivedMetrics.capexToSales, false)} />
-            <MetricRow label="FCF Growth" value={formatPercent(derivedMetrics.fcfGrowth)} showChangeArrow={false} />
+          </MetricSection>
+          
+          {/* Valuation */}
+          <MetricSection title="Valuation" icon={<DollarSign className="w-4 h-4" />}>
+            <MetricRow label="Share Price" value={`$${team.stockPrice.toFixed(2)}`} change={ourResult?.stockPriceChange ? ourResult.stockPriceChange / BASELINE_STOCK_PRICE : undefined} />
+            <MetricRow label="EV/EBITDA" value={`${derivedMetrics.evToEbitda.toFixed(1)}x`} />
+            <MetricRow label="EV/EBIT" value={`${derivedMetrics.evToEbit.toFixed(1)}x`} />
+            <MetricRow label="Price Target" value={`$${priceTarget.toFixed(2)}`} />
           </MetricSection>
         </div>
         
