@@ -5,9 +5,9 @@
  * Handles routing between screens based on URL and game state:
  * 
  * Routes:
- * - / (or /game) - Team interface
- * - /admin - Facilitator control panel
- * - /demo - Demo mode (no backend required)
+ * - / - Demo mode (default, each visitor gets their own game)
+ * - /live - Live multiplayer team interface (requires backend)
+ * - /admin - Facilitator control panel (requires backend)
  * 
  * Team Interface States:
  * - Team Selection (not joined)
@@ -38,7 +38,8 @@ const ACCESS_CODE = 'magna2026';
 type Route = 'team' | 'admin' | 'demo';
 
 function App() {
-  const [route, setRoute] = useState<Route>('team');
+  // Default to demo mode so each visitor gets their own isolated game
+  const [route, setRoute] = useState<Route>('demo');
   
   // Handle routing based on URL
   useEffect(() => {
@@ -46,13 +47,17 @@ function App() {
       const path = window.location.pathname;
       const hash = window.location.hash;
       
-      // Check for demo mode
-      if (path === '/demo' || hash === '#demo') {
-        setRoute('demo');
-      } else if (path === '/admin' || hash === '#admin') {
+      // /admin or #admin - Facilitator control panel (requires backend)
+      if (path === '/admin' || hash === '#admin') {
         setRoute('admin');
-      } else {
+      } 
+      // /live or #live - Live multiplayer mode (requires backend)
+      else if (path === '/live' || hash === '#live') {
         setRoute('team');
+      }
+      // Everything else defaults to demo mode for isolated experience
+      else {
+        setRoute('demo');
       }
     };
     
@@ -66,7 +71,7 @@ function App() {
     };
   }, []);
   
-  // Demo mode doesn't need access gate or backend
+  // Demo mode doesn't need access gate or backend - each visitor gets their own game
   if (route === 'demo') {
     return <DemoApp />;
   }
@@ -160,7 +165,7 @@ function TeamInterface() {
           
           <div className="space-y-3">
             <a
-              href="/demo"
+              href="/"
               className="block w-full px-6 py-4 bg-magna-red text-white rounded-xl font-semibold text-lg hover:bg-magna-red-dark transition-colors shadow-lg shadow-magna-red/20"
             >
               Try Demo Mode
