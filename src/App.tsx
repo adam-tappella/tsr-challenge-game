@@ -4,10 +4,13 @@
  * Main application entry point for the Magna TSR Challenge.
  * Handles routing between screens based on URL and game state:
  * 
- * Routes:
- * - / - Demo mode (default, each visitor gets their own game)
- * - /live - Live multiplayer team interface (requires backend)
- * - /admin - Facilitator control panel (requires backend)
+ * Demo Routes (no backend required, each visitor gets fresh game):
+ * - / - Player demo (direct start)
+ * - /admin - Admin demo (direct start)
+ * 
+ * Live Routes (requires backend server):
+ * - /live - Live multiplayer team interface
+ * - /live-admin - Live facilitator control panel
  * 
  * Team Interface States:
  * - Team Selection (not joined)
@@ -35,11 +38,11 @@ import { DemoApp } from '@/demo';
 // =============================================================================
 const ACCESS_CODE = 'magna2026';
 
-type Route = 'team' | 'admin' | 'demo';
+type Route = 'demo-player' | 'demo-admin' | 'live-team' | 'live-admin';
 
 function App() {
-  // Default to demo mode so each visitor gets their own isolated game
-  const [route, setRoute] = useState<Route>('demo');
+  // Default to demo player mode so each visitor gets their own isolated game
+  const [route, setRoute] = useState<Route>('demo-player');
   
   // Handle routing based on URL
   useEffect(() => {
@@ -47,17 +50,21 @@ function App() {
       const path = window.location.pathname;
       const hash = window.location.hash;
       
-      // /admin or #admin - Facilitator control panel (requires backend)
+      // /admin or #admin - Admin demo mode (each visitor gets fresh admin view)
       if (path === '/admin' || hash === '#admin') {
-        setRoute('admin');
-      } 
-      // /live or #live - Live multiplayer mode (requires backend)
-      else if (path === '/live' || hash === '#live') {
-        setRoute('team');
+        setRoute('demo-admin');
       }
-      // Everything else defaults to demo mode for isolated experience
+      // /live-admin - Live admin mode (requires backend)
+      else if (path === '/live-admin' || hash === '#live-admin') {
+        setRoute('live-admin');
+      }
+      // /live - Live multiplayer mode (requires backend)
+      else if (path === '/live' || hash === '#live') {
+        setRoute('live-team');
+      }
+      // Everything else defaults to player demo mode
       else {
-        setRoute('demo');
+        setRoute('demo-player');
       }
     };
     
@@ -71,15 +78,19 @@ function App() {
     };
   }, []);
   
-  // Demo mode doesn't need access gate or backend - each visitor gets their own game
-  if (route === 'demo') {
-    return <DemoApp />;
+  // Demo modes - no backend required, each visitor gets their own fresh game
+  if (route === 'demo-player') {
+    return <DemoApp startMode="player" />;
   }
   
-  // Wrap everything in AccessGate
+  if (route === 'demo-admin') {
+    return <DemoApp startMode="admin" />;
+  }
+  
+  // Live modes - wrap in AccessGate, requires backend
   return (
     <AccessGate accessCode={ACCESS_CODE}>
-      {route === 'admin' ? <AdminPanel /> : <TeamInterface />}
+      {route === 'live-admin' ? <AdminPanel /> : <TeamInterface />}
     </AccessGate>
   );
 }

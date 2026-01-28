@@ -160,8 +160,13 @@ function DemoAdminView() {
 // Main Demo App
 // =============================================================================
 
-export function DemoApp() {
-  const [mode, setMode] = useState<'landing' | 'player' | 'admin'>('landing');
+interface DemoAppProps {
+  /** Start directly in a specific mode, skipping landing page */
+  startMode?: 'player' | 'admin';
+}
+
+export function DemoApp({ startMode }: DemoAppProps) {
+  const [mode, setMode] = useState<'landing' | 'player' | 'admin'>(startMode || 'landing');
   
   if (mode === 'landing') {
     return <DemoLanding onSelectMode={(m) => setMode(m)} />;
