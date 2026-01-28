@@ -93,23 +93,23 @@ const BACKWARD_TEMPLATES: BackwardTemplate[] = [
   // Margin statements
   {
     condition: (ctx) => {
-      const ebitdaMargin = ctx.currentMetrics.ebitda / ctx.currentMetrics.revenue;
-      return ebitdaMargin > 0.09;
+      const ebitMargin = ctx.currentMetrics.ebit / ctx.currentMetrics.revenue;
+      return ebitMargin > 0.09;
     },
     template: (ctx) => {
-      const margin = ctx.currentMetrics.ebitda / ctx.currentMetrics.revenue;
-      return `EBITDA margin of ${formatPercent(margin)} reflects strong operational performance and cost discipline.`;
+      const margin = ctx.currentMetrics.ebit / ctx.currentMetrics.revenue;
+      return `EBIT margin of ${formatPercent(margin)} reflects strong operational performance and cost discipline.`;
     },
     priority: 7,
   },
   {
     condition: (ctx) => {
-      const ebitdaMargin = ctx.currentMetrics.ebitda / ctx.currentMetrics.revenue;
-      return ebitdaMargin < 0.08;
+      const ebitMargin = ctx.currentMetrics.ebit / ctx.currentMetrics.revenue;
+      return ebitMargin < 0.08;
     },
     template: (ctx) => {
-      const margin = ctx.currentMetrics.ebitda / ctx.currentMetrics.revenue;
-      return `EBITDA margin contracted to ${formatPercent(margin)}, highlighting the need for continued cost optimization.`;
+      const margin = ctx.currentMetrics.ebit / ctx.currentMetrics.revenue;
+      return `EBIT margin contracted to ${formatPercent(margin)}, highlighting the need for continued cost optimization.`;
     },
     priority: 6,
   },
@@ -334,7 +334,7 @@ function detectTopic(statement: string): string {
   const lower = statement.toLowerCase();
   if (lower.includes('revenue')) return 'revenue';
   if (lower.includes('roic')) return 'roic';
-  if (lower.includes('ebitda') || lower.includes('margin')) return 'margin';
+  if (lower.includes('ebit') || lower.includes('margin')) return 'margin';
   if (lower.includes('share price') || lower.includes('stock')) return 'stock';
   if (lower.includes('sg&a') || lower.includes('cost')) return 'cost';
   return 'general';

@@ -431,7 +431,7 @@ export class GameStateManager {
 
     if (!team.isClaimed) {
       // Team slot wasn't claimed, treat as new join
-      return this.joinGame(teamId, socketId);
+      return this.joinGame(team.teamName, socketId);
     }
 
     // Allow reconnection to claimed team without active socket

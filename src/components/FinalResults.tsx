@@ -477,16 +477,6 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                     values={teamHistory.map(s => s.metrics?.ebitMargin)} 
                     format="percent" 
                   />
-                  <MetricRow 
-                    label="COGS / Revenue" 
-                    values={teamHistory.map(s => s.metrics?.cogsToRevenue)} 
-                    format="percent" 
-                  />
-                  <MetricRow 
-                    label="SG&A / Revenue" 
-                    values={teamHistory.map(s => s.metrics?.sgaToRevenue)} 
-                    format="percent" 
-                  />
                 </tbody>
               </table>
             </div>

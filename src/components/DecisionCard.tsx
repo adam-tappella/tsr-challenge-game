@@ -320,10 +320,6 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
             {decision.category === 'optimize' && (
               <div className="grid grid-cols-2 gap-4">
                 <DetailItem 
-                  label="SG&A Savings" 
-                  value={decision.sgaImpact ? `${Math.abs(decision.sgaImpact * 100).toFixed(0)}%` : (decision.cogsImpact ? `${Math.abs(decision.cogsImpact * 100).toFixed(0)}%` : '—')} 
-                />
-                <DetailItem 
                   label="Implementation Cost" 
                   value={decision.recurringBenefit ? `${(decision.cost / decision.recurringBenefit).toFixed(1)}x annual savings` : `$${decision.cost}M`} 
                 />
@@ -356,7 +352,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                 <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
                   <div className="text-sm text-slate-500 mb-1">Revenue Protection</div>
                   <div className="text-slate-800 text-lg font-semibold">
-                    Avoids {decision.revenueImpact ? `${Math.abs(decision.revenueImpact * 100).toFixed(1)}%` : '0.1%'} revenue loss
+                    Avoids {decision.revenueImpact ? `${Math.abs(decision.revenueImpact * 100).toFixed(1)}%` : '0.1%'} core revenue loss compared to previous period
                   </div>
                 </div>
               </div>
@@ -426,9 +422,6 @@ function getImpactSummary(decision: Decision): string[] {
     }
   } else if (decision.category === 'optimize') {
     // Optimize-specific metrics
-    if (decision.sgaImpact) {
-      impacts.push(`SG&A -${Math.abs(decision.sgaImpact * 100).toFixed(0)}%`);
-    }
     if (decision.cogsImpact) {
       impacts.push(`COGS -${Math.abs(decision.cogsImpact * 100).toFixed(0)}%`);
     }

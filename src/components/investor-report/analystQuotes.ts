@@ -157,7 +157,7 @@ const PRICE_OBSERVATIONS: QuoteTemplate[] = [
   {
     analyst: 'Steven Brown',
     firm: 'Wells Fargo',
-    template: 'The stock\'s {stockPriceChange} appreciation to ${stockPrice} is driven by EBITDA margin expansion to {ebitMargin}.',
+    template: 'The stock\'s {stockPriceChange} appreciation to ${stockPrice} is driven by EBIT margin expansion to {ebitMargin}.',
     sentiment: 'positive',
     type: 'observation',
     condition: (p) => p.stockPriceChange > 0.02 && p.ebitMargin > 0.085,

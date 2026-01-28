@@ -377,8 +377,12 @@ export interface BaselineFinancials {
 
 /** Events sent from client to server */
 export interface ClientToServerEvents {
-  /** Team claims a team number */
-  'join-game': (teamId: number, callback: (success: boolean, error?: string) => void) => void;
+  /** Team joins game with team name and optional reconnect token */
+  'join-game': (
+    teamName: string,
+    reconnectToken: string | undefined,
+    callback: (success: boolean, error?: string, teamId?: number, reconnectToken?: string) => void
+  ) => void;
   
   /** Team submits decisions for current round */
   'submit-decisions': (decisions: string[], callback: (success: boolean, error?: string) => void) => void;
