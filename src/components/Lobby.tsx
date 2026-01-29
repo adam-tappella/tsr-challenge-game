@@ -9,6 +9,7 @@ import React, { useMemo } from 'react';
 import { Clock, Users, CheckCircle2, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
+import { MagnaLogo } from './MagnaLogo';
 
 interface LobbyProps {
   className?: string;
@@ -40,9 +41,8 @@ export const Lobby: React.FC<LobbyProps> = ({ className }) => {
       className
     )}>
       {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-4">
-        <span className="text-4xl font-black text-slate-800 tracking-tight">MAGNA</span>
-        <span className="w-3 h-3 bg-magna-red rounded-full" />
+      <div className="flex items-center justify-center mb-4">
+        <MagnaLogo variant="color" size="lg" />
       </div>
       
       {/* Team Badge */}

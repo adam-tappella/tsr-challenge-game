@@ -32,6 +32,7 @@ import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
 import { RoundCountdown } from '@/components/RoundCountdown';
 import { DemoApp } from '@/demo';
+import { MagnaLogo } from '@/components/MagnaLogo';
 
 // =============================================================================
 // ACCESS CODE - Change this to control who can access the app
@@ -158,9 +159,8 @@ function TeamInterface() {
       <div className="min-h-screen bg-slate-100 flex items-center justify-center p-8">
         <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 max-w-lg text-center">
           {/* Magna Header */}
-          <div className="flex items-center justify-center gap-2 mb-6">
-            <span className="text-2xl font-black text-slate-800 tracking-tight">MAGNA</span>
-            <span className="w-2.5 h-2.5 bg-magna-red rounded-full" />
+          <div className="flex items-center justify-center mb-6">
+            <MagnaLogo variant="color" size="md" />
           </div>
           
           <div className="w-16 h-16 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-6">

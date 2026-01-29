@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
+import { MagnaLogo } from '@/components/MagnaLogo';
 import { 
   DEMO_DECISIONS, 
   createDemoGameState, 
@@ -253,9 +254,8 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex flex-col items-center justify-center p-8">
       {/* Header */}
       <div className="text-center mb-12">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <span className="text-6xl font-black text-white tracking-tight">MAGNA</span>
-          <span className="w-4 h-4 bg-magna-red rounded-full" />
+        <div className="flex items-center justify-center mb-4">
+          <MagnaLogo variant="white" size="xl" />
         </div>
         <h1 className="text-4xl font-bold text-white mb-3">
           TSR Challenge

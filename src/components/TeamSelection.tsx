@@ -8,6 +8,7 @@ import React, { useState } from 'react';
 import { Users, Loader2, AlertTriangle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useSocket } from '@/hooks/useSocket';
+import { MagnaLogo } from './MagnaLogo';
 
 interface TeamSelectionProps {
   className?: string;
@@ -46,9 +47,8 @@ export const TeamSelection: React.FC<TeamSelectionProps> = ({ className }) => {
     )}>
       {/* Header with Magna Logo */}
       <div className="text-center mb-12">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <span className="text-6xl font-black text-slate-800 tracking-tight">MAGNA</span>
-          <span className="w-4 h-4 bg-magna-red rounded-full" />
+        <div className="flex items-center justify-center mb-4">
+          <MagnaLogo variant="color" size="xl" />
         </div>
         <h1 className="text-4xl font-bold text-slate-800 mb-3 tracking-tight">
           TSR Challenge

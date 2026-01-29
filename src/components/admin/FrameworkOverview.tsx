@@ -26,6 +26,7 @@ import {
   Lightbulb,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MagnaLogo } from '../MagnaLogo';
 
 interface FrameworkOverviewProps {
   onBack: () => void;
@@ -238,8 +239,7 @@ export const FrameworkOverview: React.FC<FrameworkOverviewProps> = ({ onBack, cl
             </div>
             
             <div className="flex items-center gap-3">
-              <span className="text-lg font-black text-white tracking-tight">MAGNA</span>
-              <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
+              <MagnaLogo variant="white" size="xs" />
               <span className="text-white font-semibold">Principles, Lessons & Dynamics</span>
             </div>
           </div>

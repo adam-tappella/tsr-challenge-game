@@ -34,6 +34,7 @@ import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useRemainingBudget, useSelectedCost } from '@/stores/gameStore';
 import { useSocket } from '@/hooks/useSocket';
 import { DecisionCard } from './DecisionCard';
+import { MagnaLogo } from './MagnaLogo';
 import type { Decision, DecisionCategory } from '@/types/game';
 
 interface DecisionScreenProps {
@@ -222,10 +223,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
           <div className="flex items-center justify-between">
             {/* Left: Magna Logo, Team & Round Info */}
             <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <span className="text-2xl font-black text-slate-800 tracking-tight">MAGNA</span>
-                <span className="w-2 h-2 bg-magna-red rounded-full" />
-              </div>
+              <MagnaLogo variant="color" size="sm" />
               <div className="bg-magna-red text-white px-5 py-2 rounded-full font-bold text-lg max-w-[220px] truncate">
                 {teamName || `Team ${team.teamId}`}
               </div>

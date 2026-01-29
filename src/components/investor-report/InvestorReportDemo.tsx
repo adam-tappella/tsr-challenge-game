@@ -20,6 +20,7 @@ import {
   ArrowLeft,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MagnaLogo } from '../MagnaLogo';
 
 // =============================================================================
 // Mock Data
@@ -184,9 +185,8 @@ export const InvestorReportDemo: React.FC = () => {
 
         {/* Header */}
         <header className="text-center mb-8">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <span className="text-3xl font-black text-magna-carbon-black tracking-tight">MAGNA</span>
-            <span className="w-2.5 h-2.5 bg-magna-ignition-red rounded-full" />
+          <div className="flex items-center justify-center mb-4">
+            <MagnaLogo variant="color" size="lg" />
           </div>
           
           <h1 className="text-2xl md:text-3xl font-bold text-magna-carbon-black mb-2">

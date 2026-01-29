@@ -52,7 +52,7 @@ export default {
           'red-dark': '#B71C1C',          // Darker variant for hover states
           'carbon-black': '#000000',      // Primary dark color (54%)
           'chrome-white': '#FFFFFF',      // Primary light color
-          'cool-gray': '#8B8B8D',         // Secondary gray (14%)
+          'cool-gray': '#888B8D',         // Secondary gray (14%) - RGB 136/139/141
           
           // Secondary Colors
           'electric-blue': '#4299B4',     // Secondary accent for highlights

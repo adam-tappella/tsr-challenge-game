@@ -13,6 +13,7 @@ import { DecisionScreen } from '@/components/DecisionScreen';
 import { RoundResults } from '@/components/RoundResults';
 import { FinalResults } from '@/components/FinalResults';
 import { AdminPanel } from '@/components/admin';
+import { MagnaLogo } from '@/components/MagnaLogo';
 import { useAdminStore } from '@/stores/adminStore';
 import { useGameStore } from '@/stores/gameStore';
 import { createDemoGameState } from './demoData';
@@ -76,9 +77,8 @@ function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
     <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-8">
       {/* Header with Magna Logo */}
       <div className="text-center mb-12">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <span className="text-6xl font-black text-slate-800 tracking-tight">MAGNA</span>
-          <span className="w-4 h-4 bg-magna-red rounded-full" />
+        <div className="flex items-center justify-center mb-4">
+          <MagnaLogo variant="color" size="xl" />
         </div>
         <h1 className="text-4xl font-bold text-slate-800 mb-3 tracking-tight">
           TSR Challenge

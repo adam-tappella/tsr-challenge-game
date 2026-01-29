@@ -33,6 +33,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore, useCurrentTeam, useTeamRank } from '@/stores/gameStore';
+import { MagnaLogo } from '../MagnaLogo';
 import { generateAnalystQuotes, MARKET_GROWTH_RATES, type AnalystQuote } from './analystQuotes';
 import type { FinancialMetrics, RoundNumber } from '@/types/game';
 
@@ -484,8 +485,7 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
           <div className="flex items-start justify-between">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <span className="text-4xl font-black tracking-tight">MAGNA</span>
-                <span className="w-3 h-3 bg-magna-ignition-red rounded-full" />
+                <MagnaLogo variant="white" size="lg" />
               </div>
               <div className="text-magna-cool-gray text-lg">
                 Automotive Technology & Manufacturing

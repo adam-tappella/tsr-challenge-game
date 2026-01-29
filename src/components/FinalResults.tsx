@@ -41,6 +41,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
 import { GameRecap } from './GameRecap';
+import { MagnaLogo } from './MagnaLogo';
 import type { TeamRoundSnapshot } from '@/types/game';
 
 // =============================================================================
@@ -197,9 +198,8 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       className
     )}>
       {/* Magna Header */}
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-5xl font-black text-slate-800 tracking-tight">MAGNA</span>
-        <span className="w-4 h-4 bg-magna-red rounded-full" />
+      <div className="flex items-center justify-center mb-8">
+        <MagnaLogo variant="color" size="xl" />
       </div>
       
       {/* Header */}
@@ -652,8 +652,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       <div className="mt-12 text-center">
         <p className="text-slate-500 text-lg mb-3">Thank you for participating in the</p>
         <div className="flex items-center justify-center gap-3">
-          <span className="text-2xl font-black text-slate-800">MAGNA</span>
-          <span className="w-2 h-2 bg-magna-red rounded-full" />
+          <MagnaLogo variant="color" size="sm" />
           <span className="text-2xl font-semibold text-slate-800">TSR Challenge</span>
         </div>
         <p className="text-slate-500 text-lg mt-3">2026</p>

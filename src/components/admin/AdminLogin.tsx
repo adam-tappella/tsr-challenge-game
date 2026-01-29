@@ -9,6 +9,7 @@ import { Lock, Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAdminStore } from '@/stores/adminStore';
 import { useAdmin } from '@/hooks/useAdmin';
+import { MagnaLogo } from '../MagnaLogo';
 
 interface AdminLoginProps {
   className?: string;
@@ -97,9 +98,8 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
       className
     )}>
       {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-8">
-        <span className="text-2xl font-black text-magna-carbon-black tracking-tight">MAGNA</span>
-        <span className="w-2.5 h-2.5 bg-magna-ignition-red rounded-full" />
+      <div className="flex items-center justify-center mb-8">
+        <MagnaLogo variant="color" size="md" />
       </div>
       
       {/* Header */}

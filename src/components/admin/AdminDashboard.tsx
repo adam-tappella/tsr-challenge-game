@@ -29,6 +29,7 @@ import { useGameStore } from '@/stores/gameStore';
 import { useAdminStore } from '@/stores/adminStore';
 import { useAdmin } from '@/hooks/useAdmin';
 import { useSocket } from '@/hooks/useSocket';
+import { MagnaLogo } from '../MagnaLogo';
 import type { GameStatus } from '@/types/game';
 
 interface AdminDashboardProps {
@@ -294,10 +295,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <span className="text-lg font-black text-slate-800 tracking-tight">MAGNA</span>
-                <span className="w-1.5 h-1.5 bg-magna-red rounded-full" />
-              </div>
+              <MagnaLogo variant="color" size="xs" />
               <div className="bg-magna-red text-white px-3 py-1 rounded-full text-sm font-medium">
                 FACILITATOR
               </div>

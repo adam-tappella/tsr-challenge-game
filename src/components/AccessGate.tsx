@@ -8,6 +8,7 @@
 import React, { useState, useEffect } from 'react';
 import { Lock, Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { MagnaLogo } from './MagnaLogo';
 
 interface AccessGateProps {
   accessCode: string;
@@ -63,9 +64,8 @@ export const AccessGate: React.FC<AccessGateProps> = ({ accessCode, children }) 
   return (
     <div className="min-h-screen bg-slate-100 flex flex-col items-center justify-center p-8">
       {/* Magna Header */}
-      <div className="flex items-center gap-2 mb-8">
-        <span className="text-2xl font-black text-magna-carbon-black tracking-tight">MAGNA</span>
-        <span className="w-2.5 h-2.5 bg-magna-ignition-red rounded-full" />
+      <div className="flex items-center justify-center mb-8">
+        <MagnaLogo variant="color" size="md" />
       </div>
       
       <div className="w-full max-w-md">
