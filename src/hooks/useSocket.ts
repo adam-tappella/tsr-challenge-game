@@ -88,37 +88,11 @@ export function useSocket(): UseSocketReturn {
       console.log('[Socket] Connected to server');
       setConnected(true);
       
-      // Try to reconnect using stored credentials (from localStorage)
-      const state = useGameStore.getState();
-      const { teamName, reconnectToken } = state.getStoredCredentials();
-      
-      if (teamName && reconnectToken) {
-        console.log('[Socket] Attempting reconnection for team:', teamName);
-        socket.emit('join-game', teamName, reconnectToken, (success: boolean, error?: string, teamId?: number, newToken?: string) => {
-          if (success && teamId) {
-            console.log('[Socket] Reconnected as team:', teamId);
-            useGameStore.getState().setTeamId(teamId);
-            useGameStore.getState().setTeamName(teamName);
-            if (newToken) {
-              useGameStore.getState().setReconnectToken(newToken);
-            }
-            useGameStore.getState().setJoinedGame(true);
-          } else {
-            console.log('[Socket] Reconnection failed:', error, '- clearing stored credentials');
-            useGameStore.getState().clearStoredCredentials();
-          }
-        });
-      } else if (state.hasJoinedGame && state.teamName && state.reconnectToken) {
-        // Fallback: use in-memory state if localStorage failed
-        console.log('[Socket] Reconnecting team (from memory):', state.teamName);
-        socket.emit('join-game', state.teamName, state.reconnectToken, (success: boolean, error?: string, teamId?: number) => {
-          if (success) {
-            console.log('[Socket] Reconnected as team:', teamId);
-          } else {
-            console.error('[Socket] Reconnection failed:', error);
-          }
-        });
-      }
+      // Auto-reconnection is disabled - teams must always enter their name
+      // This ensures fresh team selection each time the page loads
+      // Clear any stored credentials to prevent confusion
+      useGameStore.getState().clearStoredCredentials();
+      console.log('[Socket] Ready for team to join');
     });
     
     socket.on('disconnect', (reason) => {

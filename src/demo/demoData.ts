@@ -138,7 +138,11 @@ export const DEMO_DECISIONS: Decision[] = [
 // Demo Game State
 // =============================================================================
 
-export function createDemoGameState(round: RoundNumber = 1, status: 'lobby' | 'active' | 'results' | 'finished' = 'lobby'): GameState {
+export function createDemoGameState(
+  round: RoundNumber = 1, 
+  status: 'lobby' | 'active' | 'results' | 'finished' = 'lobby',
+  userTeamName?: string
+): GameState {
   return {
     status,
     currentRound: round,
@@ -148,7 +152,7 @@ export function createDemoGameState(round: RoundNumber = 1, status: 'lobby' | 'a
     teams: {
       1: {
         teamId: 1,
-        teamName: 'Alpha Investors',
+        teamName: userTeamName || 'Your Team',
         isClaimed: true,
         socketId: 'demo-socket-1',
         cashBalance: 1000,

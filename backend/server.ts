@@ -367,6 +367,51 @@ app.get('/admin/status', (req: Request, res: Response) => {
   });
 });
 
+app.get('/admin/scoreboard', (req: Request, res: Response) => {
+  const pin = req.query.pin as string;
+  if (pin !== DEFAULT_GAME_CONFIG.adminPin) {
+    return res.status(401).json({ success: false, error: 'Invalid admin PIN' });
+  }
+  
+  const state = gameManager.getState();
+  const roundHistories = gameManager.getRoundHistories();
+  
+  // Build scoreboard data with team info and historical stock prices
+  const teams = Object.values(state.teams)
+    .filter(t => t.isClaimed)
+    .map(team => {
+      const history = roundHistories[team.teamId] || [];
+      
+      // Build round-by-round stock prices (for chart)
+      const stockPricesByRound: Record<number, number> = {};
+      for (const snapshot of history) {
+        stockPricesByRound[snapshot.round] = snapshot.stockPrice;
+      }
+      // Add current stock price if not in history yet
+      if (!stockPricesByRound[state.currentRound] && state.status !== 'lobby') {
+        stockPricesByRound[state.currentRound] = team.stockPrice;
+      }
+      
+      return {
+        teamId: team.teamId,
+        teamName: team.teamName,
+        currentStockPrice: team.stockPrice,
+        cumulativeTSR: team.cumulativeTSR,
+        stockPricesByRound,
+      };
+    })
+    // Sort by cumulative TSR (highest first)
+    .sort((a, b) => b.cumulativeTSR - a.cumulativeTSR);
+  
+  res.json({
+    success: true,
+    currentRound: state.currentRound,
+    status: state.status,
+    scenario: state.scenario,
+    teams,
+  });
+});
+
 // =============================================================================
 // WebSocket Event Handlers
 // =============================================================================

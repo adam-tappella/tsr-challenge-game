@@ -23,17 +23,12 @@ import { createDemoGameState } from './demoData';
 // =============================================================================
 
 function DemoPlayerView() {
-  const { currentScreen, setScreen } = useDemoMode();
-  
-  // Custom join handler for demo mode
-  const handleDemoJoin = () => {
-    setScreen('lobby');
-  };
+  const { currentScreen, joinGame } = useDemoMode();
   
   const renderScreen = () => {
     switch (currentScreen) {
       case 'team-selection':
-        return <DemoTeamSelection onJoin={handleDemoJoin} />;
+        return <DemoTeamSelection onJoin={joinGame} />;
       case 'lobby':
         return <Lobby />;
       case 'decision':
@@ -43,7 +38,7 @@ function DemoPlayerView() {
       case 'final':
         return <FinalResults />;
       default:
-        return <DemoTeamSelection onJoin={handleDemoJoin} />;
+        return <DemoTeamSelection onJoin={joinGame} />;
     }
   };
   
@@ -60,7 +55,7 @@ function DemoPlayerView() {
 // =============================================================================
 
 interface DemoTeamSelectionProps {
-  onJoin: () => void;
+  onJoin: (teamName: string) => void;
 }
 
 function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
@@ -69,7 +64,7 @@ function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (teamName.trim()) {
-      onJoin();
+      onJoin(teamName.trim());
     }
   };
   

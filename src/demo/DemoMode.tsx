@@ -35,7 +35,10 @@ interface DemoContextType {
   isDemo: boolean;
   currentScreen: DemoScreen;
   currentRound: RoundNumber;
+  teamName: string;
   setScreen: (screen: DemoScreen) => void;
+  setTeamName: (name: string) => void;
+  joinGame: (name: string) => void;
   nextScreen: () => void;
   previousScreen: () => void;
   setRound: (round: RoundNumber) => void;
@@ -65,45 +68,66 @@ interface DemoModeProviderProps {
 export function DemoModeProvider({ children }: DemoModeProviderProps) {
   const [currentScreen, setCurrentScreen] = useState<DemoScreen>('team-selection');
   const [currentRound, setCurrentRound] = useState<RoundNumber>(1);
+  const [teamName, setTeamName] = useState<string>('');
   
   const store = useGameStore();
   
-  // Initialize demo state when screen changes
+  // Join game with a team name - called when user submits the team selection form
+  const joinGame = (name: string) => {
+    setTeamName(name);
+    store.setTeamId(1);
+    store.setTeamName(name);
+    store.setJoinedGame(true);
+    store.updateGameState(createDemoGameState(currentRound, 'lobby', name));
+    setCurrentScreen('lobby');
+  };
+  
+  // Initialize demo state when screen changes (but not for lobby - that's handled by joinGame)
   useEffect(() => {
+    // Use current team name or fallback to 'Demo Team' for demo control bar navigation
+    const displayName = teamName || 'Demo Team';
+    
     switch (currentScreen) {
       case 'team-selection':
         store.reset();
+        setTeamName(''); // Clear team name when going back to selection
         break;
       case 'lobby':
-        store.setTeamId(1);
-        store.setTeamName('Demo Team');
-        store.setJoinedGame(true);
-        store.updateGameState(createDemoGameState(currentRound, 'lobby'));
+        // Only set up if not already joined (this handles demo control bar navigation)
+        if (!store.hasJoinedGame) {
+          store.setTeamId(1);
+          store.setTeamName(displayName);
+          store.setJoinedGame(true);
+          store.updateGameState(createDemoGameState(currentRound, 'lobby', displayName));
+        } else {
+          // Just update game state for round changes
+          store.updateGameState(createDemoGameState(currentRound, 'lobby', displayName));
+        }
         break;
       case 'decision':
         store.setTeamId(1);
-        store.setTeamName('Demo Team');
+        store.setTeamName(displayName);
         store.setJoinedGame(true);
-        store.updateGameState(createDemoGameState(currentRound, 'active'));
+        store.updateGameState(createDemoGameState(currentRound, 'active', displayName));
         store.setAvailableDecisions(DEMO_DECISIONS);
         store.setTimeRemaining(180);
         break;
       case 'results':
         store.setTeamId(1);
-        store.setTeamName('Demo Team');
+        store.setTeamName(displayName);
         store.setJoinedGame(true);
-        store.updateGameState(createDemoGameState(currentRound, 'results'));
+        store.updateGameState(createDemoGameState(currentRound, 'results', displayName));
         store.setRoundResults(createDemoRoundResults(currentRound));
         break;
       case 'final':
         store.setTeamId(1);
-        store.setTeamName('Demo Team');
+        store.setTeamName(displayName);
         store.setJoinedGame(true);
-        store.updateGameState(createDemoGameState(5, 'finished'));
+        store.updateGameState(createDemoGameState(5, 'finished', displayName));
         store.setFinalResults(createDemoFinalResults());
         break;
     }
-  }, [currentScreen, currentRound]);
+  }, [currentScreen, currentRound, teamName]);
   
   const screenOrder: DemoScreen[] = ['team-selection', 'lobby', 'decision', 'results', 'final'];
   
@@ -124,6 +148,7 @@ export function DemoModeProvider({ children }: DemoModeProviderProps) {
   const resetDemo = () => {
     setCurrentScreen('team-selection');
     setCurrentRound(1);
+    setTeamName('');
     store.reset();
   };
   
@@ -131,7 +156,10 @@ export function DemoModeProvider({ children }: DemoModeProviderProps) {
     isDemo: true,
     currentScreen,
     currentRound,
+    teamName,
     setScreen: setCurrentScreen,
+    setTeamName,
+    joinGame,
     nextScreen,
     previousScreen,
     setRound: setCurrentRound,

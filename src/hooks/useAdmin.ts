@@ -42,6 +42,27 @@ interface AdminStatus {
   teamsTotal: number;
 }
 
+export interface ScoreboardTeam {
+  teamId: number;
+  teamName: string;
+  currentStockPrice: number;
+  cumulativeTSR: number;
+  stockPricesByRound: Record<number, number>;
+}
+
+export interface ScoreboardData {
+  success: boolean;
+  currentRound: number;
+  status: string;
+  scenario: {
+    type: string;
+    narrative: string;
+    eventTriggered: boolean;
+    eventDescription?: string;
+  };
+  teams: ScoreboardTeam[];
+}
+
 export function useAdmin() {
   const setAuthenticated = useAdminStore((s) => s.setAuthenticated);
   const setAuthenticating = useAdminStore((s) => s.setAuthenticating);
@@ -138,6 +159,17 @@ export function useAdmin() {
   }, [adminRequest]);
   
   /**
+   * Get scoreboard data (team rankings and historical stock prices)
+   */
+  const getScoreboard = useCallback(async (): Promise<ScoreboardData | null> => {
+    const result = await adminRequest<ScoreboardData>('/admin/scoreboard', 'GET');
+    if (result.success) {
+      return result as unknown as ScoreboardData;
+    }
+    return null;
+  }, [adminRequest]);
+  
+  /**
    * Configure team count
    */
   const configureTeamCount = useCallback(async (teamCount: number): Promise<ApiResponse> => {
@@ -216,6 +248,7 @@ export function useAdmin() {
     authenticate,
     checkStoredAuth,
     getStatus,
+    getScoreboard,
     configureTeamCount,
     configureRoundDuration,
     startGame,

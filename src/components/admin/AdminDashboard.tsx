@@ -23,6 +23,7 @@ import {
   RotateCcw,
   LogOut,
   BookOpen,
+  BarChart3,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGameStore } from '@/stores/gameStore';
@@ -35,6 +36,7 @@ import type { GameStatus } from '@/types/game';
 interface AdminDashboardProps {
   className?: string;
   onOpenFramework?: () => void;
+  onOpenScoreboard?: () => void;
 }
 
 interface TeamInfo {
@@ -115,7 +117,7 @@ const YEAR_SCENARIOS: Record<number, {
   },
 };
 
-export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework }) => {
+export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpenFramework, onOpenScoreboard }) => {
   // Local state
   const [teamCount, setTeamCount] = useState(15);
   const [roundDuration, setRoundDuration] = useState(600);
@@ -307,6 +309,17 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
             <div className="flex items-center gap-4">
               {/* Status Badge */}
               <StatusBadge status={status} />
+              
+              {/* Scoreboard Button */}
+              {onOpenScoreboard && (
+                <button
+                  onClick={onOpenScoreboard}
+                  className="flex items-center gap-2 px-4 py-2 bg-slate-800 text-white rounded-xl hover:bg-slate-700 transition-colors font-medium"
+                >
+                  <BarChart3 className="w-4 h-4" />
+                  Scoreboard
+                </button>
+              )}
               
               {/* Framework Button */}
               {onOpenFramework && (

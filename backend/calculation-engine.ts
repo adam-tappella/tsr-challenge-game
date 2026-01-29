@@ -64,6 +64,10 @@ const DIVIDEND_PAYOUT_RATIO = 0.25;
 /** Net debt for equity value calculation (simplified) */
 const NET_DEBT = 8574;  // $8,574M (NPV - Equity Value from baseline)
 
+/** Stock price bounds - max is 2x starting price, min is 0.5x */
+const MAX_STOCK_PRICE_MULTIPLIER = 2.0;
+const MIN_STOCK_PRICE_MULTIPLIER = 0.5;
+
 // =============================================================================
 // Types
 // =============================================================================
@@ -293,7 +297,12 @@ export function calculateTeamMetrics(
   // Calculate equity value and share price
   const equityValue = adjustedNpv - NET_DEBT;
   const sharesOutstanding = BASELINE_FINANCIALS.sharesOutstanding;
-  const sharePrice = Math.max(0, equityValue / sharesOutstanding);
+  const rawSharePrice = equityValue / sharesOutstanding;
+  
+  // Apply stock price bounds - max 2x starting price, min 0.5x starting price
+  const minPrice = BASELINE_FINANCIALS.sharePrice * MIN_STOCK_PRICE_MULTIPLIER;
+  const maxPrice = BASELINE_FINANCIALS.sharePrice * MAX_STOCK_PRICE_MULTIPLIER;
+  const sharePrice = Math.min(maxPrice, Math.max(minPrice, rawSharePrice));
   
   // Calculate margins and returns
   const ebitMargin = ebit / revenue;
@@ -559,6 +568,10 @@ export function generateFinalResults(
     let totalDividends = 0;
     let currentFCF = team.metrics.operatingFCF;
     
+    // Stock price bounds for final simulation
+    const minPrice = startingPrice * MIN_STOCK_PRICE_MULTIPLIER;
+    const maxPrice = startingPrice * MAX_STOCK_PRICE_MULTIPLIER;
+    
     // Simulate 5 years (2031-2035)
     for (let year = 1; year <= 5; year++) {
       // FCF grows at terminal rate
@@ -571,6 +584,9 @@ export function generateFinalResults(
       // Stock price grows slightly with FCF growth and random noise
       const growthFactor = 1 + TERMINAL_GROWTH_RATE + (Math.random() * 0.02 - 0.01);
       currentPrice *= growthFactor;
+      
+      // Apply bounds each year
+      currentPrice = Math.min(maxPrice, Math.max(minPrice, currentPrice));
     }
     
     // Calculate final TSR
