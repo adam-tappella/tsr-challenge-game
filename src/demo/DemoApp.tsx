@@ -120,8 +120,8 @@ function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
               autoFocus
               maxLength={30}
             />
-            <p className="text-base text-slate-500 mt-2">
-              Choose a <span className="font-semibold text-slate-600">unique</span> name for your team (max 30 characters)
+            <p className="text-base text-slate-700 mt-2">
+              Choose a <span className="font-semibold text-slate-800">unique</span> name for your team (max 30 characters)
             </p>
           </div>
           
@@ -139,7 +139,7 @@ function DemoTeamSelection({ onJoin }: DemoTeamSelectionProps) {
         </form>
       </div>
       
-      <p className="text-slate-500 text-lg mt-8">
+      <p className="text-slate-700 text-lg mt-8">
         Magna International Leadership Meeting • 2026
       </p>
     </div>

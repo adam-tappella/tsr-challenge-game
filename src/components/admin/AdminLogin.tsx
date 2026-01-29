@@ -163,7 +163,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
         
         {/* Hint */}
         {!isAuthenticating && !authError && (
-          <p className="text-center text-slate-500 text-base">
+          <p className="text-center text-slate-700 text-base">
             Enter the 4-digit PIN provided by the event organizer
           </p>
         )}
@@ -172,7 +172,7 @@ export const AdminLogin: React.FC<AdminLoginProps> = ({ className }) => {
       {/* Back Link */}
       <a
         href="/"
-        className="mt-8 text-slate-500 hover:text-magna-ignition-red font-medium transition-colors"
+        className="mt-8 text-slate-700 hover:text-magna-ignition-red font-medium transition-colors"
       >
         ← Back to Team View
       </a>

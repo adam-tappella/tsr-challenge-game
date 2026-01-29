@@ -322,7 +322,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
               {/* Logout */}
               <button
                 onClick={handleLogout}
-                className="flex items-center gap-2 px-3 py-2 text-slate-500 hover:text-slate-800 transition-colors"
+                className="flex items-center gap-2 px-3 py-2 text-slate-700 hover:text-slate-800 transition-colors"
               >
                 <LogOut className="w-4 h-4" />
                 Logout
@@ -359,7 +359,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-                  <Timer className="w-5 h-5 text-slate-500" />
+                  <Timer className="w-5 h-5 text-slate-700" />
                   Game Status
                 </h2>
                 <button
@@ -373,7 +373,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
               <div className="grid grid-cols-3 gap-4 mb-6">
                 <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 text-center">
                   <div className="text-3xl font-bold text-slate-800">{currentRound}</div>
-                  <div className="text-sm text-slate-500">Current Round</div>
+                  <div className="text-sm text-slate-700">Current Round</div>
                 </div>
                 <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 text-center">
                   <div className={cn(
@@ -382,13 +382,13 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                   )}>
                     {formattedTime}
                   </div>
-                  <div className="text-sm text-slate-500">Time Remaining</div>
+                  <div className="text-sm text-slate-700">Time Remaining</div>
                 </div>
                 <div className="bg-slate-100 border border-slate-200 rounded-xl p-4 text-center">
                   <div className="text-3xl font-bold text-slate-800">
                     {submittedTeams}/{claimedTeams}
                   </div>
-                  <div className="text-sm text-slate-500">
+                  <div className="text-sm text-slate-700">
                     {submittedTeams === 1 ? '1 team' : `${submittedTeams} teams`} submitted
                   </div>
                 </div>
@@ -466,7 +466,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
             {status === 'lobby' && (
               <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm">
                 <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-6">
-                  <Settings className="w-5 h-5 text-slate-500" />
+                  <Settings className="w-5 h-5 text-slate-700" />
                   Game Configuration
                 </h2>
                 
@@ -493,7 +493,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                         Set
                       </button>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">Min: 10, Max: 20</p>
+                    <p className="text-xs text-slate-700 mt-1">Min: 10, Max: 20</p>
                   </div>
                   
                   {/* Round Duration */}
@@ -518,7 +518,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                         Set
                       </button>
                     </div>
-                    <p className="text-xs text-slate-500 mt-1">
+                    <p className="text-xs text-slate-700 mt-1">
                       {Math.floor(roundDuration / 60)} min {roundDuration % 60} sec
                     </p>
                   </div>
@@ -538,7 +538,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
           <div>
             <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm sticky top-24">
               <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2 mb-6">
-                <Users className="w-5 h-5 text-slate-500" />
+                <Users className="w-5 h-5 text-slate-700" />
                 Teams Status
               </h2>
               
@@ -618,7 +618,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ className, onOpe
                           <CheckCircle2 className="w-5 h-5 text-emerald-500" />
                         )}
                         {isClaimed && !hasSubmitted && status !== 'active' && status !== 'paused' && (
-                          <span className="text-xs text-slate-500">Ready</span>
+                          <span className="text-xs text-slate-700">Ready</span>
                         )}
                       </div>
                     </div>
@@ -699,7 +699,7 @@ const YearOverview: React.FC<{ round: number }> = ({ round }) => {
     <div>
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-slate-800 flex items-center gap-2">
-          <BookOpen className="w-5 h-5 text-slate-500" />
+          <BookOpen className="w-5 h-5 text-slate-700" />
           Year Overview
         </h2>
         <span className={cn(

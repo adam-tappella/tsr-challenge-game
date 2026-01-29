@@ -200,7 +200,7 @@ const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, priceTarget, currentP
     <div className="bg-white rounded-2xl border border-magna-cool-gray/20 p-8">
       <div className="flex items-center justify-between">
         <div>
-          <div className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wider mb-2">
+          <div className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-2">
             Analyst Rating
           </div>
           <div className="flex items-center gap-3">
@@ -219,7 +219,7 @@ const RatingBadge: React.FC<RatingBadgeProps> = ({ rating, priceTarget, currentP
         </div>
         
         <div className="text-right">
-          <div className="text-sm font-semibold text-magna-cool-gray uppercase tracking-wider mb-1">
+          <div className="text-sm font-semibold text-slate-600 uppercase tracking-wider mb-1">
             Price Target
           </div>
           <div className="text-4xl font-bold text-magna-carbon-black">
@@ -248,8 +248,8 @@ const MetricRow: React.FC<MetricRowProps> = ({ label, value, change, showChangeA
   const isPositive = change !== undefined ? change >= 0 : true;
   
   return (
-    <div className="flex items-center justify-between py-3 border-b border-magna-cool-gray/10 last:border-0">
-      <span className="text-base text-magna-cool-gray">{label}</span>
+    <div className="flex items-center justify-between py-3 border-b border-slate-200 last:border-0">
+      <span className="text-base text-slate-700">{label}</span>
       <div className="flex items-center gap-2">
         <span className="font-semibold text-lg text-magna-carbon-black">{value}</span>
         {change !== undefined && showChangeArrow && (
@@ -274,8 +274,8 @@ interface MetricSectionProps {
 const MetricSection: React.FC<MetricSectionProps> = ({ title, icon, children }) => {
   return (
     <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-5">
-      <div className="flex items-center gap-2 mb-4 pb-2 border-b border-magna-cool-gray/20">
-        <span className="text-magna-cool-gray">{icon}</span>
+      <div className="flex items-center gap-2 mb-4 pb-2 border-b border-slate-200">
+        <span className="text-slate-600">{icon}</span>
         <h3 className="text-sm font-semibold text-magna-carbon-black uppercase tracking-wide">
           {title}
         </h3>
@@ -342,10 +342,10 @@ const AnalystQuoteCard: React.FC<AnalystQuoteCardProps> = ({ quote }) => {
             "{quote.quote}"
           </p>
           <div className="flex items-center gap-2 text-sm">
-            <Building2 className="w-4 h-4 text-magna-cool-gray" />
+            <Building2 className="w-4 h-4 text-slate-600" />
             <span className="font-semibold text-magna-carbon-black">{quote.analyst}</span>
-            <span className="text-magna-cool-gray">•</span>
-            <span className="text-magna-cool-gray">{quote.firm}</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-slate-600">{quote.firm}</span>
           </div>
         </div>
       </div>
@@ -464,7 +464,7 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
   if (!team || !gameState || !roundResults || !derivedMetrics) {
     return (
       <div className="min-h-screen bg-magna-chrome-white flex items-center justify-center">
-        <div className="text-magna-cool-gray">Loading results...</div>
+        <div className="text-slate-700">Loading results...</div>
       </div>
     );
   }
@@ -487,7 +487,7 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
               <div className="flex items-center gap-3 mb-2">
                 <MagnaLogo variant="white" size="lg" />
               </div>
-              <div className="text-magna-cool-gray text-lg">
+              <div className="text-slate-300 text-lg">
                 Automotive Technology & Manufacturing
               </div>
             </div>

@@ -260,7 +260,7 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
         <h1 className="text-4xl font-bold text-white mb-3">
           TSR Challenge
         </h1>
-        <p className="text-slate-400 text-xl">
+        <p className="text-slate-200 text-xl">
           Capital Allocation Simulation Game
         </p>
         
@@ -282,7 +282,7 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
             <Users className="w-8 h-8 text-magna-red" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">Player View</h2>
-          <p className="text-slate-400 mb-4">
+          <p className="text-slate-200 mb-4">
             Experience the game as a team captain. Make investment decisions and see results.
           </p>
           <div className="flex items-center gap-2 text-magna-red font-semibold">
@@ -300,7 +300,7 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
             <Settings className="w-8 h-8 text-blue-400" />
           </div>
           <h2 className="text-2xl font-bold text-white mb-2">Admin View</h2>
-          <p className="text-slate-400 mb-4">
+          <p className="text-slate-200 mb-4">
             See the facilitator control panel. Manage game flow and monitor teams.
           </p>
           <div className="flex items-center gap-2 text-blue-400 font-semibold">
@@ -311,7 +311,7 @@ export function DemoLanding({ onSelectMode }: DemoLandingProps) {
       </div>
       
       {/* Info */}
-      <p className="text-slate-500 text-sm mt-12 max-w-md text-center">
+      <p className="text-slate-300 text-sm mt-12 max-w-md text-center">
         This is a frontend demo for gathering UI/UX feedback. 
         Use the control bar at the bottom to navigate between screens.
       </p>

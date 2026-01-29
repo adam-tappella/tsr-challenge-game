@@ -115,10 +115,10 @@ const MetricCard: React.FC<MetricCardProps> = ({ label, value, change, benchmark
   return (
     <div className="bg-white rounded-xl border border-magna-cool-gray/20 p-4 transition-shadow hover:shadow-md">
       <div className="flex items-start justify-between mb-2">
-        <span className="text-xs font-medium text-magna-cool-gray uppercase tracking-wider">
+        <span className="text-xs font-medium text-slate-600 uppercase tracking-wider">
           {label}
         </span>
-        <div className="text-magna-cool-gray/60">
+        <div className="text-slate-600/60">
           {icon}
         </div>
       </div>
@@ -138,7 +138,7 @@ const MetricCard: React.FC<MetricCardProps> = ({ label, value, change, benchmark
       )}
       
       {benchmark && (
-        <div className="text-xs text-magna-cool-gray mt-1">
+        <div className="text-xs text-slate-600 mt-1">
           Market: {benchmark}
         </div>
       )}
@@ -171,11 +171,11 @@ export const InvestorReportDemo: React.FC = () => {
         <div className="bg-magna-electric-blue/10 border border-magna-electric-blue/30 rounded-xl p-4 mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="text-magna-electric-blue font-medium">Demo Mode</span>
-            <span className="text-magna-cool-gray text-sm">This is a preview with sample data</span>
+            <span className="text-slate-600 text-sm">This is a preview with sample data</span>
           </div>
           <a 
             href="#" 
-            className="flex items-center gap-2 text-sm text-magna-cool-gray hover:text-magna-carbon-black"
+            className="flex items-center gap-2 text-sm text-slate-600 hover:text-magna-carbon-black"
             onClick={() => window.history.back()}
           >
             <ArrowLeft className="w-4 h-4" />
@@ -206,7 +206,7 @@ export const InvestorReportDemo: React.FC = () => {
         
         {/* Executive Summary */}
         <section className="bg-magna-carbon-black text-white rounded-2xl p-6 mb-8">
-          <h2 className="text-sm font-medium uppercase tracking-wider text-magna-cool-gray mb-3">
+          <h2 className="text-sm font-medium uppercase tracking-wider text-slate-600 mb-3">
             Executive Summary
           </h2>
           <p className="text-lg leading-relaxed">
@@ -218,7 +218,7 @@ export const InvestorReportDemo: React.FC = () => {
         
         {/* Key Metrics Grid */}
         <section className="mb-8">
-          <h2 className="text-sm font-medium uppercase tracking-wider text-magna-cool-gray mb-4">
+          <h2 className="text-sm font-medium uppercase tracking-wider text-slate-600 mb-4">
             Key Financial Metrics
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
@@ -230,7 +230,7 @@ export const InvestorReportDemo: React.FC = () => {
         
         {/* Analyst Commentary */}
         <section className="mb-8">
-          <h2 className="text-sm font-medium uppercase tracking-wider text-magna-cool-gray mb-4">
+          <h2 className="text-sm font-medium uppercase tracking-wider text-slate-600 mb-4">
             Analyst Commentary
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -249,13 +249,13 @@ export const InvestorReportDemo: React.FC = () => {
                     "w-5 h-5 mt-0.5 flex-shrink-0",
                     quote.sentiment === 'positive' && "text-emerald-500",
                     quote.sentiment === 'negative' && "text-magna-ignition-red",
-                    quote.sentiment === 'neutral' && "text-magna-cool-gray"
+                    quote.sentiment === 'neutral' && "text-slate-600"
                   )} />
                   <div>
                     <p className="text-magna-carbon-black text-sm leading-relaxed mb-2">
                       "{quote.quote}"
                     </p>
-                    <div className="flex items-center gap-2 text-xs text-magna-cool-gray">
+                    <div className="flex items-center gap-2 text-xs text-slate-600">
                       <Building2 className="w-3 h-3" />
                       <span className="font-medium">{quote.analyst}</span>
                       <span>•</span>
@@ -271,7 +271,7 @@ export const InvestorReportDemo: React.FC = () => {
         {/* Market Conditions & Leaderboard */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
           <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-magna-cool-gray mb-3">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-slate-600 mb-3">
               Market Conditions
             </h2>
             <p className="text-magna-carbon-black leading-relaxed">
@@ -282,7 +282,7 @@ export const InvestorReportDemo: React.FC = () => {
           </section>
           
           <section className="bg-white rounded-2xl border border-magna-cool-gray/20 p-6">
-            <h2 className="text-sm font-medium uppercase tracking-wider text-magna-cool-gray mb-3">
+            <h2 className="text-sm font-medium uppercase tracking-wider text-slate-600 mb-3">
               Peer Comparison
             </h2>
             <div className="space-y-2">
@@ -299,7 +299,7 @@ export const InvestorReportDemo: React.FC = () => {
                   <div className="flex items-center gap-3">
                     <div className={cn(
                       "w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm",
-                      team.rank <= 3 ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-magna-cool-gray"
+                      team.rank <= 3 ? "bg-amber-100 text-amber-700" : "bg-gray-200 text-slate-600"
                     )}>
                       {team.rank}
                     </div>
@@ -330,7 +330,7 @@ export const InvestorReportDemo: React.FC = () => {
         
         {/* Footer */}
         <footer className="text-center">
-          <p className="text-xs text-magna-cool-gray/60 mt-4">
+          <p className="text-xs text-slate-600/60 mt-4">
             Forward. For all.
           </p>
         </footer>

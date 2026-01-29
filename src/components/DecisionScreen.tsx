@@ -237,17 +237,17 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             {/* Center: Cash Balance */}
             <div className="flex items-center gap-8">
               <div className="text-center">
-                <div className="text-sm text-slate-500 uppercase tracking-wide">Starting Cash</div>
+                <div className="text-sm text-slate-700 uppercase tracking-wide">Starting Cash</div>
                 <div className="text-2xl font-bold text-slate-800">${team.cashBalance.toLocaleString()}M</div>
               </div>
               <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <div className="text-sm text-slate-500 uppercase tracking-wide">Selected</div>
+                <div className="text-sm text-slate-700 uppercase tracking-wide">Selected</div>
                 <div className="text-2xl font-bold text-amber-600">-${selectedCost.toLocaleString()}M</div>
               </div>
               <div className="w-px h-10 bg-slate-200" />
               <div className="text-center">
-                <div className="text-sm text-slate-500 uppercase tracking-wide">Remaining</div>
+                <div className="text-sm text-slate-700 uppercase tracking-wide">Remaining</div>
                 <div className={cn(
                   "text-2xl font-bold",
                   remainingBudget >= 0 ? "text-emerald-600" : "text-magna-red"
@@ -310,14 +310,14 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                 </div>
                 <div>
                   <h2 className="text-2xl font-bold text-slate-800">How to Play</h2>
-                  <p className="text-slate-500">TSR Challenge Rules & Mechanics</p>
+                  <p className="text-slate-700">TSR Challenge Rules & Mechanics</p>
                 </div>
               </div>
               <button
                 onClick={() => setShowHelpModal(false)}
                 className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
               >
-                <X className="w-6 h-6 text-slate-500" />
+                <X className="w-6 h-6 text-slate-700" />
               </button>
             </div>
             
@@ -478,7 +478,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
               </div>
               <div>
                 <h2 className="text-2xl font-bold text-slate-800">Decisions Submitted</h2>
-                <p className="text-slate-500 text-lg mt-1">
+                <p className="text-slate-700 text-lg mt-1">
                   FY{2025 + gameState.currentRound} capital allocation locked in
                 </p>
               </div>
@@ -491,8 +491,8 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                 timeRemaining <= 60 ? "bg-amber-50 border border-amber-200" : "bg-slate-50"
               )}>
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <Timer className={cn("w-5 h-5", timeRemaining <= 60 ? "text-amber-600" : "text-slate-500")} />
-                  <span className={cn("text-sm uppercase tracking-wide", timeRemaining <= 60 ? "text-amber-600" : "text-slate-500")}>
+                  <Timer className={cn("w-5 h-5", timeRemaining <= 60 ? "text-amber-600" : "text-slate-700")} />
+                  <span className={cn("text-sm uppercase tracking-wide", timeRemaining <= 60 ? "text-amber-600" : "text-slate-700")}>
                     Time Remaining
                   </span>
                 </div>
@@ -505,13 +505,13 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
               </div>
               <div className="bg-slate-50 rounded-xl p-4 text-center">
                 <div className="flex items-center justify-center gap-2 mb-1">
-                  <DollarSign className="w-5 h-5 text-slate-500" />
-                  <span className="text-sm text-slate-500 uppercase tracking-wide">Capital Allocated</span>
+                  <DollarSign className="w-5 h-5 text-slate-700" />
+                  <span className="text-sm text-slate-700 uppercase tracking-wide">Capital Allocated</span>
                 </div>
                 <div className="text-3xl font-bold text-amber-600">
                   ${selectedCost.toLocaleString()}M
                 </div>
-                <div className="text-sm text-slate-500 mt-0.5">
+                <div className="text-sm text-slate-700 mt-0.5">
                   of ${team.cashBalance.toLocaleString()}M ({Math.round((selectedCost / team.cashBalance) * 100)}%)
                 </div>
               </div>
@@ -528,7 +528,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                 </span>
               </div>
               {selectedDecisions.length === 0 ? (
-                <div className="text-center text-slate-500 py-4 text-lg">
+                <div className="text-center text-slate-700 py-4 text-lg">
                   No decisions selected
                 </div>
               ) : (
@@ -576,7 +576,7 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
             )}
             
             {/* Waiting indicator */}
-            <div className="flex items-center justify-center gap-2 text-slate-500 text-base mt-4">
+            <div className="flex items-center justify-center gap-2 text-slate-700 text-base mt-4">
               <div className="flex items-center gap-1">
                 <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <div className="w-2 h-2 bg-magna-red rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
@@ -633,11 +633,11 @@ export const DecisionScreen: React.FC<DecisionScreenProps> = ({ className, isCou
                         </span>
                       )}
                     </h2>
-                    <p className="text-base text-slate-500">{config.description}</p>
+                    <p className="text-base text-slate-700">{config.description}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-3">
-                  <span className="text-slate-500 text-base">{decisions.length} options</span>
+                  <span className="text-slate-700 text-base">{decisions.length} options</span>
                   {isExpanded ? (
                     <ChevronUp className="w-6 h-6 text-slate-400" />
                   ) : (

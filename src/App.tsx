@@ -190,7 +190,7 @@ function TeamInterface() {
             </button>
           </div>
           
-          <p className="text-slate-500 text-sm mt-6">
+          <p className="text-slate-700 text-sm mt-6">
             If you're a facilitator, make sure the backend server is running.
           </p>
         </div>

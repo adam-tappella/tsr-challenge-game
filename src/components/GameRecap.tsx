@@ -149,15 +149,15 @@ const TeamHistoryView: React.FC<TeamHistoryViewProps> = ({
       {/* Summary Stats */}
       <div className="grid grid-cols-3 gap-4 mb-4">
         <div className="bg-slate-100 rounded-lg p-4 text-center">
-          <div className="text-sm text-slate-500 uppercase tracking-wide mb-1">Starting</div>
+          <div className="text-sm text-slate-700 uppercase tracking-wide mb-1">Starting</div>
           <div className="text-slate-800 font-bold text-xl">${startingStockPrice.toFixed(2)}</div>
         </div>
         <div className="bg-slate-100 rounded-lg p-4 text-center">
-          <div className="text-sm text-slate-500 uppercase tracking-wide mb-1">Final</div>
+          <div className="text-sm text-slate-700 uppercase tracking-wide mb-1">Final</div>
           <div className="text-slate-800 font-bold text-xl">${finalStockPrice.toFixed(2)}</div>
         </div>
         <div className="bg-slate-100 rounded-lg p-4 text-center">
-          <div className="text-sm text-slate-500 uppercase tracking-wide mb-1">Total TSR</div>
+          <div className="text-sm text-slate-700 uppercase tracking-wide mb-1">Total TSR</div>
           <div className={cn(
             "font-bold text-xl",
             finalTSR >= 0 ? "text-emerald-600" : "text-magna-red"
@@ -183,7 +183,7 @@ const TeamHistoryView: React.FC<TeamHistoryViewProps> = ({
                 </div>
                 <div>
                   <div className="text-slate-800 font-semibold text-lg">Round {snapshot.round}</div>
-                  <div className="text-sm text-slate-500">FY{2025 + snapshot.round}</div>
+                  <div className="text-sm text-slate-700">FY{2025 + snapshot.round}</div>
                 </div>
               </div>
               <div className="text-right">
@@ -200,7 +200,7 @@ const TeamHistoryView: React.FC<TeamHistoryViewProps> = ({
             {/* Decisions */}
             {snapshot.decisions.length > 0 ? (
               <div className="space-y-2">
-                <div className="text-sm text-slate-500 uppercase tracking-wide flex items-center gap-2">
+                <div className="text-sm text-slate-700 uppercase tracking-wide flex items-center gap-2">
                   <DollarSign className="w-4 h-4" />
                   {snapshot.decisions.length} Decision{snapshot.decisions.length !== 1 ? 's' : ''} - ${snapshot.cashSpent}M Invested
                 </div>
@@ -214,14 +214,14 @@ const TeamHistoryView: React.FC<TeamHistoryViewProps> = ({
                       >
                         <CategoryIcon className={cn("w-5 h-5 flex-shrink-0", CATEGORY_COLORS[decision.category])} />
                         <span className="text-slate-800 text-base flex-1 truncate">{decision.name}</span>
-                        <span className="text-slate-500 text-base font-medium">${decision.cost}M</span>
+                        <span className="text-slate-700 text-base font-medium">${decision.cost}M</span>
                       </div>
                     );
                   })}
                 </div>
               </div>
             ) : (
-              <div className="text-slate-500 text-base italic">No decisions submitted this round</div>
+              <div className="text-slate-700 text-base italic">No decisions submitted this round</div>
             )}
           </div>
         );
@@ -272,12 +272,12 @@ export const GameRecap: React.FC<GameRecapProps> = ({
               </div>
               <div>
                 <h1 className="text-3xl font-bold text-slate-800">Game Recap</h1>
-                <p className="text-slate-500 text-lg">How the game played out over 5 rounds</p>
+                <p className="text-slate-700 text-lg">How the game played out over 5 rounds</p>
               </div>
             </div>
             <button
               onClick={onClose}
-              className="p-3 text-slate-500 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
+              className="p-3 text-slate-700 hover:text-slate-800 hover:bg-slate-200 rounded-lg transition-colors"
             >
               <X className="w-8 h-8" />
             </button>
@@ -337,7 +337,7 @@ export const GameRecap: React.FC<GameRecapProps> = ({
           <div className="space-y-4">
             <h2 className="text-xl font-semibold text-slate-800 flex items-center gap-2">
               Team Breakdown
-              <span className="text-base font-normal text-slate-500">(click to expand)</span>
+              <span className="text-base font-normal text-slate-700">(click to expand)</span>
             </h2>
             
             {leaderboard.map((team, index) => {
@@ -369,7 +369,7 @@ export const GameRecap: React.FC<GameRecapProps> = ({
                         <div className="text-slate-800 font-semibold text-lg">
                           {team.teamName || `Team ${team.teamId}`}
                         </div>
-                        <div className="text-base text-slate-500">
+                        <div className="text-base text-slate-700">
                           {history.length} rounds completed
                         </div>
                       </div>
@@ -379,7 +379,7 @@ export const GameRecap: React.FC<GameRecapProps> = ({
                     <div className="flex items-center gap-8">
                       <div className="text-right">
                         <div className="text-slate-800 font-bold text-xl">${team.finalStockPrice.toFixed(2)}</div>
-                        <div className="text-sm text-slate-500">Final Price</div>
+                        <div className="text-sm text-slate-700">Final Price</div>
                       </div>
                       <div className="text-right">
                         <div className={cn(
@@ -393,7 +393,7 @@ export const GameRecap: React.FC<GameRecapProps> = ({
                           )}
                           {team.totalTSR >= 0 ? '+' : ''}{(team.totalTSR * 100).toFixed(1)}%
                         </div>
-                        <div className="text-sm text-slate-500">Total TSR</div>
+                        <div className="text-sm text-slate-700">Total TSR</div>
                       </div>
                       <div className="text-slate-400">
                         {isExpanded ? (

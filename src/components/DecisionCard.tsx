@@ -147,7 +147,7 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         
         {/* Cost */}
         <div className="flex items-center gap-1.5 mb-3">
-          <DollarSign className="w-5 h-5 text-slate-500" />
+          <DollarSign className="w-5 h-5 text-slate-700" />
           <span className="text-xl font-bold text-slate-800">${decision.cost}M</span>
         </div>
         
@@ -170,14 +170,14 @@ export const DecisionCard: React.FC<DecisionCardProps> = ({
         
         {/* Footer */}
         <div className="flex items-center justify-between pt-3 border-t border-slate-200">
-          <div className="flex items-center gap-1 text-sm text-slate-500">
+          <div className="flex items-center gap-1 text-sm text-slate-700">
             <Clock className="w-4 h-4" />
             {decision.durationYears} year{decision.durationYears > 1 ? 's' : ''} investment
           </div>
           
           <button
             onClick={handleExpandClick}
-            className="flex items-center gap-1 text-sm font-medium text-slate-500 hover:text-slate-800 transition-colors"
+            className="flex items-center gap-1 text-sm font-medium text-slate-700 hover:text-slate-800 transition-colors"
           >
             Details
             <ChevronRight className="w-4 h-4" />
@@ -251,7 +251,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
               onClick={onClose}
               className="p-2 hover:bg-slate-100 rounded-xl transition-colors"
             >
-              <X className="w-6 h-6 text-slate-500" />
+              <X className="w-6 h-6 text-slate-700" />
             </button>
           </div>
           
@@ -261,7 +261,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <DollarSign className="w-6 h-6 text-slate-500" />
+              <DollarSign className="w-6 h-6 text-slate-700" />
               <span className="text-3xl font-bold text-slate-800">${decision.cost}M</span>
             </div>
             
@@ -278,7 +278,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
         <div className="p-6 space-y-6">
           {/* Narrative */}
           <div>
-            <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-2">
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-2">
               Investment Overview
             </h4>
             <p className="text-slate-700 text-lg leading-relaxed">
@@ -288,7 +288,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
           
           {/* Key Metrics Grid - Category Specific */}
           <div>
-            <h4 className="text-base font-semibold text-slate-500 uppercase tracking-wide mb-3">
+            <h4 className="text-base font-semibold text-slate-700 uppercase tracking-wide mb-3">
               Key Metrics
             </h4>
             {decision.category === 'grow' && (
@@ -310,7 +310,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                   value={decision.revenueImpact ? `${(decision.revenueImpact * 100).toFixed(1)}% y-o-y` : '—'} 
                 />
                 <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="text-sm text-slate-500 mb-1">EBITDA Margin</div>
+                  <div className="text-sm text-slate-700 mb-1">EBITDA Margin</div>
                   <div className="text-slate-800 text-lg font-semibold">
                     {decision.revenueImpact ? `${(9 + decision.revenueImpact * 20).toFixed(0)}%` : '9%'}
                   </div>
@@ -350,7 +350,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
                   </div>
                 </div>
                 <div className="col-span-2 bg-slate-50 border border-slate-200 rounded-xl p-4">
-                  <div className="text-sm text-slate-500 mb-1">Revenue Protection</div>
+                  <div className="text-sm text-slate-700 mb-1">Revenue Protection</div>
                   <div className="text-slate-800 text-lg font-semibold">
                     Avoids {decision.revenueImpact ? `${Math.abs(decision.revenueImpact * 100).toFixed(1)}%` : '0.1%'} core revenue loss compared to previous period
                   </div>
@@ -399,7 +399,7 @@ const DecisionModal: React.FC<DecisionModalProps> = ({
 
 const DetailItem: React.FC<{ label: string; value: string }> = ({ label, value }) => (
   <div className="bg-slate-50 border border-slate-200 rounded-xl p-4">
-    <div className="text-sm text-slate-500 mb-1">{label}</div>
+    <div className="text-sm text-slate-700 mb-1">{label}</div>
     <div className="text-slate-800 text-lg font-semibold">{value}</div>
   </div>
 );

@@ -74,7 +74,7 @@ export const Lobby: React.FC<LobbyProps> = ({ className }) => {
         {/* Teams Status */}
         <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 mb-6">
           <div className="flex items-center justify-center gap-2 mb-4">
-            <Users className="w-6 h-6 text-slate-500" />
+            <Users className="w-6 h-6 text-slate-700" />
             <span className="text-slate-800 font-semibold text-xl">
               Teams Joined: {joinedCount} / {totalCount}
             </span>
@@ -115,10 +115,10 @@ export const Lobby: React.FC<LobbyProps> = ({ className }) => {
       
       {/* Scenario Preview */}
       <div className="mt-8 max-w-xl text-center">
-        <h3 className="text-slate-500 text-base uppercase tracking-wide mb-2">
+        <h3 className="text-slate-700 text-base uppercase tracking-wide mb-2">
           Round 1 Scenario
         </h3>
-        <p className="text-slate-500 text-lg">
+        <p className="text-slate-700 text-lg">
           FY2026 - Business as Usual: The automotive market remains stable with moderate growth expectations.
         </p>
       </div>

@@ -184,7 +184,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
   if (!finalResults) {
     return (
       <div className="min-h-screen bg-slate-100 flex items-center justify-center">
-        <div className="text-slate-500 text-xl">Loading final results...</div>
+        <div className="text-slate-700 text-xl">Loading final results...</div>
       </div>
     );
   }
@@ -239,14 +239,14 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
               <div className="text-amber-600 text-4xl font-bold">
                 ${winner?.finalStockPrice.toFixed(2)}
               </div>
-              <div className="text-slate-500 text-lg">Final Stock Price</div>
+              <div className="text-slate-700 text-lg">Final Stock Price</div>
             </div>
             <div className="w-px h-16 bg-amber-300" />
             <div>
               <div className="text-emerald-600 text-4xl font-bold">
                 +{(winner?.totalTSR * 100).toFixed(1)}%
               </div>
-              <div className="text-slate-500 text-lg">Total Return</div>
+              <div className="text-slate-700 text-lg">Total Return</div>
             </div>
           </div>
         </div>
@@ -271,7 +271,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
               </div>
               <div>
                 <div className="text-slate-800 font-bold text-xl">{teamName || `Team ${teamId}`} (You)</div>
-                <div className="text-slate-500 text-base">
+                <div className="text-slate-700 text-base">
                   Final Position: {getRankSuffix(ourResult.rank)} of {finalResults.leaderboard.length}
                 </div>
               </div>
@@ -292,7 +292,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       {/* Full Leaderboard */}
       <div className="bg-white border border-slate-200 shadow-lg rounded-2xl p-8 w-full max-w-4xl mb-8">
         <h3 className="text-2xl font-semibold text-slate-800 mb-6 flex items-center gap-3">
-          <Award className="w-7 h-7 text-slate-500" />
+          <Award className="w-7 h-7 text-slate-700" />
           Full Leaderboard
         </h3>
         
@@ -336,7 +336,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                       Team {result.teamId}
                       {isUs && " (You)"}
                     </div>
-                    <div className="text-sm text-slate-500">
+                    <div className="text-sm text-slate-700">
                       Started at ${result.startingStockPrice.toFixed(2)}
                     </div>
                   </div>
@@ -346,7 +346,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                 <div className="flex items-center gap-8">
                   {/* Dividends */}
                   <div className="text-right hidden md:block">
-                    <div className="text-slate-500 text-base">Dividends</div>
+                    <div className="text-slate-700 text-base">Dividends</div>
                     <div className="text-slate-800 font-semibold text-lg">
                       ${result.totalDividends.toFixed(2)}
                     </div>
@@ -354,7 +354,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                   
                   {/* Stock Price */}
                   <div className="text-right">
-                    <div className="text-slate-500 text-base">Stock Price</div>
+                    <div className="text-slate-700 text-base">Stock Price</div>
                     <div className="text-slate-800 font-bold text-xl">
                       ${result.finalStockPrice.toFixed(2)}
                     </div>
@@ -362,7 +362,7 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
                   
                   {/* TSR */}
                   <div className="text-right min-w-[100px]">
-                    <div className="text-slate-500 text-base">Total TSR</div>
+                    <div className="text-slate-700 text-base">Total TSR</div>
                     <div className={cn(
                       "font-bold text-xl flex items-center justify-end gap-1",
                       result.totalTSR >= 0 ? "text-emerald-600" : "text-magna-red"
@@ -650,12 +650,12 @@ export const FinalResults: React.FC<FinalResultsProps> = ({ className }) => {
       
       {/* Footer */}
       <div className="mt-12 text-center">
-        <p className="text-slate-500 text-lg mb-3">Thank you for participating in the</p>
+        <p className="text-slate-700 text-lg mb-3">Thank you for participating in the</p>
         <div className="flex items-center justify-center gap-3">
           <MagnaLogo variant="color" size="sm" />
           <span className="text-2xl font-semibold text-slate-800">TSR Challenge</span>
         </div>
-        <p className="text-slate-500 text-lg mt-3">2026</p>
+        <p className="text-slate-700 text-lg mt-3">2026</p>
       </div>
     </div>
   );
