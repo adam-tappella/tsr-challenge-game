@@ -531,16 +531,51 @@ export const InvestorReportSummary: React.FC<InvestorReportSummaryProps> = ({ cl
             <Target className="w-5 h-5 text-magna-ignition-red" />
             Investment Thesis
           </h2>
-          <p className="text-magna-carbon-black text-lg leading-relaxed">
-            In FY{fiscalYear}, the company achieved revenue of {formatCurrency(team.metrics.revenue)} with 
-            an EBIT margin of {formatPercent(team.metrics.ebitMargin, false)}. 
-            {derivedMetrics.growthOverMarket > 0 
-              ? ` Revenue growth outpaced the market by ${formatPercent(derivedMetrics.growthOverMarket)}, demonstrating strong competitive positioning.`
-              : ` The company is focused on operational improvements to regain market share.`
-            }
-            {' '}We {rating === 'BUY' ? 'recommend accumulating shares' : rating === 'SELL' ? 'advise reducing exposure' : 'maintain a neutral stance'} with 
-            a price target of ${priceTarget.toFixed(2)}, representing {((priceTarget / team.stockPrice - 1) * 100).toFixed(0)}% {priceTarget > team.stockPrice ? 'upside' : 'downside'}.
-          </p>
+          <div className="text-magna-carbon-black text-lg leading-relaxed space-y-4">
+            {/* 80% Consistent - Core Company Thesis */}
+            <p>
+              Magna remains a core holding in our Automotive & Mobility coverage universe. As the largest North American-based 
+              automotive supplier and one of only two globally diversified full-vehicle manufacturers, the company occupies a 
+              differentiated position in the Tier 1 value chain. We continue to see strategic value in Magna's vertically 
+              integrated platform, spanning Complete Vehicles, Power & Vision, Seating Systems, and Body Exteriors & Structures, 
+              which provides unique cross-selling synergies and positions the company as a one-stop solution for OEM partners 
+              navigating electrification and lightweighting imperatives.
+            </p>
+            <p>
+              The company's customer concentration with Detroit 3 and European OEMs provides stable baseload revenue, while 
+              recent contract wins in EV platforms and ADAS components position Magna to capture secular growth tailwinds. 
+              Capital allocation discipline and the company's track record of operational execution through prior cycles 
+              remain key differentiators versus peers.
+            </p>
+            {/* 20% Tailored - Performance-Specific Commentary */}
+            <p>
+              <strong>FY{fiscalYear} Update:</strong>{' '}
+              {derivedMetrics.growthOverMarket > 0.02
+                ? `Management delivered revenue growth of ${formatPercent(derivedMetrics.revenueGrowth)}, outpacing market growth by ${formatPercent(derivedMetrics.growthOverMarket)}. This market share capture validates the commercial strategy and supports our constructive view.`
+                : derivedMetrics.growthOverMarket > -0.01
+                  ? `Top-line growth of ${formatPercent(derivedMetrics.revenueGrowth)} was broadly in line with end-market demand. We see this as evidence of stable competitive positioning, though we await further catalysts to drive re-rating.`
+                  : `Revenue growth of ${formatPercent(derivedMetrics.revenueGrowth)} lagged broader market trends by ${formatPercent(Math.abs(derivedMetrics.growthOverMarket))}. We are monitoring for signs of stabilization in bookings activity and market share trends.`
+              }
+              {' '}
+              {team.metrics.ebitMargin > 0.055
+                ? `EBIT margin of ${formatPercent(team.metrics.ebitMargin, false)} reflects strong operating leverage and cost discipline, tracking ahead of our estimates.`
+                : team.metrics.ebitMargin > 0.04
+                  ? `EBIT margin of ${formatPercent(team.metrics.ebitMargin, false)} is consistent with management's framework for balanced investment.`
+                  : `EBIT margin compression to ${formatPercent(team.metrics.ebitMargin, false)} warrants close monitoring; we are evaluating restructuring potential and cost-out initiatives.`
+              }
+              {' '}
+              {team.metrics.roic > 0.09
+                ? `With ROIC at ${formatPercent(team.metrics.roic, false)}, returns remain well above cost of capital, supporting our thesis on capital efficiency.`
+                : team.metrics.roic > 0.065
+                  ? `ROIC of ${formatPercent(team.metrics.roic, false)} is consistent with peer-group averages.`
+                  : `ROIC of ${formatPercent(team.metrics.roic, false)} remains a focal point for investor scrutiny.`
+              }
+            </p>
+            <p>
+              We {rating === 'BUY' ? 'reiterate our Overweight rating and recommend accumulating shares' : rating === 'SELL' ? 'move to Underweight and advise reducing exposure' : 'maintain our Neutral rating'} with 
+              a 12-month price target of ${priceTarget.toFixed(2)}, representing {((priceTarget / team.stockPrice - 1) * 100).toFixed(0)}% {priceTarget > team.stockPrice ? 'upside' : 'downside'} from current levels.
+            </p>
+          </div>
         </section>
         
         {/* Key Metrics - Sectioned (Growth > Profitability > Cash Flow > Valuation) */}
