@@ -232,11 +232,26 @@ export interface FinancialMetrics {
   sharePrice: number;
   
   // Derived Metrics
+  /** Invested Capital (in USD millions) */
+  investedCapital: number;
+  
+  /** EBITDA Margin = EBITDA / Revenue */
+  ebitdaMargin: number;
+  
   /** EBIT Margin = EBIT / Revenue */
   ebitMargin: number;
   
-  /** Return on Invested Capital */
+  /** Return on Invested Capital = EBIT * (1 - Tax) / Invested Capital */
   roic: number;
+  
+  /** COGS as % of Revenue */
+  cogsToRevenue: number;
+  
+  /** SG&A as % of Revenue */
+  sgaToRevenue: number;
+  
+  /** CAPEX as % of Revenue */
+  capexToRevenue: number;
 }
 
 // =============================================================================

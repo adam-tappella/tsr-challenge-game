@@ -20,6 +20,15 @@ import {
 } from './config/index.js';
 
 import {
+  BASELINE_FINANCIALS,
+  WACC,
+  NET_DEBT,
+  MINORITY_INTEREST,
+  INVESTED_CAPITAL,
+  createInitialMetrics,
+} from './config/baseline-financials.js';
+
+import {
   initializeGameStateManager,
 } from './game-state-manager.js';
 
@@ -144,6 +153,86 @@ app.get('/api/health', (_req: Request, res: Response) => {
     },
     config: { valid: configValidation.valid, errors: configValidation.errors },
   });
+});
+
+// Temporary endpoint to view t=0 baseline state
+app.get('/t0', (_req: Request, res: Response) => {
+  const initialMetrics = createInitialMetrics();
+  
+  const html = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>T=0 Baseline State</title>
+      <style>
+        body { font-family: system-ui, -apple-system, sans-serif; max-width: 800px; margin: 40px auto; padding: 20px; background: #f5f5f5; }
+        h1 { color: #333; border-bottom: 3px solid #4CAF50; padding-bottom: 10px; }
+        .section { background: white; padding: 20px; margin: 20px 0; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #4CAF50; margin-top: 0; }
+        table { width: 100%; border-collapse: collapse; }
+        tr { border-bottom: 1px solid #eee; }
+        td { padding: 10px 0; }
+        td:first-child { font-weight: 600; color: #555; }
+        td:last-child { text-align: right; font-family: 'Courier New', monospace; }
+        .highlight { background: #ffffcc; }
+      </style>
+    </head>
+    <body>
+      <h1>T=0 Baseline Financial State</h1>
+      
+      <div class="section">
+        <h2>Income Statement</h2>
+        <table>
+          <tr><td>Revenue</td><td>$${initialMetrics.revenue.toLocaleString()}M</td></tr>
+          <tr><td>COGS</td><td>$${initialMetrics.cogs.toLocaleString()}M</td></tr>
+          <tr><td>SG&A</td><td>$${initialMetrics.sga.toLocaleString()}M</td></tr>
+          <tr><td>EBITDA</td><td>$${initialMetrics.ebitda.toLocaleString()}M</td></tr>
+          <tr><td>Depreciation</td><td>$${initialMetrics.depreciation.toLocaleString()}M</td></tr>
+          <tr><td>Amortization</td><td>$${initialMetrics.amortization.toLocaleString()}M</td></tr>
+          <tr class="highlight"><td>EBIT</td><td>$${initialMetrics.ebit.toLocaleString()}M</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Valuation</h2>
+        <table>
+          <tr class="highlight"><td>NPV / Enterprise Value</td><td>$${initialMetrics.npv.toLocaleString()}M</td></tr>
+          <tr><td>Net Debt</td><td>$${NET_DEBT.toLocaleString()}M</td></tr>
+          <tr><td>Minority Interest</td><td>$${MINORITY_INTEREST.toLocaleString()}M</td></tr>
+          <tr class="highlight"><td>Equity Value</td><td>$${initialMetrics.equityValue.toLocaleString()}M</td></tr>
+          <tr><td>Shares Outstanding</td><td>${initialMetrics.sharesOutstanding.toLocaleString()}M</td></tr>
+          <tr class="highlight"><td>Share Price</td><td>$${initialMetrics.sharePrice.toFixed(2)}</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Performance Metrics</h2>
+        <table>
+          <tr><td>Invested Capital</td><td>$${initialMetrics.investedCapital.toLocaleString()}M</td></tr>
+          <tr><td>WACC</td><td>${(WACC * 100).toFixed(2)}%</td></tr>
+          <tr class="highlight"><td>ROIC</td><td>${(initialMetrics.roic * 100).toFixed(2)}%</td></tr>
+          <tr><td>EBITDA Margin</td><td>${(initialMetrics.ebitdaMargin * 100).toFixed(2)}%</td></tr>
+          <tr><td>EBIT Margin</td><td>${(initialMetrics.ebitMargin * 100).toFixed(2)}%</td></tr>
+          <tr><td>COGS / Revenue</td><td>${(initialMetrics.cogsToRevenue * 100).toFixed(2)}%</td></tr>
+          <tr><td>SG&A / Revenue</td><td>${(initialMetrics.sgaToRevenue * 100).toFixed(2)}%</td></tr>
+          <tr><td>CAPEX / Revenue</td><td>${(initialMetrics.capexToRevenue * 100).toFixed(2)}%</td></tr>
+        </table>
+      </div>
+
+      <div class="section">
+        <h2>Formula Verification</h2>
+        <table>
+          <tr><td>ROIC Calculation</td><td>EBIT × (1 - Tax) / Invested Capital</td></tr>
+          <tr><td></td><td>${initialMetrics.ebit.toLocaleString()} × 0.78 / ${initialMetrics.investedCapital.toLocaleString()} = ${(initialMetrics.roic * 100).toFixed(2)}%</td></tr>
+          <tr><td>Equity Value Calculation</td><td>NPV - Debt - Minority</td></tr>
+          <tr><td></td><td>${initialMetrics.npv.toLocaleString()} - ${NET_DEBT.toLocaleString()} - ${MINORITY_INTEREST.toLocaleString()} = ${initialMetrics.equityValue.toLocaleString()}</td></tr>
+        </table>
+      </div>
+    </body>
+    </html>
+  `;
+  
+  res.send(html);
 });
 
 // =============================================================================
@@ -601,6 +690,30 @@ httpServer.listen(Number(PORT), HOST, () => {
     console.log(`⚠️  Decision configuration errors:`);
     configValidation.errors.forEach(e => console.log(`   - ${e}`));
   }
+  
+  // Display t=0 baseline financial state
+  const initialMetrics = createInitialMetrics();
+  console.log(`\n📊 T=0 BASELINE FINANCIAL STATE`);
+  console.log(`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`);
+  console.log(`Income Statement:`);
+  console.log(`  Revenue:     $${initialMetrics.revenue.toLocaleString()}M`);
+  console.log(`  COGS:        $${initialMetrics.cogs.toLocaleString()}M`);
+  console.log(`  SG&A:        $${initialMetrics.sga.toLocaleString()}M`);
+  console.log(`  EBITDA:      $${initialMetrics.ebitda.toLocaleString()}M`);
+  console.log(`  EBIT:        $${initialMetrics.ebit.toLocaleString()}M`);
+  console.log(`\nValuation:`);
+  console.log(`  NPV:         $${initialMetrics.npv.toLocaleString()}M`);
+  console.log(`  Debt:        $${NET_DEBT.toLocaleString()}M`);
+  console.log(`  Minority:    $${MINORITY_INTEREST.toLocaleString()}M`);
+  console.log(`  Equity:      $${initialMetrics.equityValue.toLocaleString()}M`);
+  console.log(`  Share Price: $${initialMetrics.sharePrice.toFixed(2)}`);
+  console.log(`  Shares:      ${initialMetrics.sharesOutstanding.toLocaleString()}M`);
+  console.log(`\nPerformance Metrics:`);
+  console.log(`  WACC:        ${(WACC * 100).toFixed(1)}%`);
+  console.log(`  ROIC:        ${(initialMetrics.roic * 100).toFixed(2)}%`);
+  console.log(`  EBITDA Mgn:  ${(initialMetrics.ebitdaMargin * 100).toFixed(2)}%`);
+  console.log(`  EBIT Mgn:    ${(initialMetrics.ebitMargin * 100).toFixed(2)}%`);
+  console.log(`  Invested Cap: $${initialMetrics.investedCapital.toLocaleString()}M`);
   
   console.log(`\n📋 Admin Endpoints:`);
   console.log(`   POST /admin/auth        - Verify PIN`);

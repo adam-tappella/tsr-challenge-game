@@ -36,6 +36,9 @@ import {
   TERMINAL_GROWTH_RATE,
   TAX_RATE,
   STARTING_INVESTMENT_CASH,
+  INVESTED_CAPITAL,
+  NET_DEBT,
+  MINORITY_INTEREST,
   createInitialMetrics,
 } from './config/baseline-financials.js';
 
@@ -60,9 +63,6 @@ const INVESTOR_NOISE_FACTOR = 0.05;
 
 /** Dividend payout ratio (simplified model) */
 const DIVIDEND_PAYOUT_RATIO = 0.25;
-
-/** Net debt for equity value calculation (simplified) */
-const NET_DEBT = 8574;  // $8,574M (NPV - Equity Value from baseline)
 
 /** Stock price bounds - max is 2x starting price, min is 0.5x */
 const MAX_STOCK_PRICE_MULTIPLIER = 2.0;
@@ -295,7 +295,8 @@ export function calculateTeamMetrics(
   const adjustedNpv = npv * investorNoiseFactor;
   
   // Calculate equity value and share price
-  const equityValue = adjustedNpv - NET_DEBT;
+  // Equity Value = NPV - Debt - Minority Interest
+  const equityValue = adjustedNpv - NET_DEBT - MINORITY_INTEREST;
   const sharesOutstanding = BASELINE_FINANCIALS.sharesOutstanding;
   const rawSharePrice = equityValue / sharesOutstanding;
   
@@ -368,11 +369,7 @@ function calculateNPV(ebit: number, operatingFCF: number): number {
  */
 function calculateROIC(ebit: number, revenue: number): number {
   const nopat = ebit * (1 - TAX_RATE);  // Net Operating Profit After Tax
-  
-  // Estimate invested capital as a % of revenue (industry average ~40%)
-  const investedCapital = revenue * 0.40;
-  
-  return nopat / investedCapital;
+  return nopat / INVESTED_CAPITAL;
 }
 
 // =============================================================================

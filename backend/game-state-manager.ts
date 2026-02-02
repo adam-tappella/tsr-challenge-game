@@ -139,7 +139,7 @@ export class GameStateManager {
       cashBalance: STARTING_INVESTMENT_CASH,
       currentRoundDecisions: [],
       allDecisions: [],
-      metrics: createInitialMetrics(),
+      metrics: initialMetrics,
       stockPrice: BASELINE_FINANCIALS.sharePrice,
       cumulativeTSR: 0,
       roundTSR: 0,
@@ -608,6 +608,8 @@ export class GameStateManager {
     if (claimedTeams.length === 0) {
       return { success: false, error: 'At least one team must join before starting' };
     }
+
+    console.log(`\n🎮 Starting game with ${claimedTeams.length} team(s) - Round 1`);
 
     // Transition to active
     this.state.status = 'active';

@@ -29,10 +29,10 @@ export const BASELINE_FINANCIALS: BaselineFinancials = {
   beginningCash: 1247,      // $1,247M
   
   // Valuation
-  npv: 22738,               // $22,738M - Enterprise Value / NPV
-  equityValue: 14164,       // $14,164M
+  npv: 23201,               // $23,201M - Enterprise Value / NPV
+  equityValue: 15018,       // $15,018M (NPV - Debt - Minority)
   sharesOutstanding: 287,   // 287M shares
-  sharePrice: 49.29,        // $49.29 per share
+  sharePrice: 52.27,        // $52.27 per share
 };
 
 /**
@@ -65,9 +65,14 @@ export function createInitialMetrics(): FinancialMetrics {
     sharesOutstanding: baseline.sharesOutstanding,
     sharePrice: baseline.sharePrice,
     
-    // Derived Metrics
-    ebitMargin: baseline.ebit / baseline.revenue,  // ~4.94%
-    roic: 0.08,  // Assume 8% ROIC (slightly above WACC per PRD)
+    // Derived Metrics - All calculated dynamically
+    investedCapital: INVESTED_CAPITAL,
+    ebitdaMargin: baseline.ebitda / baseline.revenue,  // EBITDA/Revenue
+    ebitMargin: baseline.ebit / baseline.revenue,  // EBIT/Revenue
+    roic: (baseline.ebit * (1 - TAX_RATE)) / INVESTED_CAPITAL,  // EBIT * (1 - Tax) / Invested Capital
+    cogsToRevenue: Math.abs(baseline.cogs) / baseline.revenue,  // COGS/Revenue
+    sgaToRevenue: Math.abs(baseline.sga) / baseline.revenue,  // SGA/Revenue
+    capexToRevenue: Math.abs(baseline.capex) / baseline.revenue,  // CAPEX/Revenue
   };
 }
 
@@ -81,7 +86,7 @@ export const STARTING_INVESTMENT_CASH = 1200;  // $1,200M available per round in
  * WACC (Weighted Average Cost of Capital)
  * Used for NPV calculations
  */
-export const WACC = 0.075;  // 7.5%
+export const WACC = 0.08;  // 8%
 
 /**
  * Terminal growth rate for DCF calculations
@@ -92,3 +97,21 @@ export const TERMINAL_GROWTH_RATE = 0.02;  // 2%
  * Tax rate for cash flow calculations
  */
 export const TAX_RATE = 0.22;  // 22%
+
+/**
+ * Net debt for equity value calculation
+ * Fixed value used for valuation purposes
+ */
+export const NET_DEBT = 7765;  // $7,765M
+
+/**
+ * Minority interest for equity value calculation
+ * Fixed value used for valuation purposes
+ */
+export const MINORITY_INTEREST = 418;  // $418M
+
+/**
+ * Invested Capital for ROIC calculation
+ * ROIC = EBIT * (1 - Tax Rate) / Invested Capital
+ */
+export const INVESTED_CAPITAL = 15828;  // $15,828M
