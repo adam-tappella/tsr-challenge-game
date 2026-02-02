@@ -130,6 +130,36 @@ export class GameStateManager {
    * Creates a single team state
    */
   private createTeamState(teamId: number): TeamState {
+    const initialMetrics = createInitialMetrics();
+    
+    // Log t=0 values for verification
+    if (teamId === 1) {  // Only log once for team 1 to avoid spam
+      console.log('\n========== T=0 INITIAL STATE ==========');
+      console.log('Income Statement:');
+      console.log(`  Revenue: $${initialMetrics.revenue.toLocaleString()}M`);
+      console.log(`  COGS: $${initialMetrics.cogs.toLocaleString()}M`);
+      console.log(`  SG&A: $${initialMetrics.sga.toLocaleString()}M`);
+      console.log(`  EBITDA: $${initialMetrics.ebitda.toLocaleString()}M`);
+      console.log(`  D&A: $${(initialMetrics.depreciation + initialMetrics.amortization).toLocaleString()}M`);
+      console.log(`  EBIT: $${initialMetrics.ebit.toLocaleString()}M`);
+      console.log('\nValuation:');
+      console.log(`  NPV/Enterprise Value: $${initialMetrics.npv.toLocaleString()}M`);
+      console.log(`  Equity Value: $${initialMetrics.equityValue.toLocaleString()}M`);
+      console.log(`  Shares Outstanding: ${initialMetrics.sharesOutstanding.toLocaleString()}M`);
+      console.log(`  Share Price: $${initialMetrics.sharePrice.toFixed(2)}`);
+      console.log('\nPerformance Metrics:');
+      console.log(`  Invested Capital: $${initialMetrics.investedCapital.toLocaleString()}M`);
+      console.log(`  EBITDA Margin: ${(initialMetrics.ebitdaMargin * 100).toFixed(2)}%`);
+      console.log(`  EBIT Margin: ${(initialMetrics.ebitMargin * 100).toFixed(2)}%`);
+      console.log(`  ROIC: ${(initialMetrics.roic * 100).toFixed(2)}%`);
+      console.log(`  COGS/Revenue: ${(initialMetrics.cogsToRevenue * 100).toFixed(2)}%`);
+      console.log(`  SG&A/Revenue: ${(initialMetrics.sgaToRevenue * 100).toFixed(2)}%`);
+      console.log(`  CAPEX/Revenue: ${(initialMetrics.capexToRevenue * 100).toFixed(2)}%`);
+      console.log('\nOther:');
+      console.log(`  Starting Cash: $${STARTING_INVESTMENT_CASH.toLocaleString()}M`);
+      console.log('=====================================\n');
+    }
+    
     return {
       teamId,
       teamName: '', // Will be set when team joins
